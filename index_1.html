@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Crie sua Empresa em 1 Minuto — Curso de Administração</title>
+
+<!--
+  ============================================================
+  BLOCO 1 — FUNDAÇÃO VISUAL
+  ============================================================
+  O que tem aqui:
+  - Paleta de cores extraída da logo do CRA-DF (#0E3880 + branco)
+  - Tipografia grande, pensada para tela touch (nada pequeno demais)
+  - Componentes-base reutilizáveis: botão grande de toque, card,
+    barra de progresso (será usada no Bloco 2), telas com transição
+  - Tela de abertura (kiosk) com CTA "Toque para começar"
+
+  O que NÃO tem ainda (vem nos próximos blocos):
+  - As 5 perguntas (Bloco 2)
+  - A geração da empresa (Bloco 3)
+  - A tela de revelação (Bloco 4)
+  - QR code + card de Instagram (Bloco 5)
+  - Gravação no Supabase (Bloco 6)
+  - Modo quiosque / reinício automático (Bloco 7)
+
+  COMO TROCAR A LOGO DA FACULDADE:
+  Procure o comentário "LOGO DA FACULDADE" mais abaixo e troque o
+  placeholder por uma tag <img src="sua-logo.png" ...>.
+  ============================================================
+-->
+
+<style>
+  :root {
+    /* Paleta extraída da logo do CRA-DF */
+    --azul: #0E3880;
+    --azul-escuro: #0A2A61;
+    --azul-claro: #BDCDE6;
+    --azul-nevoa: #EEF2FA;
+    --branco: #FFFFFF;
+    --texto: #10224A;
+    --texto-suave: #4A5A82;
+
+    /* Espaçamento e forma, pensados para dedo, não mouse */
+    --raio: 24px;
+    --raio-btn: 18px;
+    --sombra: 0 10px 30px rgba(14, 56, 128, 0.15);
+    --sombra-forte: 0 16px 40px rgba(14, 56, 128, 0.25);
+  }
+
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    /* Kiosk: evita seleção de texto e gestos indesejados no touch */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    touch-action: manipulation;
+  }
+
+  html, body {
+    height: 100%;
+    overscroll-behavior: none;
+  }
+
+  body {
+    font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
+    background: var(--branco);
+    color: var(--texto);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  /* ============ ESTRUTURA DE TELAS ============
+     Cada "tela" do fluxo (boas-vindas, perguntas, revelação...)
+     é uma .screen. Só uma fica visível (.screen--ativa) por vez.
+     Isso já deixa pronta a estrutura para o Bloco 2 em diante. */
+  .screen {
+    display: none;
+    flex: 1;
+    flex-direction: column;
+    min-height: 100vh;
+    padding: clamp(20px, 4vw, 56px);
+    animation: entra 0.45s ease;
+  }
+  .screen--ativa {
+    display: flex;
+  }
+  @keyframes entra {
+    from { opacity: 0; transform: translateY(14px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ============ CABEÇALHO ============ */
+  .topo {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+
+  .marca-faculdade {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+
+  /* LOGO DA FACULDADE — troque este placeholder pela tag <img> real */
+  .logo-placeholder {
+    width: 56px;
+    height: 56px;
+    border: 2px dashed var(--azul-claro);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    text-align: center;
+    color: var(--texto-suave);
+    line-height: 1.2;
+    padding: 4px;
+    flex-shrink: 0;
+  }
+
+  .nome-faculdade {
+    font-weight: 700;
+    font-size: clamp(14px, 1.6vw, 18px);
+    color: var(--azul);
+  }
+  .nome-faculdade small {
+    display: block;
+    font-weight: 500;
+    font-size: 0.75em;
+    color: var(--texto-suave);
+  }
+
+  .selo-evento {
+    background: var(--azul-nevoa);
+    color: var(--azul);
+    font-weight: 600;
+    font-size: clamp(12px, 1.3vw, 15px);
+    padding: 8px 18px;
+    border-radius: 999px;
+    border: 1px solid var(--azul-claro);
+  }
+
+  /* ============ TELA DE BOAS-VINDAS ============ */
+  #tela-boas-vindas {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    gap: clamp(20px, 3vw, 36px);
+  }
+
+  .icone-hero {
+    width: clamp(96px, 14vw, 160px);
+    height: clamp(96px, 14vw, 160px);
+  }
+
+  .titulo-hero {
+    font-size: clamp(34px, 6vw, 68px);
+    font-weight: 800;
+    color: var(--azul);
+    line-height: 1.08;
+    max-width: 18ch;
+  }
+
+  .subtitulo-hero {
+    font-size: clamp(16px, 2.2vw, 24px);
+    color: var(--texto-suave);
+    font-weight: 500;
+    max-width: 42ch;
+    line-height: 1.5;
+  }
+
+  /* ============ BOTÃO GRANDE DE TOQUE ============
+     Componente base reutilizado em todos os blocos seguintes
+     (respostas das perguntas, "ver minha empresa", compartilhar...) */
+  .btn-touque {
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: clamp(20px, 2.6vw, 28px);
+    color: var(--branco);
+    background: var(--azul);
+    padding: clamp(20px, 2.6vw, 26px) clamp(40px, 6vw, 72px);
+    border-radius: var(--raio-btn);
+    box-shadow: var(--sombra-forte);
+    min-height: 76px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    animation: pulsa 2.4s ease-in-out infinite;
+  }
+  .btn-touque:active {
+    transform: scale(0.96);
+    background: var(--azul-escuro);
+    box-shadow: var(--sombra);
+    animation: none;
+  }
+  @keyframes pulsa {
+    0%, 100% { box-shadow: var(--sombra-forte); }
+    50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
+  }
+
+  /* Variante secundária de botão (usada em telas futuras: "voltar", "trocar resposta") */
+  .btn-touque--secundario {
+    background: var(--branco);
+    color: var(--azul);
+    border: 2px solid var(--azul-claro);
+    box-shadow: none;
+    animation: none;
+    font-size: clamp(16px, 1.8vw, 20px);
+    padding: 14px 28px;
+    min-height: 56px;
+  }
+  .btn-touque--secundario:active {
+    background: var(--azul-nevoa);
+    transform: scale(0.97);
+  }
+
+  /* ============ CARD (usado nas próximas telas: perguntas, empresa) ============ */
+  .card {
+    background: var(--branco);
+    border-radius: var(--raio);
+    box-shadow: var(--sombra);
+    border: 1px solid var(--azul-nevoa);
+    padding: clamp(24px, 3vw, 40px);
+  }
+
+  /* ============ BARRA DE PROGRESSO (pronta para o Bloco 2) ============ */
+  .progresso-track {
+    width: 100%;
+    max-width: 520px;
+    height: 12px;
+    background: var(--azul-nevoa);
+    border-radius: 999px;
+    overflow: hidden;
+  }
+  .progresso-fill {
+    height: 100%;
+    background: var(--azul);
+    border-radius: 999px;
+    transition: width 0.35s ease;
+  }
+
+  /* ============ RODAPÉ ============ */
+  .rodape {
+    text-align: center;
+    color: var(--texto-suave);
+    font-size: clamp(12px, 1.2vw, 14px);
+    font-weight: 500;
+  }
+  .rodape strong {
+    color: var(--azul);
+  }
+
+  /* ============ TELA DE TESTE (só existe neste Bloco 1, pra você conferir a paleta) ============ */
+  #tela-teste-paleta {
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    text-align: center;
+  }
+  .amostras {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .amostra {
+    width: 120px;
+    height: 90px;
+    border-radius: 14px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+    font-size: 12px;
+    font-weight: 700;
+    box-shadow: var(--sombra);
+    border: 1px solid rgba(0,0,0,0.05);
+  }
+</style>
+</head>
+<body>
+
+  <!-- ================= TELA 1: BOAS-VINDAS ================= -->
+  <section id="tela-boas-vindas" class="screen screen--ativa">
+    <div class="topo">
+      <div class="marca-faculdade">
+        <img src="logo-faculdade.png" style="width:56px;height:56px;object-fit:contain;"> 
+        <div class="logo-placeholder">LOGO<br>FACULDADE</div>
+        <div class="nome-faculdade">
+          ISECENSA
+          <small>Mostra de Cursos 2026</small>
+        </div>
+      </div>
+      <div class="selo-evento">Curso de Administração</div>
+    </div>
+
+    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: clamp(20px,3vw,36px);">
+      <!-- Ícone original (não é a logo do CRA — é um ícone próprio da experiência) -->
+      <svg class="icone-hero" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="46" width="26" height="60" rx="6" fill="#BDCDE6"/>
+        <rect x="47" y="30" width="26" height="76" rx="6" fill="#0E3880"/>
+        <rect x="80" y="12" width="26" height="94" rx="6" fill="#0A2A61"/>
+        <circle cx="93" cy="18" r="10" fill="#0E3880"/>
+        <path d="M85 18 L91 24 L102 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+
+      <h1 class="titulo-hero">Crie sua empresa em 1 minuto</h1>
+      <p class="subtitulo-hero">
+        Responda 5 perguntas rápidas e descubra que tipo de empresário você seria.
+        No final, você leva o seu selo de <strong>Futuro Administrador</strong>.
+      </p>
+
+      <button class="btn-touque" id="btn-comecar" type="button">
+        👉 Toque para começar
+      </button>
+    </div>
+
+    <p class="rodape">
+      Um experimento do <strong>Curso de Administração</strong> — Mostra de Cursos 2026
+    </p>
+  </section>
+
+  <!-- =================================================================
+       TELA DE VERIFICAÇÃO DE PALETA — existe só neste Bloco 1, para você
+       conferir as cores extraídas da logo do CRA-DF antes de eu seguir
+       para o Bloco 2. Toque no botão "Ver paleta" (canto inf. direito)
+       para abrir; será removida quando avançarmos.
+       ================================================================= -->
+  <section id="tela-teste-paleta" class="screen">
+    <h2 style="color:var(--azul); font-size:28px;">Paleta extraída da logo do CRA-DF</h2>
+    <div class="amostras">
+      <div class="amostra" style="background:#0E3880; color:#fff;">#0E3880</div>
+      <div class="amostra" style="background:#0A2A61; color:#fff;">#0A2A61</div>
+      <div class="amostra" style="background:#BDCDE6; color:#0E3880;">#BDCDE6</div>
+      <div class="amostra" style="background:#EEF2FA; color:#0E3880; border:1px solid #BDCDE6;">#EEF2FA</div>
+      <div class="amostra" style="background:#FFFFFF; color:#0E3880; border:1px solid #BDCDE6;">#FFFFFF</div>
+    </div>
+    <div class="card" style="max-width:420px;">
+      <p style="margin-bottom:14px; color:var(--texto-suave);">Exemplo de card + botões:</p>
+      <div class="progresso-track" style="margin-bottom:18px;">
+        <div class="progresso-fill" style="width:60%;"></div>
+      </div>
+      <button class="btn-touque" style="animation:none; font-size:18px; padding:14px 28px; min-height:56px;">Botão principal</button>
+      <button class="btn-touque btn-touque--secundario" style="margin-top:12px;">Botão secundário</button>
+    </div>
+    <button class="btn-touque btn-touque--secundario" id="btn-voltar-boas-vindas">← Voltar</button>
+  </section>
+
+  <button id="btn-ver-paleta" style="position:fixed; bottom:16px; right:16px; z-index:10; background:var(--texto); color:white; border:none; padding:10px 16px; border-radius:10px; font-size:12px; font-weight:600; opacity:0.6;">
+    Ver paleta (debug)
+  </button>
+
+  <script>
+    // ============================================================
+    // BLOCO 1 — apenas a navegação básica entre telas existe aqui.
+    // Nos próximos blocos, isso vira uma "máquina de estados" completa
+    // (boas-vindas → 5 perguntas → processando → revelação → foto).
+    // ============================================================
+
+    function mostrarTela(id) {
+      document.querySelectorAll('.screen').forEach(function (el) {
+        el.classList.remove('screen--ativa');
+      });
+      document.getElementById(id).classList.add('screen--ativa');
+    }
+
+    document.getElementById('btn-comecar').addEventListener('click', function () {
+      // No Bloco 2, isto vai chamar a primeira pergunta.
+      // Por enquanto, só um alerta de confirmação no console:
+      console.log('Fluxo de perguntas começa aqui (Bloco 2).');
+      alert('A partir daqui entram as 5 perguntas (isso é o Bloco 2, ainda não construído).');
+    });
+
+    document.getElementById('btn-ver-paleta').addEventListener('click', function () {
+      mostrarTela('tela-teste-paleta');
+    });
+    document.getElementById('btn-voltar-boas-vindas').addEventListener('click', function () {
+      mostrarTela('tela-boas-vindas');
+    });
+  </script>
+</body>
+</html>
