@@ -159,14 +159,25 @@
     color: var(--texto-suave);
   }
 
-  .selo-evento {
-    background: var(--azul-nevoa);
+  /* Bloco do lado direito do topo — espelha .marca-faculdade,
+     pra logo da ISECENSA (esquerda) e do CRA-DF (direita) terem
+     o mesmo peso visual nas duas pontas da tela. */
+  .marca-curso {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+  }
+  .nome-curso {
+    font-weight: 700;
+    font-size: clamp(14px, 1.6vw, 18px);
     color: var(--azul);
-    font-weight: 600;
-    font-size: clamp(12px, 1.3vw, 15px);
-    padding: 8px 18px;
-    border-radius: 999px;
-    border: 1px solid var(--azul-claro);
+    text-align: right;
+  }
+  .nome-curso small {
+    display: block;
+    font-weight: 500;
+    font-size: 0.75em;
+    color: var(--texto-suave);
   }
 
   /* ============ TELA DE BOAS-VINDAS ============ */
@@ -373,7 +384,19 @@
           <small>Ise por um dia - 2026</small>
         </div>
       </div>
-      <div class="selo-evento">Curso de Administração</div>
+      <!-- Espelha o bloco da esquerda: texto do curso + logo do CRA-DF
+           na ponta direita, pra ficar simétrico com a logo da ISECENSA
+           na ponta esquerda. Suba "logo-cra.png" junto dos outros arquivos. -->
+      <div class="marca-curso">
+        <div class="nome-curso">
+          Curso de Administração
+          <small>Regulamentado pelo CRA-DF</small>
+        </div>
+        <img src="./logo-cra.png"
+             alt="Logo CRA-DF"
+             class="logo-imagem"
+             onerror="this.outerHTML = '&lt;div class=&quot;logo-placeholder&quot;&gt;CRA-DF&lt;/div&gt;';">
+      </div>
     </div>
 
     <div class="hero-conteudo">
