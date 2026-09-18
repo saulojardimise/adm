@@ -178,27 +178,66 @@
     gap: clamp(6px, 1.6vh, 28px);
   }
 
+  /* Bloco central: em telas largas (o caso do touchscreen do estande),
+     usa duas colunas — ícone de um lado, texto do outro — em vez de
+     ficar tudo empilhado e centralizado bem no meio, com sobra de
+     espaço em branco nas laterais (o efeito "app de celular"). */
+  .hero-conteudo {
+    flex: 1;
+    min-height: 0;
+    width: 100%;
+    max-width: 1300px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: clamp(24px, 6vw, 90px);
+  }
+
+  .hero-grafico {
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .hero-texto {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
+    gap: clamp(8px, 1.8vh, 28px);
+    max-width: 640px;
+    min-width: 0;
+  }
+
+  /* Em telas estreitas ou verticais (celular, totem em pé), volta a
+     empilhar tudo centralizado — mais adequado a pouca largura. */
+  @media (max-aspect-ratio: 4/5) {
+    .hero-conteudo { flex-direction: column; }
+    .hero-texto { align-items: center; text-align: center; }
+  }
+
   .icone-hero {
     /* limitado tanto pela largura quanto pela altura disponível:
        o menor dos dois "vence", então nunca estoura a tela */
-    width: clamp(48px, min(12vw, 11vh), 160px);
-    height: clamp(48px, min(12vw, 11vh), 160px);
+    width: clamp(64px, min(20vw, 42vh), 280px);
+    height: clamp(64px, min(20vw, 42vh), 280px);
   }
 
   .titulo-hero {
-    font-size: clamp(22px, min(5.5vw, 6vh), 68px);
+    font-size: clamp(22px, min(4.6vw, 6vh), 64px);
     font-weight: 800;
     color: var(--azul);
-    line-height: 1.08;
-    max-width: 18ch;
+    line-height: 1.1;
   }
 
   .subtitulo-hero {
-    font-size: clamp(13px, min(2.2vw, 2.6vh), 24px);
+    font-size: clamp(13px, min(1.9vw, 2.6vh), 22px);
     color: var(--texto-suave);
     font-weight: 500;
-    max-width: 42ch;
-    line-height: 1.4;
+    line-height: 1.45;
   }
 
   /* ============ BOTÃO GRANDE DE TOQUE ============
@@ -336,25 +375,29 @@
       <div class="selo-evento">Curso de Administração</div>
     </div>
 
-    <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: clamp(8px, 1.8vh, 32px);">
+    <div class="hero-conteudo">
       <!-- Ícone original (não é a logo do CRA — é um ícone próprio da experiência) -->
-      <svg class="icone-hero" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="14" y="46" width="26" height="60" rx="6" fill="#BDCDE6"/>
-        <rect x="47" y="30" width="26" height="76" rx="6" fill="#0E3880"/>
-        <rect x="80" y="12" width="26" height="94" rx="6" fill="#0A2A61"/>
-        <circle cx="93" cy="18" r="10" fill="#0E3880"/>
-        <path d="M85 18 L91 24 L102 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <div class="hero-grafico">
+        <svg class="icone-hero" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="14" y="46" width="26" height="60" rx="6" fill="#BDCDE6"/>
+          <rect x="47" y="30" width="26" height="76" rx="6" fill="#0E3880"/>
+          <rect x="80" y="12" width="26" height="94" rx="6" fill="#0A2A61"/>
+          <circle cx="93" cy="18" r="10" fill="#0E3880"/>
+          <path d="M85 18 L91 24 L102 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </div>
 
-      <h1 class="titulo-hero">Crie sua empresa em 1 minuto</h1>
-      <p class="subtitulo-hero">
-        Responda 5 perguntas rápidas e descubra que tipo de empresário você seria.
-        No final, você leva o seu selo de <strong>Futuro Administrador</strong>.
-      </p>
+      <div class="hero-texto">
+        <h1 class="titulo-hero">Crie sua empresa em 1 minuto</h1>
+        <p class="subtitulo-hero">
+          Responda 5 perguntas rápidas e descubra que tipo de empresário você seria.
+          No final, você recebe o <strong>Selo de Futuro Administrador</strong>, formado pelo ISECENSA.
+        </p>
 
-      <button class="btn-touque" id="btn-comecar" type="button">
-        👉 Toque para começar
-      </button>
+        <button class="btn-touque" id="btn-comecar" type="button">
+          👉 Toque para começar
+        </button>
+      </div>
     </div>
 
     <p class="rodape">
