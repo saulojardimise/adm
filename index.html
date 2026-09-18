@@ -111,29 +111,32 @@
   /* ============ CABEÇALHO ============ */
   .topo {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
   }
 
+  /* Logo em cima, texto centralizado embaixo — igual nos dois lados */
   .marca-faculdade {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
+    text-align: center;
+    gap: 6px;
   }
 
   /* Logo real da faculdade — encolhe junto com a tela */
   .logo-imagem {
-    width: clamp(38px, 6vh, 56px);
-    height: clamp(38px, 6vh, 56px);
+    width: clamp(48px, 8vh, 96px);
+    height: clamp(48px, 8vh, 96px);
     object-fit: contain;
     flex-shrink: 0;
   }
 
   /* Substituto automático, usado só se logo-faculdade.png não for encontrado */
   .logo-placeholder {
-    width: clamp(38px, 6vh, 56px);
-    height: clamp(38px, 6vh, 56px);
+    width: clamp(48px, 8vh, 96px);
+    height: clamp(48px, 8vh, 96px);
     border: 2px dashed var(--azul-claro);
     border-radius: 14px;
     display: flex;
@@ -164,14 +167,16 @@
      o mesmo peso visual nas duas pontas da tela. */
   .marca-curso {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 14px;
+    text-align: center;
+    gap: 6px;
   }
   .nome-curso {
     font-weight: 700;
     font-size: clamp(14px, 1.6vw, 18px);
     color: var(--azul);
-    text-align: right;
+    text-align: center;
   }
   .nome-curso small {
     display: block;
@@ -388,14 +393,11 @@
            na ponta direita, pra ficar simétrico com a logo da ISECENSA
            na ponta esquerda. Suba "logo-cra.png" junto dos outros arquivos. -->
       <div class="marca-curso">
-        <div class="nome-curso">
-          Curso de Administração
-          <small>Regulamentado pelo CRA-DF</small>
-        </div>
         <img src="./logo-cra.png"
              alt="Logo CRA-DF"
              class="logo-imagem"
              onerror="this.outerHTML = '&lt;div class=&quot;logo-placeholder&quot;&gt;CRA-DF&lt;/div&gt;';">
+        <div class="nome-curso">Curso de Administração</div>
       </div>
     </div>
 
