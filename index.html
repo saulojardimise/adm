@@ -114,6 +114,11 @@
     align-items: flex-start;
     justify-content: space-between;
     gap: 16px;
+    /* Sem isso, o cabeçalho encolhe pro tamanho do conteúdo e fica
+       "flutuando" centralizado — foi o que aconteceu na última versão.
+       Com 100%, ele sempre ocupa a largura toda, então uma logo vai
+       pra ponta esquerda e a outra pra ponta direita, de verdade. */
+    width: 100%;
   }
 
   /* Logo em cima, texto centralizado embaixo — igual nos dois lados */
