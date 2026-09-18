@@ -224,6 +224,7 @@
        o menor dos dois "vence", então nunca estoura a tela */
     width: clamp(64px, min(20vw, 42vh), 280px);
     height: clamp(64px, min(20vw, 42vh), 280px);
+    object-fit: contain;
   }
 
   .titulo-hero {
@@ -376,15 +377,10 @@
     </div>
 
     <div class="hero-conteudo">
-      <!-- Ícone original (não é a logo do CRA — é um ícone próprio da experiência) -->
+      <!-- Ícone do foguete + plano de negócio (arquivo enviado por você).
+           Precisa subir "icone-hero.png" na mesma pasta do index.html. -->
       <div class="hero-grafico">
-        <svg class="icone-hero" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect x="14" y="46" width="26" height="60" rx="6" fill="#BDCDE6"/>
-          <rect x="47" y="30" width="26" height="76" rx="6" fill="#0E3880"/>
-          <rect x="80" y="12" width="26" height="94" rx="6" fill="#0A2A61"/>
-          <circle cx="93" cy="18" r="10" fill="#0E3880"/>
-          <path d="M85 18 L91 24 L102 11" stroke="white" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
+        <img src="./icone-hero.png" alt="Ícone de foguete decolando de um plano de negócio" class="icone-hero">
       </div>
 
       <div class="hero-texto">
