@@ -1,492 +1,686 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Crie sua Empresa em 1 Minuto — Curso de Administração</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#0E3880">
+  <title>Crie sua Empresa em 1 Minuto — Curso de Administração</title>
 
-<!--
-  ============================================================
-  BLOCO 1 — FUNDAÇÃO VISUAL (v2 — responsivo por altura + logo real)
-  ============================================================
-  O que tem aqui:
-  - Paleta de cores extraída da logo do CRA-DF (#0E3880 + branco)
-  - Tipografia grande, pensada para tela touch (nada pequeno demais)
-  - Componentes-base reutilizáveis: botão grande de toque, card,
-    barra de progresso (será usada no Bloco 2), telas com transição
-  - Tela de abertura (kiosk) com CTA "Toque para começar"
-  - Layout que se ajusta tanto pela LARGURA quanto pela ALTURA da
-    tela, então nada fica cortado em janelas mais baixas (o problema
-    que apareceu ao testar no Chrome normal, com barra de abas)
-  - Logo real da ISECENSA, com um substituto automático caso o
-    arquivo de imagem não seja encontrado
-
-  O que NÃO tem ainda (vem nos próximos blocos):
-  - As 5 perguntas (Bloco 2)
-  - A geração da empresa (Bloco 3)
-  - A tela de revelação (Bloco 4)
-  - QR code + card de Instagram (Bloco 5)
-  - Gravação no Supabase (Bloco 6)
-  - Modo quiosque / reinício automático (Bloco 7)
-
-  COMO COLOCAR A LOGO DE VERDADE:
-  Suba um arquivo chamado "logo-faculdade.png" na MESMA pasta deste
-  index.html (raiz do repositório no GitHub). Se esse arquivo não
-  existir, a página mostra automaticamente um quadradinho tracejado
-  no lugar, sem quebrar o layout.
-  ============================================================
--->
-
-<style>
-  :root {
-    /* Paleta extraída da logo do CRA-DF */
-    --azul: #0E3880;
-    --azul-escuro: #0A2A61;
-    --azul-claro: #BDCDE6;
-    --azul-nevoa: #EEF2FA;
-    --branco: #FFFFFF;
-    --texto: #10224A;
-    --texto-suave: #4A5A82;
-
-    /* Espaçamento e forma, pensados para dedo, não mouse */
-    --raio: 24px;
-    --raio-btn: 18px;
-    --sombra: 0 10px 30px rgba(14, 56, 128, 0.15);
-    --sombra-forte: 0 16px 40px rgba(14, 56, 128, 0.25);
-  }
-
-  * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    /* Kiosk: evita seleção de texto e gestos indesejados no touch */
-    -webkit-user-select: none;
-    user-select: none;
-    -webkit-tap-highlight-color: transparent;
-    touch-action: manipulation;
-  }
-
-  html, body {
-    height: 100%;
-    overscroll-behavior: none;
-  }
-
-  body {
-    font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
-    background: var(--branco);
-    color: var(--texto);
-    min-height: 100dvh;
-    display: flex;
-    flex-direction: column;
-    /* Antes era "hidden": se o conteúdo não coubesse na altura da
-       janela, era cortado sem aviso (foi o que cortou o botão).
-       Com os tamanhos em clamp() abaixo isso quase nunca deve
-       acontecer, mas se acontecer, agora dá pra rolar em vez de
-       perder conteúdo escondido. */
-    overflow-y: auto;
-    overflow-x: hidden;
-  }
-
-  /* ============ ESTRUTURA DE TELAS ============
-     Cada "tela" do fluxo (boas-vindas, perguntas, revelação...)
-     é uma .screen. Só uma fica visível (.screen--ativa) por vez.
-     Isso já deixa pronta a estrutura para o Bloco 2 em diante. */
-  .screen {
-    display: none;
-    flex: 1;
-    flex-direction: column;
-    min-height: 100dvh;
-    /* padding agora também reage à altura da tela (vh), não só à largura */
-    padding: clamp(12px, 2.5vh, 56px) clamp(20px, 4vw, 56px);
-    animation: entra 0.45s ease;
-  }
-  .screen--ativa {
-    display: flex;
-  }
-  @keyframes entra {
-    from { opacity: 0; transform: translateY(14px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ============ CABEÇALHO ============ */
-  .topo {
-    display: flex;
-    align-items: flex-start;
-    justify-content: space-between;
-    gap: 16px;
-    /* Sem isso, o cabeçalho encolhe pro tamanho do conteúdo e fica
-       "flutuando" centralizado — foi o que aconteceu na última versão.
-       Com 100%, ele sempre ocupa a largura toda, então uma logo vai
-       pra ponta esquerda e a outra pra ponta direita, de verdade. */
-    width: 100%;
-  }
-
-  /* Logo em cima, texto centralizado embaixo — igual nos dois lados */
-  .marca-faculdade {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-  }
-
-  /* Logo real da faculdade — encolhe junto com a tela */
-  .logo-imagem {
-    width: clamp(48px, 8vh, 96px);
-    height: clamp(48px, 8vh, 96px);
-    object-fit: contain;
-    flex-shrink: 0;
-  }
-
-  /* Substituto automático, usado só se logo-faculdade.png não for encontrado */
-  .logo-placeholder {
-    width: clamp(48px, 8vh, 96px);
-    height: clamp(48px, 8vh, 96px);
-    border: 2px dashed var(--azul-claro);
-    border-radius: 14px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 10px;
-    text-align: center;
-    color: var(--texto-suave);
-    line-height: 1.2;
-    padding: 4px;
-    flex-shrink: 0;
-  }
-
-  .nome-faculdade {
-    font-weight: 700;
-    font-size: clamp(14px, 1.6vw, 18px);
-    color: var(--azul);
-  }
-  .nome-faculdade small {
-    display: block;
-    font-weight: 500;
-    font-size: 0.75em;
-    color: var(--texto-suave);
-  }
-
-  /* Bloco do lado direito do topo — espelha .marca-faculdade,
-     pra logo da ISECENSA (esquerda) e do CRA-DF (direita) terem
-     o mesmo peso visual nas duas pontas da tela. */
-  .marca-curso {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    text-align: center;
-    gap: 6px;
-  }
-  .nome-curso {
-    font-weight: 700;
-    font-size: clamp(14px, 1.6vw, 18px);
-    color: var(--azul);
-    text-align: center;
-  }
-  .nome-curso small {
-    display: block;
-    font-weight: 500;
-    font-size: 0.75em;
-    color: var(--texto-suave);
-  }
-
-  /* ============ TELA DE BOAS-VINDAS ============ */
-  #tela-boas-vindas {
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    /* gap entre topo / bloco central / rodapé — encolhe em telas baixas */
-    gap: clamp(6px, 1.6vh, 28px);
-  }
-
-  /* Bloco central: em telas largas (o caso do touchscreen do estande),
-     usa duas colunas — ícone de um lado, texto do outro — em vez de
-     ficar tudo empilhado e centralizado bem no meio, com sobra de
-     espaço em branco nas laterais (o efeito "app de celular"). */
-  .hero-conteudo {
-    flex: 1;
-    min-height: 0;
-    width: 100%;
-    max-width: 1300px;
-    margin: 0 auto;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-    gap: clamp(24px, 6vw, 90px);
-  }
-
-  .hero-grafico {
-    flex-shrink: 0;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .hero-texto {
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: left;
-    gap: clamp(8px, 1.8vh, 28px);
-    max-width: 640px;
-    min-width: 0;
-  }
-
-  /* Em telas estreitas ou verticais (celular, totem em pé), volta a
-     empilhar tudo centralizado — mais adequado a pouca largura. */
-  @media (max-aspect-ratio: 4/5) {
-    .hero-conteudo { flex-direction: column; }
-    .hero-texto { align-items: center; text-align: center; }
-  }
-
-  .icone-hero {
-    /* limitado tanto pela largura quanto pela altura disponível:
-       o menor dos dois "vence", então nunca estoura a tela */
-    width: clamp(64px, min(20vw, 42vh), 280px);
-    height: clamp(64px, min(20vw, 42vh), 280px);
-    object-fit: contain;
-  }
-
-  .titulo-hero {
-    font-size: clamp(22px, min(4.6vw, 6vh), 64px);
-    font-weight: 800;
-    color: var(--azul);
-    line-height: 1.1;
-  }
-
-  .subtitulo-hero {
-    font-size: clamp(13px, min(1.9vw, 2.6vh), 22px);
-    color: var(--texto-suave);
-    font-weight: 500;
-    line-height: 1.45;
-  }
-
-  /* ============ BOTÃO GRANDE DE TOQUE ============
-     Componente base reutilizado em todos os blocos seguintes
-     (respostas das perguntas, "ver minha empresa", compartilhar...) */
-  .btn-touque {
-    appearance: none;
-    border: none;
-    cursor: pointer;
-    font-family: inherit;
-    font-weight: 700;
-    font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
-    color: var(--branco);
-    background: var(--azul);
-    padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
-    border-radius: var(--raio-btn);
-    box-shadow: var(--sombra-forte);
-    min-height: clamp(48px, 8vh, 76px);
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
-    animation: pulsa 2.4s ease-in-out infinite;
-  }
-  .btn-touque:active {
-    transform: scale(0.96);
-    background: var(--azul-escuro);
-    box-shadow: var(--sombra);
-    animation: none;
-  }
-  @keyframes pulsa {
-    0%, 100% { box-shadow: var(--sombra-forte); }
-    50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
-  }
-
-  /* Variante secundária de botão (usada em telas futuras: "voltar", "trocar resposta") */
-  .btn-touque--secundario {
-    background: var(--branco);
-    color: var(--azul);
-    border: 2px solid var(--azul-claro);
-    box-shadow: none;
-    animation: none;
-    font-size: clamp(16px, 1.8vw, 20px);
-    padding: 14px 28px;
-    min-height: 56px;
-  }
-  .btn-touque--secundario:active {
-    background: var(--azul-nevoa);
-    transform: scale(0.97);
-  }
-
-  /* ============ CARD (usado nas próximas telas: perguntas, empresa) ============ */
-  .card {
-    background: var(--branco);
-    border-radius: var(--raio);
-    box-shadow: var(--sombra);
-    border: 1px solid var(--azul-nevoa);
-    padding: clamp(24px, 3vw, 40px);
-  }
-
-  /* ============ BARRA DE PROGRESSO (pronta para o Bloco 2) ============ */
-  .progresso-track {
-    width: 100%;
-    max-width: 520px;
-    height: 12px;
-    background: var(--azul-nevoa);
-    border-radius: 999px;
-    overflow: hidden;
-  }
-  .progresso-fill {
-    height: 100%;
-    background: var(--azul);
-    border-radius: 999px;
-    transition: width 0.35s ease;
-  }
-
-  /* ============ RODAPÉ ============ */
-  .rodape {
-    text-align: center;
-    color: var(--texto-suave);
-    font-size: clamp(12px, 1.2vw, 14px);
-    font-weight: 500;
-  }
-  .rodape strong {
-    color: var(--azul);
-  }
-
-  /* ============ TELA DE TESTE (só existe neste Bloco 1, pra você conferir a paleta) ============ */
-  #tela-teste-paleta {
-    align-items: center;
-    justify-content: center;
-    gap: 24px;
-    text-align: center;
-  }
-  .amostras {
-    display: flex;
-    gap: 14px;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .amostra {
-    width: 120px;
-    height: 90px;
-    border-radius: 14px;
-    display: flex;
-    align-items: flex-end;
-    justify-content: center;
-    padding-bottom: 8px;
-    font-size: 12px;
-    font-weight: 700;
-    box-shadow: var(--sombra);
-    border: 1px solid rgba(0,0,0,0.05);
-  }
-</style>
-</head>
-<body>
-
-  <!-- ================= TELA 1: BOAS-VINDAS ================= -->
-  <section id="tela-boas-vindas" class="screen screen--ativa">
-    <div class="topo">
-      <div class="marca-faculdade">
-        <!-- LOGO DA FACULDADE: suba "logo-faculdade.png" na raiz do repositório.
-             Se o arquivo não existir, o onerror abaixo troca automaticamente
-             pelo quadradinho tracejado, sem quebrar o layout. -->
-        <img src="./logo-faculdade.png"
-             alt="Logo ISECENSA"
-             class="logo-imagem"
-             onerror="this.outerHTML = '&lt;div class=&quot;logo-placeholder&quot;&gt;LOGO&lt;br&gt;FACULDADE&lt;/div&gt;';">
-        <div class="nome-faculdade">
-          ISECENSA
-          <small>Ise por um dia - 2026</small>
-        </div>
-      </div>
-      <!-- Espelha o bloco da esquerda: texto do curso + logo do CRA-DF
-           na ponta direita, pra ficar simétrico com a logo da ISECENSA
-           na ponta esquerda. Suba "logo-cra.png" junto dos outros arquivos. -->
-      <div class="marca-curso">
-        <img src="./logo-cra.png"
-             alt="Logo CRA-DF"
-             class="logo-imagem"
-             onerror="this.outerHTML = '&lt;div class=&quot;logo-placeholder&quot;&gt;CRA-DF&lt;/div&gt;';">
-        <div class="nome-curso">Curso de Administração</div>
-      </div>
-    </div>
-
-    <div class="hero-conteudo">
-      <!-- Ícone do foguete + plano de negócio (arquivo enviado por você).
-           Precisa subir "icone-hero.png" na mesma pasta do index.html. -->
-      <div class="hero-grafico">
-        <img src="./icone-hero.png" alt="Ícone de foguete decolando de um plano de negócio" class="icone-hero">
-      </div>
-
-      <div class="hero-texto">
-        <h1 class="titulo-hero">Crie sua empresa em 1 minuto</h1>
-        <p class="subtitulo-hero">
-          Responda 5 perguntas rápidas e descubra que tipo de empresário você seria.
-          No final, você recebe o <strong>Selo de Futuro Administrador</strong>, formado pelo ISECENSA.
-        </p>
-
-        <button class="btn-touque" id="btn-comecar" type="button">
-          👉 Toque para começar
-        </button>
-      </div>
-    </div>
-
-    <p class="rodape">
-      Um experimento do <strong>Curso de Administração</strong> — Ise por um dia - 2026
-    </p>
-  </section>
-
-  <!-- =================================================================
-       TELA DE VERIFICAÇÃO DE PALETA — existe só neste Bloco 1, para você
-       conferir as cores extraídas da logo do CRA-DF antes de eu seguir
-       para o Bloco 2. Toque no botão "Ver paleta" (canto inf. direito)
-       para abrir; será removida quando avançarmos.
-       ================================================================= -->
-  <section id="tela-teste-paleta" class="screen">
-    <h2 style="color:var(--azul); font-size:28px;">Paleta extraída da logo do CRA-DF</h2>
-    <div class="amostras">
-      <div class="amostra" style="background:#0E3880; color:#fff;">#0E3880</div>
-      <div class="amostra" style="background:#0A2A61; color:#fff;">#0A2A61</div>
-      <div class="amostra" style="background:#BDCDE6; color:#0E3880;">#BDCDE6</div>
-      <div class="amostra" style="background:#EEF2FA; color:#0E3880; border:1px solid #BDCDE6;">#EEF2FA</div>
-      <div class="amostra" style="background:#FFFFFF; color:#0E3880; border:1px solid #BDCDE6;">#FFFFFF</div>
-    </div>
-    <div class="card" style="max-width:420px;">
-      <p style="margin-bottom:14px; color:var(--texto-suave);">Exemplo de card + botões:</p>
-      <div class="progresso-track" style="margin-bottom:18px;">
-        <div class="progresso-fill" style="width:60%;"></div>
-      </div>
-      <button class="btn-touque" style="animation:none; font-size:18px; padding:14px 28px; min-height:56px;">Botão principal</button>
-      <button class="btn-touque btn-touque--secundario" style="margin-top:12px;">Botão secundário</button>
-    </div>
-    <button class="btn-touque btn-touque--secundario" id="btn-voltar-boas-vindas">← Voltar</button>
-  </section>
-
-  <button id="btn-ver-paleta" style="position:fixed; bottom:16px; right:16px; z-index:10; background:var(--texto); color:white; border:none; padding:10px 16px; border-radius:10px; font-size:12px; font-weight:600; opacity:0.6;">
-    Ver paleta (debug)
-  </button>
-
-  <script>
-    // ============================================================
-    // BLOCO 1 — apenas a navegação básica entre telas existe aqui.
-    // Nos próximos blocos, isso vira uma "máquina de estados" completa
-    // (boas-vindas → 5 perguntas → processando → revelação → foto).
-    // ============================================================
-
-    function mostrarTela(id) {
-      document.querySelectorAll('.screen').forEach(function (el) {
-        el.classList.remove('screen--ativa');
-      });
-      document.getElementById(id).classList.add('screen--ativa');
+  <style>
+    :root {
+      --azul: #0E3880;
+      --azul-escuro: #08295f;
+      --azul-medio: #2d66c3;
+      --azul-claro: #bdd7ff;
+      --azul-nevoa: #f3f7ff;
+      --branco: #ffffff;
+      --texto: #10224a;
+      --texto-suave: #536383;
+      --borda: rgba(14, 56, 128, 0.10);
+      --sombra: 0 24px 60px rgba(14, 56, 128, 0.14);
+      --sombra-botao: 0 18px 36px rgba(14, 56, 128, 0.28);
+      --raio-btn: 18px;
+      --sombra-forte: 0 16px 40px rgba(14, 56, 128, 0.25);
     }
 
-    document.getElementById('btn-comecar').addEventListener('click', function () {
-      // No Bloco 2, isto vai chamar a primeira pergunta.
-      // Por enquanto, só um alerta de confirmação no console:
-      console.log('Fluxo de perguntas começa aqui (Bloco 2).');
-      alert('A partir daqui entram as 5 perguntas (isso é o Bloco 2, ainda não construído).');
-    });
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
 
-    document.getElementById('btn-ver-paleta').addEventListener('click', function () {
-      mostrarTela('tela-teste-paleta');
-    });
-    document.getElementById('btn-voltar-boas-vindas').addEventListener('click', function () {
-      mostrarTela('tela-boas-vindas');
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% 35%, rgba(189, 215, 255, 0.20), transparent 26rem),
+        radial-gradient(circle at 88% 60%, rgba(14, 56, 128, 0.07), transparent 26rem),
+        #ffffff;
+      color: var(--texto);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .pagina {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px clamp(20px, 5vw, 72px) 18px;
+    }
+
+    .topo {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .marca--direita {
+      justify-content: flex-end;
+    }
+
+    .logo-faculdade {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .logo-cra {
+      width: 66px;
+      height: 46px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .marca-texto {
+      line-height: 1.18;
+    }
+
+    .marca-titulo {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .marca-subtitulo {
+      margin-top: 4px;
+      color: var(--texto-suave);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .marca-curso {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 17px;
+      line-height: 1.2;
+      text-align: right;
+    }
+
+    .hero-wrap {
+      width: 100%;
+      max-width: 1180px;
+      margin: auto;
+      padding: clamp(28px, 5vh, 58px) 0;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .hero-card {
+      width: 100%;
+      min-height: 470px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--borda);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.98), rgba(246,249,255,0.98));
+      box-shadow: var(--sombra);
+      display: grid;
+      grid-template-columns: minmax(290px, 0.86fr) minmax(430px, 1.24fr);
+      align-items: center;
+      gap: clamp(28px, 5vw, 72px);
+      padding: clamp(34px, 5vw, 66px);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      left: -125px;
+      top: -160px;
+      background: rgba(189, 215, 255, 0.27);
+      pointer-events: none;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      right: -80px;
+      bottom: -110px;
+      background: rgba(14, 56, 128, 0.06);
+      pointer-events: none;
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      width: min(27vw, 330px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #edf5ff, #ffffff);
+      box-shadow: inset 0 0 0 1px rgba(14,56,128,0.05);
+    }
+
+    .icone-hero {
+      position: relative;
+      z-index: 1;
+      width: min(25vw, 310px);
+      min-width: 220px;
+      filter: drop-shadow(0 18px 22px rgba(14, 56, 128, 0.12));
+    }
+
+    .hero-texto {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .selo-topo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--azul);
+      background: #eaf2ff;
+      border: 1px solid #cfdef6;
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .ponto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3e82ef;
+      box-shadow: 0 0 0 4px rgba(62,130,239,0.13);
+    }
+
+    h1 {
+      max-width: 720px;
+      color: var(--azul);
+      font-size: clamp(38px, 4.3vw, 66px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      font-weight: 900;
+    }
+
+    .pergunta {
+      margin-top: 22px;
+      color: var(--texto);
+      font-size: clamp(18px, 1.65vw, 25px);
+      line-height: 1.35;
+      font-weight: 750;
+      max-width: 690px;
+    }
+
+    .descricao {
+      margin-top: 13px;
+      color: var(--texto-suave);
+      font-size: clamp(15px, 1.25vw, 18px);
+      line-height: 1.55;
+      max-width: 670px;
+    }
+
+    .descricao strong {
+      color: var(--azul);
+    }
+
+    .cta-area {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+
+
+
+    /* Botão original do HTML anterior */
+    .btn-touque {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
+      color: var(--branco);
+      background: var(--azul);
+      padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
+      border-radius: var(--raio-btn);
+      box-shadow: var(--sombra-forte);
+      min-height: clamp(48px, 8vh, 76px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      animation: pulsa 2.4s ease-in-out infinite;
+    }
+
+    .btn-touque:active {
+      transform: scale(0.96);
+      background: var(--azul-escuro);
+      box-shadow: var(--sombra);
+      animation: none;
+    }
+
+    @keyframes pulsa {
+      0%, 100% { box-shadow: var(--sombra-forte); }
+      50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
+    }
+
+    .microinfos {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .microinfos span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .microinfos span + span::before {
+      content: "•";
+      color: #8ea8d2;
+      margin-right: 4px;
+    }
+
+    .rodape {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding-top: 4px;
+      text-align: center;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .rodape strong {
+      color: var(--azul);
+    }
+
+    /* Feedback visual caso o restante da experiência ainda não tenha sido conectado */
+    .aviso {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 18px);
+      max-width: min(92vw, 620px);
+      padding: 14px 18px;
+      border-radius: 14px;
+      color: #fff;
+      background: rgba(8, 41, 95, 0.96);
+      box-shadow: 0 18px 44px rgba(8, 41, 95, 0.28);
+      font-weight: 650;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+      text-align: center;
+      z-index: 30;
+    }
+
+    .aviso.visivel {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 900px) {
+      .pagina {
+        padding: 18px 18px 14px;
+      }
+
+      .topo {
+        align-items: flex-start;
+      }
+
+      .marca {
+        gap: 8px;
+      }
+
+      .logo-faculdade {
+        width: 48px;
+        height: 48px;
+      }
+
+      .logo-cra {
+        width: 54px;
+        height: 38px;
+      }
+
+      .marca-titulo,
+      .marca-curso {
+        font-size: 15px;
+      }
+
+      .marca-subtitulo {
+        font-size: 11px;
+      }
+
+      .hero-wrap {
+        padding: 24px 0;
+      }
+
+      .hero-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 14px;
+        border-radius: 28px;
+        padding: 30px 22px 34px;
+      }
+
+      .hero-visual::before {
+        width: 260px;
+      }
+
+      .icone-hero {
+        width: 230px;
+        min-width: 0;
+      }
+
+      .hero-texto {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: clamp(36px, 8.8vw, 54px);
+      }
+
+      .pergunta,
+      .descricao {
+        max-width: 620px;
+      }
+
+      .cta-area {
+        align-items: center;
+        width: 100%;
+      }
+
+      .rodape {
+        padding-top: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topo {
+        gap: 12px;
+      }
+
+      .marca-texto {
+        display: none;
+      }
+
+      .marca--direita {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+      }
+
+      .marca-curso {
+        font-size: 13px;
+        max-width: 150px;
+      }
+
+      .hero-card {
+        padding: 26px 18px 30px;
+      }
+
+      .icone-hero {
+        width: 185px;
+      }
+
+      .hero-visual::before {
+        width: 210px;
+      }
+
+      .selo-topo {
+        font-size: 10px;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .pergunta {
+        font-size: 18px;
+      }
+
+      .descricao {
+        font-size: 15px;
+      }
+
+      .btn-touque {
+        width: 100%;
+        min-width: 0;
+      }
+
+  
+    /* Botão original do HTML anterior */
+    .btn-touque {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
+      color: var(--branco);
+      background: var(--azul);
+      padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
+      border-radius: var(--raio-btn);
+      box-shadow: var(--sombra-forte);
+      min-height: clamp(48px, 8vh, 76px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      animation: pulsa 2.4s ease-in-out infinite;
+    }
+
+    .btn-touque:active {
+      transform: scale(0.96);
+      background: var(--azul-escuro);
+      box-shadow: var(--sombra);
+      animation: none;
+    }
+
+    @keyframes pulsa {
+      0%, 100% { box-shadow: var(--sombra-forte); }
+      50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
+    }
+
+    .microinfos {
+        justify-content: center;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-height: 760px) and (min-width: 901px) {
+      .pagina {
+        padding-top: 16px;
+        padding-bottom: 12px;
+      }
+
+      .logo-faculdade {
+        width: 48px;
+        height: 48px;
+      }
+
+      .logo-cra {
+        width: 58px;
+        height: 40px;
+      }
+
+      .hero-wrap {
+        padding: 18px 0;
+      }
+
+      .hero-card {
+        min-height: 390px;
+        padding-top: 34px;
+        padding-bottom: 34px;
+      }
+
+      .icone-hero {
+        width: min(22vw, 250px);
+        min-width: 190px;
+      }
+
+      h1 {
+        font-size: clamp(36px, 3.8vw, 56px);
+      }
+
+      .pergunta {
+        margin-top: 16px;
+      }
+
+      .cta-area {
+        margin-top: 20px;
+      }
+
+      .btn-touque {
+        min-height: 56px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="pagina">
+    <header class="topo">
+      <div class="marca">
+        <img src="./logo-faculdade.png" class="logo-faculdade" alt="Logo ISECENSA">
+        <div class="marca-texto">
+          <div class="marca-titulo">ISECENSA</div>
+          <div class="marca-subtitulo">Ise por um dia • 2026</div>
+        </div>
+      </div>
+
+      <div class="marca marca--direita">
+        <img src="./logo-cra.png" class="logo-cra" alt="Logo do Conselho Regional de Administração">
+        <div class="marca-curso">Curso de Administração</div>
+      </div>
+    </header>
+
+    <section class="hero-wrap" aria-labelledby="titulo-principal">
+      <div class="hero-card">
+        <div class="hero-visual" aria-hidden="true">
+          <img src="./icone-hero.png" class="icone-hero" alt="">
+        </div>
+
+        <div class="hero-texto">
+          <div class="selo-topo">
+            <span class="ponto"></span>
+            Experiência interativa • 1 minuto
+          </div>
+
+          <h1 id="titulo-principal">Crie sua empresa em 1 minuto</h1>
+
+          <p class="pergunta">
+            Se você abrisse uma empresa hoje, que tipo de empreendedor seria?
+          </p>
+
+          <p class="descricao">
+            Responda <strong>5 perguntas rápidas</strong>, descubra seu perfil e veja qual empresa combina com você.
+            No final, receba seu <strong>Selo de Futuro Administrador</strong>, formado pelo ISECENSA.
+          </p>
+
+          <div class="cta-area">
+            <button class="btn-touque" id="btn-comecar" type="button">
+              👉 Toque para começar
+            </button>
+
+            <div class="microinfos" aria-label="Informações da experiência">
+              <span>5 perguntas</span>
+              <span>1 minuto</span>
+              <span>resultado instantâneo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="rodape">
+      Uma experiência do <strong>Curso de Administração</strong> — Ise por um dia • 2026
+    </footer>
+  </main>
+
+  <div class="aviso" id="aviso">
+    A tela inicial está pronta. Conecte aqui o próximo bloco com as 5 perguntas.
+  </div>
+
+  <script>
+    /*
+      Quando você adicionar a tela das 5 perguntas, substitua o conteúdo
+      deste clique pela função que abre a primeira pergunta.
+    */
+    const btn = document.getElementById('btn-comecar');
+    const aviso = document.getElementById('aviso');
+    let timer;
+
+    btn.addEventListener('click', function () {
+      aviso.classList.add('visivel');
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        aviso.classList.remove('visivel');
+      }, 2800);
     });
   </script>
 </body>

@@ -1,0 +1,17 @@
+PACOTE DA PÁGINA — ISE POR UM DIA 2026
+
+Arquivos:
+- index.html
+- logo-faculdade.png
+- logo-cra.png
+- icone-hero.png
+
+Para usar no GitHub Pages:
+1. Apague/substitua os arquivos antigos do repositório.
+2. Envie estes quatro arquivos para a raiz do repositório.
+3. O arquivo principal precisa continuar se chamando index.html.
+4. Aguarde o GitHub Pages atualizar e faça Ctrl+Shift+R no navegador.
+
+Observação:
+A tela inicial está pronta. O botão "Começar experiência" ainda precisa
+ser conectado ao bloco das 5 perguntas quando esse bloco for criado.
