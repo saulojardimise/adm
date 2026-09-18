@@ -1,17 +1,20 @@
-PACOTE DA PÁGINA — ISE POR UM DIA 2026
+PACOTE DA PÁGINA — VERSÃO COM IMAGEM E ÍCONE
 
-Arquivos:
+Arquivos incluídos:
 - index.html
 - logo-faculdade.png
 - logo-cra.png
-- icone-hero.png
+- icone-hero.png  (nova ilustração atualizada)
+- favicon.png     (ícone da aba do navegador)
+- LEIA-ME.txt
 
-Para usar no GitHub Pages:
-1. Apague/substitua os arquivos antigos do repositório.
-2. Envie estes quatro arquivos para a raiz do repositório.
-3. O arquivo principal precisa continuar se chamando index.html.
-4. Aguarde o GitHub Pages atualizar e faça Ctrl+Shift+R no navegador.
+O que foi atualizado:
+- a imagem principal da página foi substituída pela nova versão do foguete;
+- foi adicionado um favicon para aparecer na aba do navegador;
+- o index.html já está apontando para os dois arquivos corretamente.
 
-Observação:
-A tela inicial está pronta. O botão "Começar experiência" ainda precisa
-ser conectado ao bloco das 5 perguntas quando esse bloco for criado.
+Como usar:
+1. Extraia o ZIP.
+2. Envie todos os arquivos para a raiz do seu repositório/site.
+3. Mantenha o nome do arquivo principal como index.html.
+4. Atualize a página com Ctrl+Shift+R.
