@@ -7,7 +7,7 @@
 
 <!--
   ============================================================
-  BLOCO 1 — FUNDAÇÃO VISUAL
+  BLOCO 1 — FUNDAÇÃO VISUAL (v2 — responsivo por altura + logo real)
   ============================================================
   O que tem aqui:
   - Paleta de cores extraída da logo do CRA-DF (#0E3880 + branco)
@@ -15,6 +15,11 @@
   - Componentes-base reutilizáveis: botão grande de toque, card,
     barra de progresso (será usada no Bloco 2), telas com transição
   - Tela de abertura (kiosk) com CTA "Toque para começar"
+  - Layout que se ajusta tanto pela LARGURA quanto pela ALTURA da
+    tela, então nada fica cortado em janelas mais baixas (o problema
+    que apareceu ao testar no Chrome normal, com barra de abas)
+  - Logo real da ISECENSA, com um substituto automático caso o
+    arquivo de imagem não seja encontrado
 
   O que NÃO tem ainda (vem nos próximos blocos):
   - As 5 perguntas (Bloco 2)
@@ -24,9 +29,11 @@
   - Gravação no Supabase (Bloco 6)
   - Modo quiosque / reinício automático (Bloco 7)
 
-  COMO TROCAR A LOGO DA FACULDADE:
-  Procure o comentário "LOGO DA FACULDADE" mais abaixo e troque o
-  placeholder por uma tag <img src="sua-logo.png" ...>.
+  COMO COLOCAR A LOGO DE VERDADE:
+  Suba um arquivo chamado "logo-faculdade.png" na MESMA pasta deste
+  index.html (raiz do repositório no GitHub). Se esse arquivo não
+  existir, a página mostra automaticamente um quadradinho tracejado
+  no lugar, sem quebrar o layout.
   ============================================================
 -->
 
@@ -68,10 +75,16 @@
     font-family: 'Poppins', 'Segoe UI', system-ui, sans-serif;
     background: var(--branco);
     color: var(--texto);
-    min-height: 100vh;
+    min-height: 100dvh;
     display: flex;
     flex-direction: column;
-    overflow: hidden;
+    /* Antes era "hidden": se o conteúdo não coubesse na altura da
+       janela, era cortado sem aviso (foi o que cortou o botão).
+       Com os tamanhos em clamp() abaixo isso quase nunca deve
+       acontecer, mas se acontecer, agora dá pra rolar em vez de
+       perder conteúdo escondido. */
+    overflow-y: auto;
+    overflow-x: hidden;
   }
 
   /* ============ ESTRUTURA DE TELAS ============
@@ -82,8 +95,9 @@
     display: none;
     flex: 1;
     flex-direction: column;
-    min-height: 100vh;
-    padding: clamp(20px, 4vw, 56px);
+    min-height: 100dvh;
+    /* padding agora também reage à altura da tela (vh), não só à largura */
+    padding: clamp(12px, 2.5vh, 56px) clamp(20px, 4vw, 56px);
     animation: entra 0.45s ease;
   }
   .screen--ativa {
@@ -108,10 +122,18 @@
     gap: 14px;
   }
 
-  /* LOGO DA FACULDADE — troque este placeholder pela tag <img> real */
+  /* Logo real da faculdade — encolhe junto com a tela */
+  .logo-imagem {
+    width: clamp(38px, 6vh, 56px);
+    height: clamp(38px, 6vh, 56px);
+    object-fit: contain;
+    flex-shrink: 0;
+  }
+
+  /* Substituto automático, usado só se logo-faculdade.png não for encontrado */
   .logo-placeholder {
-    width: 56px;
-    height: 56px;
+    width: clamp(38px, 6vh, 56px);
+    height: clamp(38px, 6vh, 56px);
     border: 2px dashed var(--azul-claro);
     border-radius: 14px;
     display: flex;
@@ -152,16 +174,19 @@
     align-items: center;
     justify-content: center;
     text-align: center;
-    gap: clamp(20px, 3vw, 36px);
+    /* gap entre topo / bloco central / rodapé — encolhe em telas baixas */
+    gap: clamp(6px, 1.6vh, 28px);
   }
 
   .icone-hero {
-    width: clamp(96px, 14vw, 160px);
-    height: clamp(96px, 14vw, 160px);
+    /* limitado tanto pela largura quanto pela altura disponível:
+       o menor dos dois "vence", então nunca estoura a tela */
+    width: clamp(48px, min(12vw, 11vh), 160px);
+    height: clamp(48px, min(12vw, 11vh), 160px);
   }
 
   .titulo-hero {
-    font-size: clamp(34px, 6vw, 68px);
+    font-size: clamp(22px, min(5.5vw, 6vh), 68px);
     font-weight: 800;
     color: var(--azul);
     line-height: 1.08;
@@ -169,11 +194,11 @@
   }
 
   .subtitulo-hero {
-    font-size: clamp(16px, 2.2vw, 24px);
+    font-size: clamp(13px, min(2.2vw, 2.6vh), 24px);
     color: var(--texto-suave);
     font-weight: 500;
     max-width: 42ch;
-    line-height: 1.5;
+    line-height: 1.4;
   }
 
   /* ============ BOTÃO GRANDE DE TOQUE ============
@@ -185,13 +210,13 @@
     cursor: pointer;
     font-family: inherit;
     font-weight: 700;
-    font-size: clamp(20px, 2.6vw, 28px);
+    font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
     color: var(--branco);
     background: var(--azul);
-    padding: clamp(20px, 2.6vw, 26px) clamp(40px, 6vw, 72px);
+    padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
     border-radius: var(--raio-btn);
     box-shadow: var(--sombra-forte);
-    min-height: 76px;
+    min-height: clamp(48px, 8vh, 76px);
     display: inline-flex;
     align-items: center;
     justify-content: center;
@@ -296,10 +321,13 @@
   <section id="tela-boas-vindas" class="screen screen--ativa">
     <div class="topo">
       <div class="marca-faculdade">
+        <!-- LOGO DA FACULDADE: suba "logo-faculdade.png" na raiz do repositório.
+             Se o arquivo não existir, o onerror abaixo troca automaticamente
+             pelo quadradinho tracejado, sem quebrar o layout. -->
         <img src="./logo-faculdade.png"
-     alt="Logo ISECENSA"
-     style="width:56px;height:56px;object-fit:contain;">
-  
+             alt="Logo ISECENSA"
+             class="logo-imagem"
+             onerror="this.outerHTML = '&lt;div class=&quot;logo-placeholder&quot;&gt;LOGO&lt;br&gt;FACULDADE&lt;/div&gt;';">
         <div class="nome-faculdade">
           ISECENSA
           <small>Ise por um dia - 2026</small>
@@ -308,7 +336,7 @@
       <div class="selo-evento">Curso de Administração</div>
     </div>
 
-    <div style="flex:1; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: clamp(20px,3vw,36px);">
+    <div style="flex:1; min-height:0; display:flex; flex-direction:column; align-items:center; justify-content:center; gap: clamp(8px, 1.8vh, 32px);">
       <!-- Ícone original (não é a logo do CRA — é um ícone próprio da experiência) -->
       <svg class="icone-hero" viewBox="0 0 120 120" fill="none" xmlns="http://www.w3.org/2000/svg">
         <rect x="14" y="46" width="26" height="60" rx="6" fill="#BDCDE6"/>
