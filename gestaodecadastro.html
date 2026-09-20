@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Painel de Cadastros — Ise por um dia</title>
+<link rel="icon" type="image/png" href="./favicon.png">
+
+<!--
+  ============================================================
+  PAINEL ADMINISTRATIVO — gestaodecadastro.html
+  ============================================================
+  Página separada do index.html, não referenciada em nenhum link
+  do site (só quem tiver a URL exata chega aqui).
+
+  Sobre a senha: ela NÃO fica escrita em lugar nenhum deste
+  arquivo. A validação acontece dentro do banco de dados, numa
+  função (RPC) "security definer" chamada painel_listar_cadastros:
+  ela só devolve as linhas da tabela se a senha recebida bater
+  com a senha configurada lá dentro do Supabase. Isso significa
+  que mesmo alguém lendo o código-fonte desta página (inclusive
+  no histórico do repositório no GitHub) não encontra a senha
+  aqui — só encontraria se tivesse acesso ao painel do Supabase.
+
+  Importante mesmo assim: como o repositório no GitHub Pages é
+  público (plano gratuito), esta página está tecnicamente
+  acessível a qualquer pessoa que descubra a URL exata. A senha
+  impede a leitura dos dados, mas não impede alguém de *tentar*
+  adivinhar a senha repetidamente (não há limite de tentativas
+  aqui). Para o cenário de um evento de um dia isso é uma
+  proteção razoável; para uso prolongado, o ideal seria migrar
+  para um repositório privado (GitHub Pro/Team) ou usar
+  diretamente o Table Editor do Supabase, que já tem login de
+  verdade.
+  ============================================================
+-->
+
+<style>
+  :root {
+    --azul: #0E3880;
+    --azul-escuro: #08295f;
+    --azul-medio: #2d66c3;
+    --azul-claro: #bdd7ff;
+    --azul-nevoa: #f3f7ff;
+    --branco: #ffffff;
+    --texto: #10224a;
+    --texto-suave: #536383;
+    --borda: rgba(14, 56, 128, 0.10);
+    --sombra: 0 24px 60px rgba(14, 56, 128, 0.14);
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body { min-height: 100%; }
+
+  body {
+    font-family: Inter, "Segoe UI", Arial, sans-serif;
+    background:
+      radial-gradient(circle at 15% 20%, rgba(189, 215, 255, 0.20), transparent 26rem),
+      radial-gradient(circle at 88% 80%, rgba(14, 56, 128, 0.06), transparent 26rem),
+      #ffffff;
+    color: var(--texto);
+    min-height: 100dvh;
+  }
+
+  button, input { font: inherit; }
+
+  /* ===== Tela de senha ===== */
+  .tela-login {
+    min-height: 100dvh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+  }
+
+  .cartao-login {
+    width: 100%;
+    max-width: 380px;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 24px;
+    box-shadow: var(--sombra);
+    padding: 36px 30px;
+    text-align: center;
+  }
+
+  .cartao-login .cadeado {
+    font-size: 38px;
+    margin-bottom: 14px;
+  }
+
+  .cartao-login h1 {
+    color: var(--azul);
+    font-size: 22px;
+    font-weight: 900;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .cartao-login p {
+    color: var(--texto-suave);
+    font-size: 13px;
+    line-height: 1.5;
+    margin-bottom: 22px;
+  }
+
+  .campo-senha-wrap {
+    text-align: left;
+  }
+
+  .campo-senha-wrap label {
+    display: block;
+    font-size: 12px;
+    font-weight: 800;
+    color: #24365f;
+    margin-bottom: 6px;
+  }
+
+  #campo-senha {
+    width: 100%;
+    min-height: 48px;
+    border: 1.5px solid #dce5f3;
+    background: #fbfdff;
+    border-radius: 12px;
+    padding: 0 14px;
+    color: var(--texto);
+    outline: none;
+    font-size: 15px;
+  }
+
+  #campo-senha:focus {
+    border-color: #5a8ad6;
+    box-shadow: 0 0 0 4px rgba(90, 138, 214, .12);
+    background: #fff;
+  }
+
+  .btn-entrar {
+    width: 100%;
+    margin-top: 16px;
+    appearance: none;
+    border: none;
+    cursor: pointer;
+    min-height: 50px;
+    border-radius: 14px;
+    color: #fff;
+    background: var(--azul);
+    font-weight: 800;
+    font-size: 15px;
+    box-shadow: 0 14px 28px rgba(14, 56, 128, .24);
+    transition: .15s ease;
+  }
+
+  .btn-entrar:active { transform: scale(.98); }
+  .btn-entrar:disabled { opacity: .6; cursor: default; }
+
+  .erro-login {
+    display: none;
+    margin-top: 14px;
+    padding: 10px 12px;
+    border-radius: 10px;
+    background: #fff2f3;
+    color: #a73742;
+    border: 1px solid #ffd5d9;
+    font-size: 12px;
+    font-weight: 650;
+  }
+
+  .erro-login.visivel { display: block; }
+
+  /* ===== Painel ===== */
+  .tela-painel { display: none; min-height: 100dvh; padding: 22px clamp(16px, 3vw, 40px) 40px; }
+  .tela-painel.visivel { display: block; }
+
+  .painel-topo {
+    max-width: 1200px;
+    margin: 0 auto 20px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 14px;
+  }
+
+  .painel-titulo h1 {
+    color: var(--azul);
+    font-size: clamp(20px, 2.4vw, 26px);
+    font-weight: 900;
+    letter-spacing: -.02em;
+  }
+
+  .painel-titulo p {
+    color: var(--texto-suave);
+    font-size: 13px;
+    margin-top: 4px;
+  }
+
+  .contagem-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--azul-nevoa);
+    color: var(--azul);
+    font-weight: 800;
+    font-size: 13px;
+    padding: 7px 14px;
+    border-radius: 999px;
+  }
+
+  .painel-acoes {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  .btn-acao {
+    appearance: none;
+    border: 1.5px solid var(--azul-claro);
+    background: #fff;
+    color: var(--azul);
+    font-weight: 750;
+    font-size: 13px;
+    padding: 10px 16px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: .15s ease;
+  }
+
+  .btn-acao:hover { background: var(--azul-nevoa); }
+  .btn-acao:active { transform: scale(.97); }
+
+  .btn-acao--sair {
+    border-color: #f0d3d5;
+    color: #a73742;
+  }
+  .btn-acao--sair:hover { background: #fff2f3; }
+
+  .painel-busca {
+    max-width: 1200px;
+    margin: 0 auto 16px;
+  }
+
+  #campo-busca {
+    width: 100%;
+    max-width: 360px;
+    min-height: 44px;
+    border: 1.5px solid #dce5f3;
+    background: #fbfdff;
+    border-radius: 12px;
+    padding: 0 14px;
+    font-size: 14px;
+    color: var(--texto);
+    outline: none;
+  }
+
+  #campo-busca:focus {
+    border-color: #5a8ad6;
+    box-shadow: 0 0 0 4px rgba(90, 138, 214, .12);
+    background: #fff;
+  }
+
+  .painel-tabela-wrap {
+    max-width: 1200px;
+    margin: 0 auto;
+    background: #fff;
+    border: 1px solid var(--borda);
+    border-radius: 20px;
+    box-shadow: var(--sombra);
+    overflow: auto;
+  }
+
+  table#tabela-cadastros {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    min-width: 860px;
+  }
+
+  table#tabela-cadastros thead th {
+    text-align: left;
+    background: var(--azul-nevoa);
+    color: var(--azul);
+    font-weight: 800;
+    font-size: 11.5px;
+    text-transform: uppercase;
+    letter-spacing: .04em;
+    padding: 12px 14px;
+    position: sticky;
+    top: 0;
+    white-space: nowrap;
+  }
+
+  table#tabela-cadastros tbody td {
+    padding: 11px 14px;
+    border-top: 1px solid #eef2f9;
+    color: var(--texto);
+    white-space: nowrap;
+  }
+
+  table#tabela-cadastros tbody tr:hover { background: #fbfdff; }
+
+  .vazio-estado {
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--texto-suave);
+    font-size: 14px;
+  }
+
+  .carregando-estado {
+    padding: 50px 20px;
+    text-align: center;
+    color: var(--texto-suave);
+    font-size: 14px;
+  }
+
+  @media (max-width: 640px) {
+    .painel-topo { flex-direction: column; align-items: flex-start; }
+    .painel-acoes { width: 100%; }
+    .btn-acao { flex: 1; justify-content: center; }
+  }
+
+  /* ===== Impressão (usado para "Baixar PDF") ===== */
+  @media print {
+    body { background: #fff; }
+    .tela-login, .painel-acoes, .painel-busca, .contagem-badge { display: none !important; }
+    .painel-topo { display: block; margin-bottom: 10px; }
+    .tela-painel { padding: 0; }
+    .painel-tabela-wrap { box-shadow: none; border: none; }
+    table#tabela-cadastros thead th { position: static; }
+  }
+</style>
+</head>
+
+<body>
+
+  <!-- ================= TELA: SENHA ================= -->
+  <div class="tela-login" id="tela-login">
+    <form class="cartao-login" id="form-senha">
+      <div class="cadeado" aria-hidden="true">🔒</div>
+      <h1>Painel de Cadastros</h1>
+      <p>Ise por um dia • 2026 — acesso restrito. Digite a senha para ver os dados dos alunos cadastrados.</p>
+      <div class="campo-senha-wrap">
+        <label for="campo-senha">Senha</label>
+        <input id="campo-senha" type="password" autocomplete="off" placeholder="Digite a senha" required>
+      </div>
+      <button class="btn-entrar" id="btn-entrar" type="submit">Entrar</button>
+      <div class="erro-login" id="erro-login"></div>
+    </form>
+  </div>
+
+  <!-- ================= TELA: PAINEL ================= -->
+  <div class="tela-painel" id="tela-painel">
+    <div class="painel-topo">
+      <div class="painel-titulo">
+        <h1>Cadastros — Ise por um dia 2026</h1>
+        <p>Dados enviados pelos alunos na experiência "Crie sua empresa em 1 minuto".</p>
+      </div>
+      <div class="painel-acoes">
+        <span class="contagem-badge" id="contagem-badge">0 alunos</span>
+        <button class="btn-acao" id="btn-atualizar" type="button">↻ Atualizar</button>
+        <button class="btn-acao" id="btn-excel" type="button">⬇ Baixar Excel (.xlsx)</button>
+        <button class="btn-acao" id="btn-pdf" type="button">🖶 Baixar PDF</button>
+        <button class="btn-acao btn-acao--sair" id="btn-sair" type="button">Sair</button>
+      </div>
+    </div>
+
+    <div class="painel-busca">
+      <input id="campo-busca" type="text" placeholder="Buscar por nome ou escola...">
+    </div>
+
+    <div class="painel-tabela-wrap">
+      <table id="tabela-cadastros">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Telefone</th>
+            <th>E-mail</th>
+            <th>Sexo</th>
+            <th>Escola</th>
+            <th>Série / Ano</th>
+            <th>Aceitou contato</th>
+            <th>Cadastrado em</th>
+          </tr>
+        </thead>
+        <tbody id="corpo-tabela"></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Bibliotecas externas: Supabase (ler os dados) e SheetJS (gerar o .xlsx) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <script>
+    const SUPABASE_URL = 'https://tjxyqxzqbtpkuykvmttd.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_x992ff0d5kQHl9fpOkyLCw_6ROlB7N8';
+
+    let supabaseClient = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      }
+    } catch (erro) {
+      console.error('Erro ao iniciar o Supabase:', erro);
+    }
+
+    let todosOsCadastros = [];   // como veio do banco
+    let cadastrosFiltrados = []; // depois do campo de busca
+
+    const telaLogin = document.getElementById('tela-login');
+    const telaPainel = document.getElementById('tela-painel');
+    const formSenha = document.getElementById('form-senha');
+    const campoSenha = document.getElementById('campo-senha');
+    const btnEntrar = document.getElementById('btn-entrar');
+    const erroLogin = document.getElementById('erro-login');
+    const corpoTabela = document.getElementById('corpo-tabela');
+    const contagemBadge = document.getElementById('contagem-badge');
+    const campoBusca = document.getElementById('campo-busca');
+
+    function mostrarErroLogin(texto) {
+      erroLogin.textContent = texto;
+      erroLogin.classList.add('visivel');
+    }
+
+    function formatarData(isoString) {
+      if (!isoString) return '—';
+      try {
+        return new Date(isoString).toLocaleString('pt-BR', {
+          day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit'
+        });
+      } catch (erro) {
+        return isoString;
+      }
+    }
+
+    // Busca os cadastros chamando a função do banco (RPC) que só libera
+    // os dados se a senha bater — a validação acontece 100% no Supabase,
+    // nada aqui compara a senha digitada com um valor fixo.
+    async function buscarCadastros(senha) {
+      if (!supabaseClient) {
+        throw new Error('SEM_SUPABASE');
+      }
+      const { data, error } = await supabaseClient.rpc('painel_listar_cadastros', { senha: senha });
+      if (error) {
+        throw error;
+      }
+      return data || [];
+    }
+
+    function renderizarTabela(lista) {
+      corpoTabela.innerHTML = '';
+
+      if (lista.length === 0) {
+        const linha = document.createElement('tr');
+        const celula = document.createElement('td');
+        celula.colSpan = 8;
+        celula.className = 'vazio-estado';
+        celula.textContent = 'Nenhum cadastro encontrado.';
+        linha.appendChild(celula);
+        corpoTabela.appendChild(linha);
+        return;
+      }
+
+      lista.forEach(function (aluno) {
+        const linha = document.createElement('tr');
+        const colunas = [
+          aluno.nome, aluno.telefone, aluno.email, aluno.sexo, aluno.escola, aluno.serie,
+          aluno.contato ? 'Sim' : 'Não',
+          formatarData(aluno.criado_em)
+        ];
+        colunas.forEach(function (valor) {
+          const celula = document.createElement('td');
+          celula.textContent = (valor === null || valor === undefined) ? '—' : String(valor);
+          linha.appendChild(celula);
+        });
+        corpoTabela.appendChild(linha);
+      });
+    }
+
+    function aplicarBusca() {
+      const termo = campoBusca.value.trim().toLowerCase();
+      if (!termo) {
+        cadastrosFiltrados = todosOsCadastros.slice();
+      } else {
+        cadastrosFiltrados = todosOsCadastros.filter(function (aluno) {
+          const nome = (aluno.nome || '').toLowerCase();
+          const escola = (aluno.escola || '').toLowerCase();
+          return nome.indexOf(termo) !== -1 || escola.indexOf(termo) !== -1;
+        });
+      }
+      renderizarTabela(cadastrosFiltrados);
+      contagemBadge.textContent = cadastrosFiltrados.length + (cadastrosFiltrados.length === 1 ? ' aluno' : ' alunos') +
+        (termo ? ' (de ' + todosOsCadastros.length + ')' : '');
+    }
+
+    campoBusca.addEventListener('input', aplicarBusca);
+
+    async function carregarEExibirPainel(senha) {
+      const dados = await buscarCadastros(senha);
+      todosOsCadastros = dados;
+      cadastrosFiltrados = dados.slice();
+      renderizarTabela(cadastrosFiltrados);
+      contagemBadge.textContent = dados.length + (dados.length === 1 ? ' aluno' : ' alunos');
+      telaLogin.style.display = 'none';
+      telaPainel.classList.add('visivel');
+    }
+
+    formSenha.addEventListener('submit', async function (evento) {
+      evento.preventDefault();
+      erroLogin.classList.remove('visivel');
+      btnEntrar.disabled = true;
+      btnEntrar.textContent = 'Verificando...';
+
+      const senhaDigitada = campoSenha.value;
+
+      try {
+        await carregarEExibirPainel(senhaDigitada);
+        // guarda só nesta aba/sessão, some ao fechar o navegador
+        sessionStorage.setItem('painel_senha', senhaDigitada);
+      } catch (erro) {
+        if (erro && erro.message === 'SEM_SUPABASE') {
+          mostrarErroLogin('Não foi possível conectar ao banco de dados agora. Verifique sua internet e tente de novo.');
+        } else {
+          mostrarErroLogin('Senha incorreta. Tente novamente.');
+        }
+        console.error(erro);
+      } finally {
+        btnEntrar.disabled = false;
+        btnEntrar.textContent = 'Entrar';
+      }
+    });
+
+    document.getElementById('btn-sair').addEventListener('click', function () {
+      sessionStorage.removeItem('painel_senha');
+      telaPainel.classList.remove('visivel');
+      telaLogin.style.display = 'flex';
+      campoSenha.value = '';
+      campoSenha.focus();
+    });
+
+    document.getElementById('btn-atualizar').addEventListener('click', async function () {
+      const senha = sessionStorage.getItem('painel_senha');
+      if (!senha) { return; }
+      try {
+        await carregarEExibirPainel(senha);
+        campoBusca.value = '';
+      } catch (erro) {
+        console.error(erro);
+      }
+    });
+
+    document.getElementById('btn-pdf').addEventListener('click', function () {
+      window.print();
+    });
+
+    document.getElementById('btn-excel').addEventListener('click', function () {
+      if (typeof XLSX === 'undefined') {
+        alert('Não foi possível carregar o gerador de Excel agora. Verifique sua internet e tente de novo.');
+        return;
+      }
+      const linhas = cadastrosFiltrados.map(function (aluno) {
+        return {
+          'Nome': aluno.nome || '',
+          'Telefone': aluno.telefone || '',
+          'E-mail': aluno.email || '',
+          'Sexo': aluno.sexo || '',
+          'Escola': aluno.escola || '',
+          'Série / Ano': aluno.serie || '',
+          'Aceitou contato': aluno.contato ? 'Sim' : 'Não',
+          'Cadastrado em': formatarData(aluno.criado_em)
+        };
+      });
+      const planilha = XLSX.utils.json_to_sheet(linhas);
+      planilha['!cols'] = [
+        { wch: 28 }, { wch: 16 }, { wch: 28 }, { wch: 14 }, { wch: 26 }, { wch: 22 }, { wch: 14 }, { wch: 18 }
+      ];
+      const livro = XLSX.utils.book_new();
+      XLSX.utils.book_append_sheet(livro, planilha, 'Cadastros');
+      const dataArquivo = new Date().toISOString().slice(0, 10);
+      XLSX.writeFile(livro, 'cadastros-ise-por-um-dia-' + dataArquivo + '.xlsx');
+    });
+
+    // Se já tinha entrado nesta mesma aba antes (sessionStorage), entra
+    // direto sem pedir a senha de novo.
+    (function tentarEntrarAutomaticamente() {
+      const senhaSalva = sessionStorage.getItem('painel_senha');
+      if (!senhaSalva) { return; }
+      carregarEExibirPainel(senhaSalva).catch(function () {
+        sessionStorage.removeItem('painel_senha');
+      });
+    })();
+  </script>
+</body>
+</html>

@@ -870,6 +870,29 @@
     /* ==========================================================
        BLOCO 3 — AS 5 PERGUNTAS
        ========================================================== */
+    .pergunta-topo-acoes {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto 6px;
+      text-align: left;
+    }
+
+    .btn-pergunta-voltar {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: var(--texto-suave);
+      font-family: inherit;
+      font-weight: 750;
+      font-size: 13px;
+      cursor: pointer;
+      padding: 6px 4px;
+    }
+
+    .btn-pergunta-voltar:hover {
+      color: var(--azul);
+    }
+
     .pergunta-cabecalho {
       width: 100%;
       max-width: 640px;
@@ -1593,6 +1616,9 @@
 
       <!-- ================= TELA: AS 5 PERGUNTAS (conteúdo trocado via JS) ================= -->
       <section class="hero-card screen hero-card--coluna" id="tela-pergunta" aria-labelledby="pergunta-titulo">
+        <div class="pergunta-topo-acoes">
+          <button class="btn-pergunta-voltar" id="btn-pergunta-voltar" type="button">← Voltar</button>
+        </div>
         <div class="pergunta-cabecalho">
           <div class="pergunta-contador" id="pergunta-contador">Pergunta 1 de 5</div>
           <div class="progresso-track"><div class="progresso-fill" id="progresso-fill" style="width:0%"></div></div>
@@ -1832,35 +1858,30 @@
     const PERFIS = {
       mkt: {
         nome: 'Comunicador(a) Nato(a)', curto: 'Marketing', animal: 'Golfinho', emoji: '🐬',
-        cargo: 'Diretor(a) de Marketing (CMO)',
         frase: 'Seu superpoder é comunicar. Você sabe transformar uma ideia em algo que todo mundo quer ouvir — e ouvir de novo.',
         slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.',
         missaoQualificador: 'conectar pessoas de verdade'
       },
       ops: {
         nome: 'Organizador(a) Mestre', curto: 'Operações', animal: 'Formiga', emoji: '🐜',
-        cargo: 'Diretor(a) de Operações (COO)',
         frase: 'Seu superpoder é organizar. Onde tem bagunça, você enxerga um sistema esperando para ser montado.',
         slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.',
         missaoQualificador: 'entregar excelência todos os dias'
       },
       fin: {
         nome: 'Estrategista Financeiro(a)', curto: 'Finanças', animal: 'Coruja', emoji: '🦉',
-        cargo: 'Diretor(a) Financeiro(a) (CFO)',
         frase: 'Seu superpoder é decidir com a cabeça fria. Você sabe que todo sonho grande precisa de uma base financeira sólida.',
         slogan: 'Crescer com segurança: esse é o compromisso da {nome}.',
         missaoQualificador: 'crescer com solidez e responsabilidade'
       },
       lid: {
         nome: 'Líder Nato(a)', curto: 'Liderança', animal: 'Leão', emoji: '🦁',
-        cargo: 'CEO — Diretor(a) Presidente',
         frase: 'Seu superpoder é inspirar pessoas. Times inteiros rendem mais quando você está por perto.',
         slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.',
         missaoQualificador: 'formar os melhores times do setor'
       },
       est: {
         nome: 'Visionário(a) Estratégico(a)', curto: 'Estratégia', animal: 'Raposa', emoji: '🦊',
-        cargo: 'Diretor(a) de Estratégia e Inovação (CSO)',
         frase: 'Seu superpoder é enxergar longe. Enquanto os outros reagem ao presente, você já está pensando no que vem depois.',
         slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.',
         missaoQualificador: 'estar sempre um passo à frente'
@@ -1976,15 +1997,15 @@
     ];
 
     let indicePergunta = 0;
-    let respostasPerguntas = {};
-    let pontosPerfil = { mkt: 0, ops: 0, fin: 0, lid: 0, est: 0 };
-    let respostaAnimalQ4 = null; // desempate: pergunta 4 é a mais "de identidade"
+    // Guardamos só a resposta escolhida em cada pergunta (por índice). A
+    // pontuação por perfil é sempre recalculada a partir daqui (nunca
+    // acumulada aos poucos), então voltar e trocar uma resposta nunca
+    // deixa "resto" de uma escolha antiga contando junto.
+    let respostasEscolhidas = [];
 
     function iniciarPerguntas() {
       indicePergunta = 0;
-      respostasPerguntas = {};
-      pontosPerfil = { mkt: 0, ops: 0, fin: 0, lid: 0, est: 0 };
-      respostaAnimalQ4 = null;
+      respostasEscolhidas = [];
       mostrarTela('tela-pergunta');
       renderizarPergunta();
     }
@@ -1995,31 +2016,26 @@
       document.getElementById('progresso-fill').style.width = ((indicePergunta / PERGUNTAS.length) * 100) + '%';
       document.getElementById('pergunta-titulo').textContent = pergunta.titulo;
 
+      const valorJaEscolhido = respostasEscolhidas[indicePergunta];
       const container = document.getElementById('opcoes-pergunta');
       container.innerHTML = '';
       pergunta.opcoes.forEach(function (opcao) {
         const botao = document.createElement('button');
         botao.type = 'button';
-        botao.className = 'opcao-pergunta';
+        botao.className = 'opcao-pergunta' + (opcao.valor === valorJaEscolhido ? ' selecionada' : '');
         botao.innerHTML = (opcao.emoji ? '<span class="opcao-emoji">' + opcao.emoji + '</span>' : '') + '<span>' + opcao.texto + '</span>';
         botao.addEventListener('click', function () {
-          selecionarOpcao(pergunta, opcao, botao);
+          selecionarOpcao(opcao, botao);
         });
         container.appendChild(botao);
       });
     }
 
-    function selecionarOpcao(pergunta, opcao, botaoClicado) {
+    function selecionarOpcao(opcao, botaoClicado) {
       document.querySelectorAll('.opcao-pergunta').forEach(function (b) { b.classList.remove('selecionada'); });
       botaoClicado.classList.add('selecionada');
 
-      if (pergunta.eixo === 'perfil') {
-        pontosPerfil[opcao.valor] = (pontosPerfil[opcao.valor] || 0) + 1;
-        if (indicePergunta === 3) { respostaAnimalQ4 = opcao.valor; } // pergunta 4 (personalidade/animal)
-      } else {
-        respostasPerguntas[pergunta.eixo] = opcao.valor;
-      }
-      respostasPerguntas['pergunta_' + (indicePergunta + 1)] = opcao.valor;
+      respostasEscolhidas[indicePergunta] = opcao.valor;
 
       // pequena pausa para o aluno ver a opção marcada antes de avançar
       setTimeout(function () {
@@ -2033,22 +2049,55 @@
       }, 320);
     }
 
+    // "← Voltar": volta uma pergunta (mantendo a resposta anterior marcada,
+    // caso o aluno só queira conferir) ou volta pra confirmação do
+    // cadastro se estiver na primeira pergunta.
+    function voltarPergunta() {
+      if (indicePergunta === 0) {
+        mostrarTela('tela-cadastro-ok');
+        return;
+      }
+      indicePergunta--;
+      renderizarPergunta();
+    }
+
+    // Reconstrói pontos por perfil, setor, estilo e a resposta da
+    // pergunta-4 a partir do histórico completo de escolhas — chamado só
+    // na hora de fechar o resultado, nunca durante as perguntas.
+    function recalcularAPartirDoHistorico() {
+      const pontos = { mkt: 0, ops: 0, fin: 0, lid: 0, est: 0 };
+      const respostas = {};
+      let animalQ4 = null;
+      PERGUNTAS.forEach(function (pergunta, indice) {
+        const valor = respostasEscolhidas[indice];
+        if (valor === undefined) { return; }
+        if (pergunta.eixo === 'perfil') {
+          pontos[valor] = (pontos[valor] || 0) + 1;
+          if (indice === 3) { animalQ4 = valor; }
+        } else {
+          respostas[pergunta.eixo] = valor;
+        }
+        respostas['pergunta_' + (indice + 1)] = valor;
+      });
+      return { pontos: pontos, respostas: respostas, animalQ4: animalQ4 };
+    }
+
     // Com só 3 votos (perguntas 2, 4 e 5) distribuídos entre 5 perfis, um
     // empate só pode ser 1-1-1 entre três perfis — nesse caso, desempatamos
     // pela pergunta 4 (a mais "de identidade", com o animal/emoji).
-    function calcularPerfilVencedor() {
+    function calcularPerfilVencedor(pontos, animalQ4) {
       let maior = -1;
       let vencedores = [];
-      Object.keys(pontosPerfil).forEach(function (chave) {
-        if (pontosPerfil[chave] > maior) {
-          maior = pontosPerfil[chave];
+      Object.keys(pontos).forEach(function (chave) {
+        if (pontos[chave] > maior) {
+          maior = pontos[chave];
           vencedores = [chave];
-        } else if (pontosPerfil[chave] === maior) {
+        } else if (pontos[chave] === maior) {
           vencedores.push(chave);
         }
       });
-      if (vencedores.length > 1 && respostaAnimalQ4 && vencedores.indexOf(respostaAnimalQ4) !== -1) {
-        return respostaAnimalQ4;
+      if (vencedores.length > 1 && animalQ4 && vencedores.indexOf(animalQ4) !== -1) {
+        return animalQ4;
       }
       return vencedores[0];
     }
@@ -2084,15 +2133,23 @@
       });
     }
 
+    // Todo aluno é sempre "CEO e Fundador(a)" da própria empresa — o
+    // perfil vencedor (Marketing, Operações...) já aparece no DNA e no
+    // extrato, não precisa também virar um cargo diferente aqui.
+    const CARGO_PADRAO = 'CEO e Fundador(a)';
+
     function finalizarPerguntas() {
       mostrarTela('tela-processando');
       setTimeout(function () {
-        const perfilChave = calcularPerfilVencedor();
-        const setorChave = respostasPerguntas.setor;
-        const estiloChave = respostasPerguntas.estilo;
+        const calculo = recalcularAPartirDoHistorico();
+        const perfilChave = calcularPerfilVencedor(calculo.pontos, calculo.animalQ4);
+        const setorChave = calculo.respostas.setor;
+        const estiloChave = calculo.respostas.estilo;
         const perfil = PERFIS[perfilChave];
         const nomeEmpresa = gerarNomeEmpresa(setorChave, perfilChave);
-        const sloganFinal = perfil.slogan.replace('{nome}', nomeEmpresa);
+        // Corrige o "ponto duplo" que aparece quando o nome termina em
+        // "Ltda."/"S.A." bem no final da frase do slogan.
+        const sloganFinal = perfil.slogan.replace('{nome}', nomeEmpresa).replace(/\.\.+/g, '.');
         const ramo = escolherAleatorio(RAMOS[setorChave]);
         const missao = 'Missão: ser referência em ' + descapitalizar(ramo) + ', com o compromisso de ' + perfil.missaoQualificador + '.';
         const registroFicticio = gerarRegistroFicticio();
@@ -2110,10 +2167,10 @@
         document.getElementById('revelacao-dna').textContent = perfil.frase + ' ' + ESTILOS[estiloChave];
         document.getElementById('revelacao-missao').textContent = missao;
         document.getElementById('revelacao-fundador').textContent = nomeFundador;
-        document.getElementById('revelacao-cargo').textContent = perfil.cargo;
+        document.getElementById('revelacao-cargo').textContent = CARGO_PADRAO;
         document.getElementById('revelacao-data').textContent = dataFundacao;
         document.getElementById('revelacao-registro').textContent = registroFicticio + ' (fictício)';
-        renderizarDnaLista(pontosPerfil);
+        renderizarDnaLista(calculo.pontos);
 
         const empresaGerada = {
           nome: nomeEmpresa,
@@ -2126,12 +2183,12 @@
           slogan: sloganFinal,
           missao: missao,
           fundador: nomeFundador,
-          cargo: perfil.cargo,
+          cargo: CARGO_PADRAO,
           data_fundacao: dataFundacao,
           registro_ficticio: registroFicticio
         };
 
-        salvarResultadoPerguntas(respostasPerguntas, pontosPerfil, empresaGerada);
+        salvarResultadoPerguntas(calculo.respostas, calculo.pontos, empresaGerada);
 
         mostrarTela('tela-revelacao');
       }, 1400);
@@ -2166,6 +2223,10 @@
     // ---------- Tela 3 (confirmação) → Bloco 3 (as 5 perguntas) ----------
     document.getElementById('btn-ir-perguntas').addEventListener('click', function () {
       iniciarPerguntas();
+    });
+
+    document.getElementById('btn-pergunta-voltar').addEventListener('click', function () {
+      voltarPergunta();
     });
 
     // ---------- Tela de revelação ----------
