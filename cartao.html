@@ -200,7 +200,7 @@
     </section>
   </div>
 
-  <canvas id="canvas-cartao" width="1080" height="1620"></canvas>
+  <canvas id="canvas-cartao" width="1080" height="1920"></canvas>
 
   <script>
     // ---------- 1) Lê os dados da empresa embutidos no link do QR code ----------
@@ -345,17 +345,121 @@
       ctx.restore();
     }
 
+    // Desenha um pequeno ícone (0..1 de largura/altura) representando o
+    // setor da empresa, centralizado em (cx, cy) com o lado "lado". Faz as
+    // vezes de "logo" da empresa dentro do cartãozinho — sem depender de
+    // gerar uma logo de verdade, que exigiria IA de imagem em tempo real.
+    function desenharIconeSetor(ctx, chave, cx, cy, lado, cor) {
+      ctx.save();
+      ctx.translate(cx - lado / 2, cy - lado / 2);
+      ctx.scale(lado, lado);
+      ctx.fillStyle = cor;
+      ctx.strokeStyle = cor;
+      ctx.lineJoin = 'round';
+      ctx.lineCap = 'round';
+
+      if (chave === 'tecnologia') {
+        // raio
+        ctx.beginPath();
+        ctx.moveTo(0.58, 0.04);
+        ctx.lineTo(0.28, 0.56);
+        ctx.lineTo(0.46, 0.56);
+        ctx.lineTo(0.38, 0.96);
+        ctx.lineTo(0.74, 0.42);
+        ctx.lineTo(0.54, 0.42);
+        ctx.closePath();
+        ctx.fill();
+      } else if (chave === 'saude') {
+        // coração
+        ctx.beginPath();
+        ctx.moveTo(0.5, 0.84);
+        ctx.bezierCurveTo(0.18, 0.56, 0.04, 0.36, 0.04, 0.2);
+        ctx.bezierCurveTo(0.04, 0.04, 0.22, -0.02, 0.34, 0.06);
+        ctx.bezierCurveTo(0.42, 0.11, 0.48, 0.2, 0.5, 0.27);
+        ctx.bezierCurveTo(0.52, 0.2, 0.58, 0.11, 0.66, 0.06);
+        ctx.bezierCurveTo(0.78, -0.02, 0.96, 0.04, 0.96, 0.2);
+        ctx.bezierCurveTo(0.96, 0.36, 0.82, 0.56, 0.5, 0.84);
+        ctx.closePath();
+        ctx.fill();
+      } else if (chave === 'alimentacao') {
+        // chama (gastronomia/fogo)
+        ctx.beginPath();
+        ctx.moveTo(0.5, 0.02);
+        ctx.bezierCurveTo(0.78, 0.26, 0.88, 0.48, 0.82, 0.66);
+        ctx.bezierCurveTo(0.77, 0.82, 0.62, 0.92, 0.48, 0.9);
+        ctx.bezierCurveTo(0.32, 0.88, 0.18, 0.76, 0.18, 0.6);
+        ctx.bezierCurveTo(0.18, 0.5, 0.24, 0.42, 0.32, 0.37);
+        ctx.bezierCurveTo(0.28, 0.5, 0.34, 0.62, 0.46, 0.63);
+        ctx.bezierCurveTo(0.58, 0.64, 0.62, 0.52, 0.56, 0.4);
+        ctx.bezierCurveTo(0.5, 0.28, 0.44, 0.15, 0.5, 0.02);
+        ctx.closePath();
+        ctx.fill();
+      } else if (chave === 'moda') {
+        // cabide
+        ctx.lineWidth = 0.075;
+        ctx.beginPath();
+        ctx.arc(0.5, 0.14, 0.09, 0.15 * Math.PI, 1.7 * Math.PI);
+        ctx.stroke();
+        ctx.beginPath();
+        ctx.moveTo(0.5, 0.22);
+        ctx.lineTo(0.5, 0.32);
+        ctx.moveTo(0.5, 0.3);
+        ctx.lineTo(0.1, 0.62);
+        ctx.lineTo(0.5, 0.8);
+        ctx.lineTo(0.9, 0.62);
+        ctx.lineTo(0.5, 0.3);
+        ctx.moveTo(0.16, 0.68);
+        ctx.lineTo(0.84, 0.68);
+        ctx.stroke();
+      } else if (chave === 'sustentabilidade') {
+        // folha
+        ctx.beginPath();
+        ctx.moveTo(0.88, 0.12);
+        ctx.bezierCurveTo(0.5, 0.06, 0.12, 0.28, 0.12, 0.64);
+        ctx.bezierCurveTo(0.12, 0.86, 0.34, 0.97, 0.5, 0.91);
+        ctx.bezierCurveTo(0.78, 0.81, 0.94, 0.46, 0.88, 0.12);
+        ctx.closePath();
+        ctx.fill();
+        ctx.save();
+        ctx.strokeStyle = '#0E3880';
+        ctx.globalCompositeOperation = 'destination-out';
+        ctx.lineWidth = 0.045;
+        ctx.beginPath();
+        ctx.moveTo(0.22, 0.78);
+        ctx.lineTo(0.74, 0.26);
+        ctx.stroke();
+        ctx.restore();
+      } else {
+        // fallback: monograma com a inicial do nome da empresa
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.font = '800 0.52px Inter, Arial, sans-serif';
+        const letra = (dadosCard.e || '?').trim().charAt(0).toUpperCase();
+        ctx.fillText(letra, 0.5, 0.54);
+      }
+
+      ctx.restore();
+    }
+
     // ---------- 4) Monta o card completo no canvas ----------
     function montarCard(imgFoto) {
       return imagemBannerPronta.then(function (imagemBanner) {
         const canvas = document.getElementById('canvas-cartao');
         const ctx = canvas.getContext('2d');
-        const L = canvas.width;   // 1080
-        const A = canvas.height;
+        const L = canvas.width;    // 1080
+        const A = canvas.height;   // 1920 — cheio, cabe na tela toda do Stories (9:16)
 
-        // fundo branco
+        // fundo branco em todo o canvas 1080x1920
         ctx.fillStyle = '#ffffff';
         ctx.fillRect(0, 0, L, A);
+
+        // o conteúdo do card (banner + foto + textos) tem uma altura própria,
+        // menor que 1920 — centraliza ele verticalmente no canvas pra não
+        // sobrar aquela barra preta quando for compartilhado nos Stories
+        const ALTURA_CONTEUDO = 1620;
+        const offsetY = Math.round((A - ALTURA_CONTEUDO) / 2);
+        ctx.save();
+        ctx.translate(0, offsetY);
 
         // --- faixa superior: banner oficial completo (prédio + brasão +
         // "ISECENSA" + frases), desenhado por inteiro, sem cortar nada ---
@@ -417,8 +521,8 @@
         ctx.fill();
         ctx.restore();
 
-        // monograma
-        const letraEmpresa = (dadosCard.e || '?').trim().charAt(0).toUpperCase();
+        // "logo" da empresa: um selinho com ícone do setor (mais parecido
+        // com uma marca de verdade do que só a inicial do nome)
         const monoX = margemLateral + 32;
         const monoY = yCartaoEmpresa + alturaCartaoEmpresa / 2 - 42;
         const monoLado = 80;
@@ -428,12 +532,7 @@
         ctx.fillStyle = gradMono;
         caminhoArredondado(ctx, monoX, monoY, monoLado, monoLado, 18);
         ctx.fill();
-        ctx.fillStyle = '#ffffff';
-        ctx.font = '800 40px Inter, Arial, sans-serif';
-        ctx.textAlign = 'center';
-        ctx.textBaseline = 'middle';
-        ctx.fillText(letraEmpresa, monoX + monoLado / 2, monoY + monoLado / 2 + 3);
-        ctx.textBaseline = 'alphabetic';
+        desenharIconeSetor(ctx, dadosCard.st, monoX + monoLado / 2, monoY + monoLado / 2, monoLado * 0.56, '#ffffff');
 
         // nome + slogan
         const textoX = monoX + monoLado + 28;
@@ -535,7 +634,9 @@
         ctx.fillStyle = '#536383';
         ctx.font = 'italic 500 26px Inter, Arial, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('#IseporUmDia2026 · #ISECENSA', L / 2, A - 50);
+        ctx.fillText('#IseporUmDia2026 · #ISECENSA', L / 2, ALTURA_CONTEUDO - 50);
+
+        ctx.restore();
 
         return canvas.toDataURL('image/png');
       });
