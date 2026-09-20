@@ -1324,7 +1324,54 @@
 
   <div class="aviso" id="aviso"></div>
 
+  <!-- Cliente oficial do Supabase (só para o front-end conversar com o banco) -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+
   <script>
+    // ---------- Conexão com o Supabase ----------
+    // A "publishable key" é pública por natureza: pode ficar exposta no
+    // código do site porque quem protege os dados é a política de RLS
+    // configurada na tabela (só permite INSERT, nunca leitura/edição).
+    const SUPABASE_URL = 'https://tjxyqxzqbtpkuykvmttd.supabase.co';
+    const SUPABASE_KEY = 'sb_publishable_x992ff0d5kQHl9fpOkyLCw_6ROlB7N8';
+
+    // Blindagem: se a internet do evento falhar em carregar a biblioteca
+    // (script externo), o totem não pode travar por causa disso — o
+    // cadastro continua funcionando e fica guardado para reenvio depois.
+    let supabaseClient = null;
+    try {
+      if (window.supabase && typeof window.supabase.createClient === 'function') {
+        supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+      } else {
+        console.warn('Biblioteca do Supabase não carregou; cadastros serão guardados localmente.');
+      }
+    } catch (erro) {
+      console.error('Erro ao iniciar o Supabase:', erro);
+    }
+
+    // Identificador único desta visita ao totem — gerado uma vez no
+    // navegador e reaproveitado por todas as etapas (cadastro, 5
+    // perguntas, empresa gerada), para relacionarmos os registros sem
+    // nunca precisar de permissão de UPDATE.
+    function obterSessaoId() {
+      let id = sessionStorage.getItem('ise_sessao_id');
+      if (!id) {
+        id = (crypto.randomUUID) ? crypto.randomUUID() : ('sess-' + Date.now() + '-' + Math.random().toString(16).slice(2));
+        sessionStorage.setItem('ise_sessao_id', id);
+      }
+      return id;
+    }
+
+    // Se o envio ao Supabase falhar (sem internet no momento, etc.), guarda
+    // localmente para não perder o cadastro; nunca trava o fluxo do totem.
+    function guardarCadastroPendente(dados) {
+      try {
+        const fila = JSON.parse(localStorage.getItem('ise_fila_pendente') || '[]');
+        fila.push(dados);
+        localStorage.setItem('ise_fila_pendente', JSON.stringify(fila));
+      } catch (erro) { /* localStorage indisponível: seguimos sem guardar */ }
+    }
+
     // Troca qual .screen fica visível dentro de .palco — usada em toda
     // a experiência (cadastro, 5 perguntas, processando, revelação).
     function mostrarTela(id) {
@@ -1399,13 +1446,39 @@
         return;
       }
 
-      // Por enquanto guardamos só no navegador (sessionStorage).
-      // No Bloco 6 este objeto será enviado ao Supabase.
       const dados = Object.fromEntries(new FormData(formCadastro).entries());
       dados.consentimento = document.getElementById('consentimento').checked;
       dados.contato = document.getElementById('contato').checked;
       dados.criado_em = new Date().toISOString();
+      dados.sessao_id = obterSessaoId();
       sessionStorage.setItem('ise_aluno', JSON.stringify(dados));
+
+      // Envia o cadastro ao Supabase. Não esperamos a resposta para seguir
+      // o fluxo do totem — se falhar (sem internet, instabilidade etc.),
+      // guardamos localmente e o aluno segue normalmente para a próxima tela.
+      if (supabaseClient) {
+        supabaseClient.from('cadastros_alunos').insert([{
+          sessao_id: dados.sessao_id,
+          nome: dados.nome,
+          telefone: dados.telefone,
+          email: dados.email,
+          sexo: dados.sexo,
+          escola: dados.escola,
+          serie: dados.serie,
+          consentimento: dados.consentimento,
+          contato: dados.contato
+        }]).then(function (resultado) {
+          if (resultado.error) {
+            console.error('Falha ao gravar cadastro no Supabase:', resultado.error);
+            guardarCadastroPendente(dados);
+          }
+        }).catch(function (erro) {
+          console.error('Falha de rede ao gravar cadastro no Supabase:', erro);
+          guardarCadastroPendente(dados);
+        });
+      } else {
+        guardarCadastroPendente(dados);
+      }
 
       const primeiroNome = dados.nome.trim().split(/\s+/)[0];
       document.getElementById('mensagem-cadastro-ok').textContent =
