@@ -867,6 +867,176 @@
       margin-bottom: 24px;
     }
 
+    /* ==========================================================
+       BLOCO 3 — AS 5 PERGUNTAS
+       ========================================================== */
+    .pergunta-cabecalho {
+      width: 100%;
+      max-width: 640px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .pergunta-contador {
+      color: var(--texto-suave);
+      font-weight: 800;
+      font-size: 13px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      margin-bottom: 12px;
+    }
+
+    .pergunta-titulo {
+      color: var(--azul);
+      font-size: clamp(24px, 3vw, 34px);
+      font-weight: 900;
+      line-height: 1.18;
+      letter-spacing: -0.02em;
+      margin-top: 16px;
+    }
+
+    .opcoes-pergunta {
+      width: 100%;
+      max-width: 640px;
+      margin: 26px auto 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .opcao-pergunta {
+      appearance: none;
+      border: 1.5px solid #dce5f3;
+      background: #fbfdff;
+      border-radius: 16px;
+      padding: 17px 22px;
+      text-align: left;
+      font-family: inherit;
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--texto);
+      cursor: pointer;
+      transition: border-color .15s ease, background .15s ease, box-shadow .15s ease, transform .1s ease;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-height: 60px;
+    }
+
+    .opcao-pergunta:active {
+      transform: scale(0.98);
+    }
+
+    .opcao-pergunta.selecionada {
+      border-color: var(--azul);
+      background: #eef4ff;
+      color: var(--azul);
+      box-shadow: 0 0 0 3px rgba(90, 138, 214, .15);
+    }
+
+    .opcao-emoji {
+      font-size: 22px;
+      flex: 0 0 auto;
+    }
+
+    /* ==========================================================
+       TELA — PROCESSANDO
+       ========================================================== */
+    .spinner-processando {
+      width: 60px;
+      height: 60px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      border: 6px solid var(--azul-nevoa);
+      border-top-color: var(--azul);
+      animation: girar 0.9s linear infinite;
+    }
+
+    @keyframes girar {
+      to { transform: rotate(360deg); }
+    }
+
+    /* ==========================================================
+       TELA — REVELAÇÃO DA EMPRESA
+       ========================================================== */
+    .revelacao-wrap {
+      width: 100%;
+      max-width: 760px;
+      text-align: center;
+      padding: clamp(32px, 5vw, 56px);
+      border-radius: 34px;
+      border: 1px solid var(--borda);
+      background: linear-gradient(160deg, rgba(255,255,255,0.98), rgba(246,249,255,0.98));
+      box-shadow: var(--sombra);
+    }
+
+    .revelacao-wrap.screen.screen--ativa {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin: auto;
+    }
+
+    .revelacao-animal {
+      font-size: 64px;
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .revelacao-empresa-nome {
+      color: var(--azul);
+      font-size: clamp(30px, 4.5vw, 48px);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1.08;
+    }
+
+    .revelacao-slogan {
+      margin-top: 12px;
+      color: var(--texto);
+      font-size: clamp(16px, 1.6vw, 20px);
+      font-weight: 700;
+      font-style: italic;
+      max-width: 600px;
+    }
+
+    .revelacao-setor-tag {
+      margin-top: 18px;
+      display: inline-block;
+      background: var(--azul-nevoa);
+      color: var(--azul);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+      padding: 7px 14px;
+      border-radius: 999px;
+    }
+
+    .revelacao-perfil-titulo {
+      margin-top: 24px;
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .revelacao-dna {
+      margin-top: 10px;
+      color: var(--texto-suave);
+      font-size: 15px;
+      line-height: 1.65;
+      max-width: 600px;
+    }
+
+    .revelacao-acoes {
+      margin-top: 30px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
     @media (max-width: 900px) {
       .pagina {
         padding: 18px 18px 14px;
@@ -1020,6 +1190,12 @@
       .sexo-opcoes { grid-template-columns: repeat(2, 1fr); }
       .acoes-cadastro { flex-direction: column-reverse; align-items: stretch; }
       .btn-voltar, .btn-continuar { width: 100%; }
+
+      .opcao-pergunta { padding: 15px 16px; font-size: 15px; }
+      .revelacao-wrap { padding: 26px 18px 30px; border-radius: 26px; }
+      .revelacao-animal { font-size: 52px; }
+      .revelacao-acoes { flex-direction: column; width: 100%; }
+      .revelacao-acoes .btn-touque { width: 100%; }
     }
 
     /* Celulares bem estreitos (a maioria dos smartphones em pé) */
@@ -1303,18 +1479,47 @@
         </div>
       </section>
 
-      <!-- Tela provisória apenas para testar o fluxo até construirmos as 5 perguntas -->
       <section class="cadastro-ok-wrap screen" id="tela-cadastro-ok">
         <div class="check-grande">✓</div>
         <h2>Cadastro concluído!</h2>
         <p id="mensagem-cadastro-ok">Agora vamos descobrir que empresa combina com você.</p>
         <button class="btn-touque" id="btn-ir-perguntas" type="button">🚀 Começar as 5 perguntas</button>
-        <div style="margin-top:14px; color:#7b88a2; font-size:12px;">A próxima etapa (as 5 perguntas, com 5 opções cada) será construída no Bloco 3.</div>
       </section>
 
-      <!-- As próximas telas (Bloco 3) entram aqui, cada uma como:
-           <section class="hero-card screen hero-card--coluna" id="tela-pergunta-1">...</section>
-           e a função mostrarTela(id) abaixo troca qual delas fica visível. -->
+      <!-- ================= TELA: AS 5 PERGUNTAS (conteúdo trocado via JS) ================= -->
+      <section class="hero-card screen hero-card--coluna" id="tela-pergunta" aria-labelledby="pergunta-titulo">
+        <div class="pergunta-cabecalho">
+          <div class="pergunta-contador" id="pergunta-contador">Pergunta 1 de 5</div>
+          <div class="progresso-track"><div class="progresso-fill" id="progresso-fill" style="width:0%"></div></div>
+          <h2 class="pergunta-titulo" id="pergunta-titulo"></h2>
+        </div>
+        <div class="opcoes-pergunta" id="opcoes-pergunta"></div>
+      </section>
+
+      <!-- ================= TELA: PROCESSANDO ================= -->
+      <section class="cadastro-ok-wrap screen" id="tela-processando">
+        <div class="spinner-processando" aria-hidden="true"></div>
+        <h2>Calculando seu perfil...</h2>
+        <p>Estamos descobrindo qual empresa combina com você.</p>
+      </section>
+
+      <!-- ================= TELA: REVELAÇÃO DA EMPRESA ================= -->
+      <section class="revelacao-wrap screen" id="tela-revelacao" aria-labelledby="revelacao-nome">
+        <div class="selo-topo">
+          <span class="ponto"></span>
+          Selo de Futuro Administrador
+        </div>
+        <div class="revelacao-animal" id="revelacao-animal" aria-hidden="true"></div>
+        <h1 class="revelacao-empresa-nome" id="revelacao-nome"></h1>
+        <p class="revelacao-slogan" id="revelacao-slogan"></p>
+        <span class="revelacao-setor-tag" id="revelacao-setor"></span>
+        <div class="revelacao-perfil-titulo" id="revelacao-perfil-titulo"></div>
+        <p class="revelacao-dna" id="revelacao-dna"></p>
+        <div class="revelacao-acoes">
+          <button class="btn-touque" id="btn-ver-selo" type="button">📲 Compartilhar meu selo</button>
+          <button class="btn-touque btn-touque--secundario" id="btn-refazer" type="button">↺ Refazer a experiência</button>
+        </div>
+      </section>
     </div>
 
     <footer class="rodape">
@@ -1363,8 +1568,9 @@
     }
 
     // Se o envio ao Supabase falhar (sem internet no momento, etc.), guarda
-    // localmente para não perder o cadastro; nunca trava o fluxo do totem.
-    function guardarCadastroPendente(dados) {
+    // localmente para não perder o registro; nunca trava o fluxo do totem.
+    // Usada tanto pelo cadastro quanto pelo resultado das 5 perguntas.
+    function guardarPendente(dados) {
       try {
         const fila = JSON.parse(localStorage.getItem('ise_fila_pendente') || '[]');
         fila.push(dados);
@@ -1470,14 +1676,14 @@
         }]).then(function (resultado) {
           if (resultado.error) {
             console.error('Falha ao gravar cadastro no Supabase:', resultado.error);
-            guardarCadastroPendente(dados);
+            guardarPendente(dados);
           }
         }).catch(function (erro) {
           console.error('Falha de rede ao gravar cadastro no Supabase:', erro);
-          guardarCadastroPendente(dados);
+          guardarPendente(dados);
         });
       } else {
-        guardarCadastroPendente(dados);
+        guardarPendente(dados);
       }
 
       const primeiroNome = dados.nome.trim().split(/\s+/)[0];
@@ -1487,9 +1693,280 @@
       mostrarTela('tela-cadastro-ok');
     });
 
-    // ---------- Tela 3 (confirmação) → Bloco 3 (ainda não existe) ----------
+    // ---------- Bloco 3: as 5 perguntas + geração da empresa ----------
+
+    // Cada "perfil" é um dos 5 arquétipos de administrador. As perguntas 2,
+    // 4 e 5 votam nesses perfis (eixo: 'perfil'); a pergunta 1 define o
+    // setor e a 3 define o estilo de decisão — esses dois não entram na
+    // pontuação, só no texto final.
+    const PERFIS = {
+      mkt: {
+        nome: 'Comunicador(a) Nato(a)', animal: 'Golfinho', emoji: '🐬',
+        frase: 'Seu superpoder é comunicar. Você sabe transformar uma ideia em algo que todo mundo quer ouvir — e ouvir de novo.',
+        slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.'
+      },
+      ops: {
+        nome: 'Organizador(a) Mestre', animal: 'Formiga', emoji: '🐜',
+        frase: 'Seu superpoder é organizar. Onde tem bagunça, você enxerga um sistema esperando para ser montado.',
+        slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.'
+      },
+      fin: {
+        nome: 'Estrategista Financeiro(a)', animal: 'Coruja', emoji: '🦉',
+        frase: 'Seu superpoder é decidir com a cabeça fria. Você sabe que todo sonho grande precisa de uma base financeira sólida.',
+        slogan: 'Crescer com segurança: esse é o compromisso da {nome}.'
+      },
+      lid: {
+        nome: 'Líder Nato(a)', animal: 'Leão', emoji: '🦁',
+        frase: 'Seu superpoder é inspirar pessoas. Times inteiros rendem mais quando você está por perto.',
+        slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.'
+      },
+      est: {
+        nome: 'Visionário(a) Estratégico(a)', animal: 'Raposa', emoji: '🦊',
+        frase: 'Seu superpoder é enxergar longe. Enquanto os outros reagem ao presente, você já está pensando no que vem depois.',
+        slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.'
+      }
+    };
+
+    const ESTILOS = {
+      analitico: 'E o seu jeito de decidir é olhando pros números: você confia em dados antes de dar o próximo passo.',
+      criativo: 'E o seu jeito de decidir é pela intuição: as melhores ideias chegam quando você deixa a criatividade guiar.',
+      colaborativo: 'E o seu jeito de decidir é junto com os outros: você sabe que uma boa conversa vale mais que uma decisão solitária.',
+      agil: 'E o seu jeito de decidir é testando rápido: você prefere ajustar o caminho andando a ficar planejando pra sempre.',
+      planejador: 'E o seu jeito de decidir é planejando: você gosta de ter cada passo mapeado antes de agir.'
+    };
+
+    const SETORES = {
+      tecnologia: { tag: 'Tecnologia e Inovação', palavras: ['Nex', 'Byte', 'Nova', 'Code', 'Pulse', 'Quantum'] },
+      saude: { tag: 'Saúde e Bem-Estar', palavras: ['Vita', 'Bem', 'Viva', 'Pulso', 'Zenith', 'Cuidar'] },
+      alimentacao: { tag: 'Alimentação e Gastronomia', palavras: ['Sabor', 'Gourmet', 'Raiz', 'Colher', 'Origem', 'Fogo'] },
+      moda: { tag: 'Moda e Beleza', palavras: ['Estilo', 'Trend', 'Look', 'Tecido', 'Aura', 'Vogue'] },
+      sustentabilidade: { tag: 'Sustentabilidade e Meio Ambiente', palavras: ['Eco', 'Verde', 'Raiz', 'Terra', 'Bio', 'Renova'] }
+    };
+
+    const PALAVRAS_PERFIL = {
+      mkt: ['Conecta', 'Voz', 'Buzz', 'Share', 'Alcance'],
+      ops: ['Flow', 'Sistema', 'Precisão', 'Método', 'Órbita'],
+      fin: ['Capital', 'Vault', 'Firme', 'Base', 'Prosperis'],
+      lid: ['Liderança', 'Impulso', 'Vanguarda', 'Comando', 'Rumo'],
+      est: ['Visão', 'Estratégia', 'Horizonte', 'Next', 'Insight']
+    };
+
+    const SUFIXOS_EMPRESA = ['', '', ' Labs', ' Studio', ' Co.', ' Group'];
+
+    const PERGUNTAS = [
+      {
+        titulo: 'Se você pudesse criar uma empresa hoje, em qual área ela estaria?', eixo: 'setor',
+        opcoes: [
+          { texto: 'Tecnologia e inovação', valor: 'tecnologia' },
+          { texto: 'Saúde e bem-estar', valor: 'saude' },
+          { texto: 'Alimentação e gastronomia', valor: 'alimentacao' },
+          { texto: 'Moda e beleza', valor: 'moda' },
+          { texto: 'Sustentabilidade e meio ambiente', valor: 'sustentabilidade' }
+        ]
+      },
+      {
+        titulo: 'Qual seria seu maior superpoder como empresário?', eixo: 'perfil',
+        opcoes: [
+          { texto: 'Convencer pessoas e divulgar ideias', valor: 'mkt' },
+          { texto: 'Organizar processos e colocar tudo em ordem', valor: 'ops' },
+          { texto: 'Cuidar do dinheiro e tomar decisões financeiras', valor: 'fin' },
+          { texto: 'Liderar e motivar uma equipe', valor: 'lid' },
+          { texto: 'Enxergar oportunidades antes dos outros', valor: 'est' }
+        ]
+      },
+      {
+        titulo: 'Como você prefere tomar decisões importantes?', eixo: 'estilo',
+        opcoes: [
+          { texto: 'Analisando dados e números', valor: 'analitico' },
+          { texto: 'Usando criatividade e intuição', valor: 'criativo' },
+          { texto: 'Conversando com outras pessoas antes', valor: 'colaborativo' },
+          { texto: 'Testando rapidamente e ajustando depois', valor: 'agil' },
+          { texto: 'Planejando tudo antes de agir', valor: 'planejador' }
+        ]
+      },
+      {
+        titulo: 'Qual personalidade combina mais com a empresa que você gostaria de criar?', eixo: 'perfil',
+        opcoes: [
+          { texto: 'Leão — ousada e confiante', emoji: '🦁', valor: 'lid' },
+          { texto: 'Coruja — inteligente e analítica', emoji: '🦉', valor: 'fin' },
+          { texto: 'Formiga — organizada e trabalhadora', emoji: '🐜', valor: 'ops' },
+          { texto: 'Golfinho — comunicativa e conectada', emoji: '🐬', valor: 'mkt' },
+          { texto: 'Raposa — estratégica e esperta', emoji: '🦊', valor: 'est' }
+        ]
+      },
+      {
+        titulo: 'Se sua empresa começasse a crescer muito, qual seria sua primeira prioridade?', eixo: 'perfil',
+        opcoes: [
+          { texto: 'Fazer a marca ficar conhecida', emoji: '📣', valor: 'mkt' },
+          { texto: 'Montar uma equipe excelente', emoji: '👥', valor: 'lid' },
+          { texto: 'Organizar as finanças para crescer com segurança', emoji: '💰', valor: 'fin' },
+          { texto: 'Melhorar processos e aumentar a eficiência', emoji: '⚙️', valor: 'ops' },
+          { texto: 'Criar novos produtos e entrar em novos mercados', emoji: '🚀', valor: 'est' }
+        ]
+      }
+    ];
+
+    let indicePergunta = 0;
+    let respostasPerguntas = {};
+    let pontosPerfil = { mkt: 0, ops: 0, fin: 0, lid: 0, est: 0 };
+    let respostaAnimalQ4 = null; // desempate: pergunta 4 é a mais "de identidade"
+
+    function iniciarPerguntas() {
+      indicePergunta = 0;
+      respostasPerguntas = {};
+      pontosPerfil = { mkt: 0, ops: 0, fin: 0, lid: 0, est: 0 };
+      respostaAnimalQ4 = null;
+      mostrarTela('tela-pergunta');
+      renderizarPergunta();
+    }
+
+    function renderizarPergunta() {
+      const pergunta = PERGUNTAS[indicePergunta];
+      document.getElementById('pergunta-contador').textContent = 'Pergunta ' + (indicePergunta + 1) + ' de ' + PERGUNTAS.length;
+      document.getElementById('progresso-fill').style.width = ((indicePergunta / PERGUNTAS.length) * 100) + '%';
+      document.getElementById('pergunta-titulo').textContent = pergunta.titulo;
+
+      const container = document.getElementById('opcoes-pergunta');
+      container.innerHTML = '';
+      pergunta.opcoes.forEach(function (opcao) {
+        const botao = document.createElement('button');
+        botao.type = 'button';
+        botao.className = 'opcao-pergunta';
+        botao.innerHTML = (opcao.emoji ? '<span class="opcao-emoji">' + opcao.emoji + '</span>' : '') + '<span>' + opcao.texto + '</span>';
+        botao.addEventListener('click', function () {
+          selecionarOpcao(pergunta, opcao, botao);
+        });
+        container.appendChild(botao);
+      });
+    }
+
+    function selecionarOpcao(pergunta, opcao, botaoClicado) {
+      document.querySelectorAll('.opcao-pergunta').forEach(function (b) { b.classList.remove('selecionada'); });
+      botaoClicado.classList.add('selecionada');
+
+      if (pergunta.eixo === 'perfil') {
+        pontosPerfil[opcao.valor] = (pontosPerfil[opcao.valor] || 0) + 1;
+        if (indicePergunta === 3) { respostaAnimalQ4 = opcao.valor; } // pergunta 4 (personalidade/animal)
+      } else {
+        respostasPerguntas[pergunta.eixo] = opcao.valor;
+      }
+      respostasPerguntas['pergunta_' + (indicePergunta + 1)] = opcao.valor;
+
+      // pequena pausa para o aluno ver a opção marcada antes de avançar
+      setTimeout(function () {
+        indicePergunta++;
+        if (indicePergunta < PERGUNTAS.length) {
+          renderizarPergunta();
+        } else {
+          document.getElementById('progresso-fill').style.width = '100%';
+          finalizarPerguntas();
+        }
+      }, 320);
+    }
+
+    // Com só 3 votos (perguntas 2, 4 e 5) distribuídos entre 5 perfis, um
+    // empate só pode ser 1-1-1 entre três perfis — nesse caso, desempatamos
+    // pela pergunta 4 (a mais "de identidade", com o animal/emoji).
+    function calcularPerfilVencedor() {
+      let maior = -1;
+      let vencedores = [];
+      Object.keys(pontosPerfil).forEach(function (chave) {
+        if (pontosPerfil[chave] > maior) {
+          maior = pontosPerfil[chave];
+          vencedores = [chave];
+        } else if (pontosPerfil[chave] === maior) {
+          vencedores.push(chave);
+        }
+      });
+      if (vencedores.length > 1 && respostaAnimalQ4 && vencedores.indexOf(respostaAnimalQ4) !== -1) {
+        return respostaAnimalQ4;
+      }
+      return vencedores[0];
+    }
+
+    // Gera o nome combinando um banco de palavras do setor com um do
+    // perfil vencedor — em vez de guardar um nome fixo para cada uma das
+    // combinações possíveis, compomos o nome no momento.
+    function gerarNomeEmpresa(setorChave, perfilChave) {
+      const palavrasSetor = SETORES[setorChave].palavras;
+      const palavrasPerfil = PALAVRAS_PERFIL[perfilChave];
+      const p1 = palavrasSetor[Math.floor(Math.random() * palavrasSetor.length)];
+      const p2 = palavrasPerfil[Math.floor(Math.random() * palavrasPerfil.length)];
+      const sufixo = SUFIXOS_EMPRESA[Math.floor(Math.random() * SUFIXOS_EMPRESA.length)];
+      return p1 + p2 + sufixo;
+    }
+
+    function finalizarPerguntas() {
+      mostrarTela('tela-processando');
+      setTimeout(function () {
+        const perfilChave = calcularPerfilVencedor();
+        const setorChave = respostasPerguntas.setor;
+        const estiloChave = respostasPerguntas.estilo;
+        const perfil = PERFIS[perfilChave];
+        const nomeEmpresa = gerarNomeEmpresa(setorChave, perfilChave);
+        const sloganFinal = perfil.slogan.replace('{nome}', nomeEmpresa);
+
+        document.getElementById('revelacao-animal').textContent = perfil.emoji;
+        document.getElementById('revelacao-nome').textContent = nomeEmpresa;
+        document.getElementById('revelacao-slogan').textContent = sloganFinal;
+        document.getElementById('revelacao-setor').textContent = SETORES[setorChave].tag;
+        document.getElementById('revelacao-perfil-titulo').textContent = 'Seu DNA de Administrador: ' + perfil.nome;
+        document.getElementById('revelacao-dna').textContent = perfil.frase + ' ' + ESTILOS[estiloChave];
+
+        const empresaGerada = {
+          nome: nomeEmpresa,
+          setor: setorChave,
+          perfil: perfilChave,
+          perfil_nome: perfil.nome,
+          animal: perfil.animal,
+          estilo: estiloChave,
+          slogan: sloganFinal
+        };
+
+        salvarResultadoPerguntas(respostasPerguntas, pontosPerfil, empresaGerada);
+
+        mostrarTela('tela-revelacao');
+      }, 1400);
+    }
+
+    // Grava as respostas + a empresa gerada no Supabase, relacionadas ao
+    // cadastro pelo mesmo sessao_id — nunca precisamos de UPDATE.
+    function salvarResultadoPerguntas(respostas, pontos, empresaGerada) {
+      const registro = {
+        sessao_id: obterSessaoId(),
+        respostas: respostas,
+        pontos_perfil: pontos,
+        empresa_gerada: empresaGerada
+      };
+      sessionStorage.setItem('ise_resultado', JSON.stringify(registro));
+
+      if (supabaseClient) {
+        supabaseClient.from('resultados_perguntas').insert([registro]).then(function (resultado) {
+          if (resultado.error) {
+            console.error('Falha ao gravar resultado no Supabase:', resultado.error);
+            guardarPendente(registro);
+          }
+        }).catch(function (erro) {
+          console.error('Falha de rede ao gravar resultado no Supabase:', erro);
+          guardarPendente(registro);
+        });
+      } else {
+        guardarPendente(registro);
+      }
+    }
+
+    // ---------- Tela 3 (confirmação) → Bloco 3 (as 5 perguntas) ----------
     document.getElementById('btn-ir-perguntas').addEventListener('click', function () {
-      mostrarAviso('Próximo passo: as 5 perguntas (com 5 opções cada), que vamos construir no Bloco 3.');
+      iniciarPerguntas();
+    });
+
+    // ---------- Tela de revelação ----------
+    document.getElementById('btn-refazer').addEventListener('click', function () {
+      mostrarTela('tela-boas-vindas');
+    });
+
+    document.getElementById('btn-ver-selo').addEventListener('click', function () {
+      mostrarAviso('O cartão para compartilhar no Instagram será construído no próximo bloco.');
     });
   </script>
 </body>
