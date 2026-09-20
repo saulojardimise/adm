@@ -455,6 +455,68 @@
     }
 
     /* ==========================================================
+       AVISO DE INATIVIDADE — reseta o totem sozinho quando ninguém
+       mexe por um tempo, pra não travar numa tela de outro aluno
+       ========================================================== */
+    .overlay-inatividade {
+      position: fixed;
+      inset: 0;
+      background: rgba(8, 41, 95, 0.85);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity .3s ease;
+      z-index: 60;
+    }
+
+    .overlay-inatividade.visivel {
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .overlay-inatividade-caixa {
+      width: 100%;
+      max-width: 420px;
+      background: #ffffff;
+      border-radius: 28px;
+      padding: 40px 32px 34px;
+      text-align: center;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.35);
+    }
+
+    .overlay-inatividade-emoji {
+      font-size: 40px;
+    }
+
+    .overlay-inatividade-caixa h2 {
+      margin-top: 10px;
+      color: var(--texto);
+      font-size: 22px;
+    }
+
+    .overlay-inatividade-texto {
+      margin-top: 8px;
+      color: var(--texto-suave);
+      font-size: 15px;
+      line-height: 1.6;
+    }
+
+    .overlay-inatividade-numero {
+      font-size: 60px;
+      font-weight: 800;
+      color: var(--azul);
+      margin: 8px 0 18px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .overlay-inatividade-caixa .btn-touque {
+      width: 100%;
+    }
+
+    /* ==========================================================
        TELA 2 — CADASTRO DO ALUNO
        ========================================================== */
     .cadastro-card {
@@ -1753,6 +1815,16 @@
     </footer>
   </main>
 
+  <div class="overlay-inatividade" id="overlay-inatividade" role="alertdialog" aria-live="assertive" aria-label="Aviso de inatividade">
+    <div class="overlay-inatividade-caixa">
+      <div class="overlay-inatividade-emoji" aria-hidden="true">⏳</div>
+      <h2>Ainda está aí?</h2>
+      <p class="overlay-inatividade-texto">Por inatividade, vamos voltar para o início em</p>
+      <div class="overlay-inatividade-numero" id="overlay-inatividade-numero">15</div>
+      <button class="btn-touque" id="btn-continuar-usando" type="button">Continuar usando</button>
+    </div>
+  </div>
+
   <div class="aviso" id="aviso"></div>
 
   <!-- Cliente oficial do Supabase (só para o front-end conversar com o banco) -->
@@ -1814,6 +1886,9 @@
       });
       document.getElementById(id).classList.add('screen--ativa');
       window.scrollTo({ top: 0, behavior: 'smooth' });
+      // Toda troca de tela reagenda o relógio de inatividade (definida mais
+      // abaixo) — cobre tanto cliques em botões quanto transições automáticas.
+      if (typeof agendarAvisoInatividade === 'function') { agendarAvisoInatividade(); }
     }
 
     const aviso = document.getElementById('aviso');
@@ -2357,9 +2432,105 @@
 
     // ---------- Tela de revelação ----------
     document.getElementById('btn-refazer').addEventListener('click', function () {
-      mostrarTela('tela-boas-vindas');
+      reiniciarQuiosque();
     });
 
+    // ==========================================================
+    // TIMER DE INATIVIDADE — o totem fica ligado o dia inteiro no
+    // evento; se um aluno sair andando no meio da experiência (ou
+    // esquecer a tela na revelação), sozinho ele volta pro início
+    // depois de um tempo, pronto pro próximo aluno usar.
+    // ==========================================================
+    const TEMPO_ATE_AVISO_MS = 60000;  // 60s sem nenhuma interação
+    const TEMPO_CONTAGEM_SEGUNDOS = 15; // +15s com o aviso na tela antes de resetar
+
+    let timerAvisoInatividade = null;
+    let intervaloContagemInatividade = null;
+    let segundosRestantesInatividade = TEMPO_CONTAGEM_SEGUNDOS;
+
+    const overlayInatividade = document.getElementById('overlay-inatividade');
+    const numeroInatividade = document.getElementById('overlay-inatividade-numero');
+
+    function telaAtualEhInicial() {
+      const inicial = document.getElementById('tela-boas-vindas');
+      return inicial && inicial.classList.contains('screen--ativa');
+    }
+
+    // Limpa tudo (cadastro salvo, respostas, QR do card anterior) e volta
+    // pra tela inicial — usada tanto pelo botão "Refazer" quanto pelo
+    // reset automático por inatividade, pra sempre deixar o totem pronto
+    // pro próximo aluno sem sobra do aluno anterior.
+    function reiniciarQuiosque() {
+      cancelarAvisoInatividade();
+
+      try {
+        sessionStorage.removeItem('ise_aluno');
+        sessionStorage.removeItem('ise_resultado');
+      } catch (erro) { /* sessionStorage indisponível: segue o jogo */ }
+
+      const formulario = document.getElementById('form-cadastro');
+      if (formulario) { formulario.reset(); }
+      const erroCadastro = document.getElementById('erro-cadastro');
+      if (erroCadastro) { erroCadastro.textContent = ''; }
+
+      indicePergunta = 0;
+      respostasEscolhidas = [];
+
+      const qrCartao = document.getElementById('qr-cartao');
+      if (qrCartao) { qrCartao.innerHTML = ''; }
+      const linkCartaoManual = document.getElementById('link-cartao-manual');
+      if (linkCartaoManual) { linkCartaoManual.style.display = 'none'; }
+
+      mostrarTela('tela-boas-vindas');
+    }
+
+    function mostrarOverlayInatividade() {
+      segundosRestantesInatividade = TEMPO_CONTAGEM_SEGUNDOS;
+      numeroInatividade.textContent = segundosRestantesInatividade;
+      overlayInatividade.classList.add('visivel');
+
+      clearInterval(intervaloContagemInatividade);
+      intervaloContagemInatividade = setInterval(function () {
+        segundosRestantesInatividade -= 1;
+        numeroInatividade.textContent = Math.max(segundosRestantesInatividade, 0);
+        if (segundosRestantesInatividade <= 0) {
+          clearInterval(intervaloContagemInatividade);
+          reiniciarQuiosque();
+        }
+      }, 1000);
+    }
+
+    function cancelarAvisoInatividade() {
+      overlayInatividade.classList.remove('visivel');
+      clearInterval(intervaloContagemInatividade);
+      intervaloContagemInatividade = null;
+    }
+
+    // Reagenda o aviso a cada interação real do aluno (toque, digitação)
+    // e também a cada troca de tela — inclusive as automáticas, como
+    // "processando" → "revelação", pra contar o tempo parado na tela
+    // que está na frente, não desde o início da experiência.
+    function agendarAvisoInatividade() {
+      clearTimeout(timerAvisoInatividade);
+      if (telaAtualEhInicial()) { return; } // já está em repouso, nada a resetar
+      timerAvisoInatividade = setTimeout(mostrarOverlayInatividade, TEMPO_ATE_AVISO_MS);
+    }
+
+    ['pointerdown', 'touchstart', 'keydown', 'input'].forEach(function (evento) {
+      document.addEventListener(evento, function () {
+        if (overlayInatividade.classList.contains('visivel')) {
+          cancelarAvisoInatividade();
+        }
+        agendarAvisoInatividade();
+      }, { passive: true });
+    });
+
+    document.getElementById('btn-continuar-usando').addEventListener('click', function () {
+      cancelarAvisoInatividade();
+      agendarAvisoInatividade();
+    });
+
+    agendarAvisoInatividade();
   </script>
 </body>
 </html>
