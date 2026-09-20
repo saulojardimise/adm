@@ -1012,6 +1012,108 @@
       border-radius: 999px;
     }
 
+    .revelacao-ramo-tag {
+      margin-top: 8px;
+      display: block;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .revelacao-missao {
+      margin-top: 18px;
+      color: var(--texto);
+      font-size: 15px;
+      line-height: 1.6;
+      max-width: 620px;
+      font-style: italic;
+    }
+
+    .revelacao-ficha {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 520px;
+      border-top: 1px dashed var(--borda);
+      border-bottom: 1px dashed var(--borda);
+      padding: 18px 2px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .revelacao-ficha-linha {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      font-size: 13px;
+    }
+
+    .revelacao-ficha-rotulo {
+      color: var(--texto-suave);
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .revelacao-ficha-valor {
+      color: var(--azul);
+      font-weight: 800;
+      text-align: right;
+    }
+
+    .revelacao-dna-titulo {
+      margin-top: 26px;
+      width: 100%;
+      max-width: 520px;
+      text-align: left;
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .revelacao-dna-lista {
+      margin-top: 12px;
+      width: 100%;
+      max-width: 520px;
+      display: grid;
+      gap: 10px;
+    }
+
+    .revelacao-dna-linha {
+      display: grid;
+      grid-template-columns: 100px 1fr 38px;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .revelacao-dna-nome {
+      color: var(--texto);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: left;
+    }
+
+    .revelacao-dna-track {
+      height: 10px;
+      border-radius: 999px;
+      background: var(--azul-nevoa);
+      overflow: hidden;
+    }
+
+    .revelacao-dna-fill {
+      height: 100%;
+      border-radius: 999px;
+      background: var(--azul);
+      transition: width .6s ease;
+    }
+
+    .revelacao-dna-pct {
+      color: var(--texto-suave);
+      font-size: 12px;
+      font-weight: 700;
+      text-align: right;
+    }
+
     .revelacao-perfil-titulo {
       margin-top: 24px;
       color: var(--azul);
@@ -1196,6 +1298,9 @@
       .revelacao-animal { font-size: 52px; }
       .revelacao-acoes { flex-direction: column; width: 100%; }
       .revelacao-acoes .btn-touque { width: 100%; }
+      .revelacao-ficha-linha { font-size: 12px; }
+      .revelacao-dna-linha { grid-template-columns: 82px 1fr 34px; }
+      .revelacao-dna-nome { font-size: 11px; }
     }
 
     /* Celulares bem estreitos (a maioria dos smartphones em pé) */
@@ -1513,8 +1618,33 @@
         <h1 class="revelacao-empresa-nome" id="revelacao-nome"></h1>
         <p class="revelacao-slogan" id="revelacao-slogan"></p>
         <span class="revelacao-setor-tag" id="revelacao-setor"></span>
+        <span class="revelacao-ramo-tag" id="revelacao-ramo"></span>
         <div class="revelacao-perfil-titulo" id="revelacao-perfil-titulo"></div>
         <p class="revelacao-dna" id="revelacao-dna"></p>
+        <p class="revelacao-missao" id="revelacao-missao"></p>
+
+        <div class="revelacao-ficha">
+          <div class="revelacao-ficha-linha">
+            <span class="revelacao-ficha-rotulo">Fundador(a)</span>
+            <span class="revelacao-ficha-valor" id="revelacao-fundador"></span>
+          </div>
+          <div class="revelacao-ficha-linha">
+            <span class="revelacao-ficha-rotulo">Cargo</span>
+            <span class="revelacao-ficha-valor" id="revelacao-cargo"></span>
+          </div>
+          <div class="revelacao-ficha-linha">
+            <span class="revelacao-ficha-rotulo">Fundada em</span>
+            <span class="revelacao-ficha-valor" id="revelacao-data"></span>
+          </div>
+          <div class="revelacao-ficha-linha">
+            <span class="revelacao-ficha-rotulo">Registro fictício</span>
+            <span class="revelacao-ficha-valor" id="revelacao-registro"></span>
+          </div>
+        </div>
+
+        <div class="revelacao-dna-titulo">Seu extrato de DNA empresarial</div>
+        <div class="revelacao-dna-lista" id="revelacao-dna-lista"></div>
+
         <div class="revelacao-acoes">
           <button class="btn-touque" id="btn-ver-selo" type="button">📲 Compartilhar meu selo</button>
           <button class="btn-touque btn-touque--secundario" id="btn-refazer" type="button">↺ Refazer a experiência</button>
@@ -1701,30 +1831,48 @@
     // pontuação, só no texto final.
     const PERFIS = {
       mkt: {
-        nome: 'Comunicador(a) Nato(a)', animal: 'Golfinho', emoji: '🐬',
+        nome: 'Comunicador(a) Nato(a)', curto: 'Marketing', animal: 'Golfinho', emoji: '🐬',
+        cargo: 'Diretor(a) de Marketing (CMO)',
         frase: 'Seu superpoder é comunicar. Você sabe transformar uma ideia em algo que todo mundo quer ouvir — e ouvir de novo.',
-        slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.'
+        slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.',
+        missaoQualificador: 'conectar pessoas de verdade'
       },
       ops: {
-        nome: 'Organizador(a) Mestre', animal: 'Formiga', emoji: '🐜',
+        nome: 'Organizador(a) Mestre', curto: 'Operações', animal: 'Formiga', emoji: '🐜',
+        cargo: 'Diretor(a) de Operações (COO)',
         frase: 'Seu superpoder é organizar. Onde tem bagunça, você enxerga um sistema esperando para ser montado.',
-        slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.'
+        slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.',
+        missaoQualificador: 'entregar excelência todos os dias'
       },
       fin: {
-        nome: 'Estrategista Financeiro(a)', animal: 'Coruja', emoji: '🦉',
+        nome: 'Estrategista Financeiro(a)', curto: 'Finanças', animal: 'Coruja', emoji: '🦉',
+        cargo: 'Diretor(a) Financeiro(a) (CFO)',
         frase: 'Seu superpoder é decidir com a cabeça fria. Você sabe que todo sonho grande precisa de uma base financeira sólida.',
-        slogan: 'Crescer com segurança: esse é o compromisso da {nome}.'
+        slogan: 'Crescer com segurança: esse é o compromisso da {nome}.',
+        missaoQualificador: 'crescer com solidez e responsabilidade'
       },
       lid: {
-        nome: 'Líder Nato(a)', animal: 'Leão', emoji: '🦁',
+        nome: 'Líder Nato(a)', curto: 'Liderança', animal: 'Leão', emoji: '🦁',
+        cargo: 'CEO — Diretor(a) Presidente',
         frase: 'Seu superpoder é inspirar pessoas. Times inteiros rendem mais quando você está por perto.',
-        slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.'
+        slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.',
+        missaoQualificador: 'formar os melhores times do setor'
       },
       est: {
-        nome: 'Visionário(a) Estratégico(a)', animal: 'Raposa', emoji: '🦊',
+        nome: 'Visionário(a) Estratégico(a)', curto: 'Estratégia', animal: 'Raposa', emoji: '🦊',
+        cargo: 'Diretor(a) de Estratégia e Inovação (CSO)',
         frase: 'Seu superpoder é enxergar longe. Enquanto os outros reagem ao presente, você já está pensando no que vem depois.',
-        slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.'
+        slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.',
+        missaoQualificador: 'estar sempre um passo à frente'
       }
+    };
+
+    const RAMOS = {
+      tecnologia: ['Startup de aplicativos', 'Desenvolvedora de software', 'Empresa de inteligência artificial', 'Estúdio de games', 'Consultoria em tecnologia', 'Plataforma de e-commerce'],
+      saude: ['Clínica de bem-estar', 'Academia e estúdio fitness', 'Marca de suplementos naturais', 'Consultório de nutrição', 'Spa e terapias holísticas', 'Startup de telemedicina'],
+      alimentacao: ['Hamburgueria artesanal', 'Confeitaria e doceria', 'Food truck gourmet', 'Marca de produtos naturais', 'Restaurante temático', 'Delivery de refeições saudáveis'],
+      moda: ['Loja de roupas autorais', 'Marca de cosméticos', 'Ateliê de acessórios', 'Grife de streetwear', 'Salão de beleza e estética', 'Marca de calçados'],
+      sustentabilidade: ['Empresa de reciclagem', 'Marca de produtos biodegradáveis', 'Consultoria em energia solar', 'Horta urbana e agricultura sustentável', 'Startup de economia circular', 'Marca de moda sustentável']
     };
 
     const ESTILOS = {
@@ -1751,7 +1899,28 @@
       est: ['Visão', 'Estratégia', 'Horizonte', 'Next', 'Insight']
     };
 
-    const SUFIXOS_EMPRESA = ['', '', ' Labs', ' Studio', ' Co.', ' Group'];
+    // A pedido: sempre com razão social de verdade, variando entre os dois
+    // tipos societários mais comuns no Brasil.
+    const SUFIXOS_EMPRESA = [' Ltda.', ' S.A.'];
+
+    function escolherAleatorio(lista) {
+      return lista[Math.floor(Math.random() * lista.length)];
+    }
+
+    function descapitalizar(texto) {
+      return texto.charAt(0).toLowerCase() + texto.slice(1);
+    }
+
+    // Número no formato de CNPJ, só para dar clima de "documento oficial"
+    // no cartão — deixamos claro que é fictício em todo lugar que aparece.
+    function gerarRegistroFicticio() {
+      function bloco(tamanho) {
+        let numero = '';
+        for (let i = 0; i < tamanho; i++) { numero += Math.floor(Math.random() * 10); }
+        return numero;
+      }
+      return bloco(2) + '.' + bloco(3) + '.' + bloco(3) + '/0001-' + bloco(2);
+    }
 
     const PERGUNTAS = [
       {
@@ -1888,12 +2057,31 @@
     // perfil vencedor — em vez de guardar um nome fixo para cada uma das
     // combinações possíveis, compomos o nome no momento.
     function gerarNomeEmpresa(setorChave, perfilChave) {
-      const palavrasSetor = SETORES[setorChave].palavras;
-      const palavrasPerfil = PALAVRAS_PERFIL[perfilChave];
-      const p1 = palavrasSetor[Math.floor(Math.random() * palavrasSetor.length)];
-      const p2 = palavrasPerfil[Math.floor(Math.random() * palavrasPerfil.length)];
-      const sufixo = SUFIXOS_EMPRESA[Math.floor(Math.random() * SUFIXOS_EMPRESA.length)];
+      const p1 = escolherAleatorio(SETORES[setorChave].palavras);
+      const p2 = escolherAleatorio(PALAVRAS_PERFIL[perfilChave]);
+      const sufixo = escolherAleatorio(SUFIXOS_EMPRESA);
       return p1 + p2 + sufixo;
+    }
+
+    // Monta as barras do "extrato de DNA" — mostra a pontuação nos 5
+    // perfis (não só o vencedor), ordenadas da maior pra menor, pra dar
+    // a sensação de um resultado único e não só uma categoria fechada.
+    function renderizarDnaLista(pontos) {
+      const ordem = ['mkt', 'ops', 'fin', 'lid', 'est'].slice().sort(function (a, b) {
+        return pontos[b] - pontos[a];
+      });
+      const container = document.getElementById('revelacao-dna-lista');
+      container.innerHTML = '';
+      ordem.forEach(function (chave) {
+        const pct = Math.round((pontos[chave] / 3) * 100);
+        const linha = document.createElement('div');
+        linha.className = 'revelacao-dna-linha';
+        linha.innerHTML =
+          '<span class="revelacao-dna-nome">' + PERFIS[chave].curto + '</span>' +
+          '<span class="revelacao-dna-track"><span class="revelacao-dna-fill" style="width:' + pct + '%"></span></span>' +
+          '<span class="revelacao-dna-pct">' + pct + '%</span>';
+        container.appendChild(linha);
+      });
     }
 
     function finalizarPerguntas() {
@@ -1905,22 +2093,42 @@
         const perfil = PERFIS[perfilChave];
         const nomeEmpresa = gerarNomeEmpresa(setorChave, perfilChave);
         const sloganFinal = perfil.slogan.replace('{nome}', nomeEmpresa);
+        const ramo = escolherAleatorio(RAMOS[setorChave]);
+        const missao = 'Missão: ser referência em ' + descapitalizar(ramo) + ', com o compromisso de ' + perfil.missaoQualificador + '.';
+        const registroFicticio = gerarRegistroFicticio();
+        const dataFundacao = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+        const dadosAluno = JSON.parse(sessionStorage.getItem('ise_aluno') || '{}');
+        const nomeFundador = dadosAluno.nome || 'Futuro(a) Administrador(a)';
 
         document.getElementById('revelacao-animal').textContent = perfil.emoji;
         document.getElementById('revelacao-nome').textContent = nomeEmpresa;
         document.getElementById('revelacao-slogan').textContent = sloganFinal;
         document.getElementById('revelacao-setor').textContent = SETORES[setorChave].tag;
+        document.getElementById('revelacao-ramo').textContent = ramo;
         document.getElementById('revelacao-perfil-titulo').textContent = 'Seu DNA de Administrador: ' + perfil.nome;
         document.getElementById('revelacao-dna').textContent = perfil.frase + ' ' + ESTILOS[estiloChave];
+        document.getElementById('revelacao-missao').textContent = missao;
+        document.getElementById('revelacao-fundador').textContent = nomeFundador;
+        document.getElementById('revelacao-cargo').textContent = perfil.cargo;
+        document.getElementById('revelacao-data').textContent = dataFundacao;
+        document.getElementById('revelacao-registro').textContent = registroFicticio + ' (fictício)';
+        renderizarDnaLista(pontosPerfil);
 
         const empresaGerada = {
           nome: nomeEmpresa,
           setor: setorChave,
+          ramo: ramo,
           perfil: perfilChave,
           perfil_nome: perfil.nome,
           animal: perfil.animal,
           estilo: estiloChave,
-          slogan: sloganFinal
+          slogan: sloganFinal,
+          missao: missao,
+          fundador: nomeFundador,
+          cargo: perfil.cargo,
+          data_fundacao: dataFundacao,
+          registro_ficticio: registroFicticio
         };
 
         salvarResultadoPerguntas(respostasPerguntas, pontosPerfil, empresaGerada);
