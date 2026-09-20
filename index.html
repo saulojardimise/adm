@@ -9,21 +9,25 @@
 
   <!--
     ============================================================
-    BLOCO 1 — FUNDAÇÃO VISUAL (v3 — visual "hero card" + infraestrutura
-    de múltiplas telas pronta para o Bloco 2)
+    BLOCO 1 + BLOCO 2 (v4 — cabeçalho/rodapé únicos + tela de cadastro)
     ============================================================
-    Este arquivo parte do visual "hero card" que você mandou (gradiente,
-    foguete, selo "Experiência interativa"). Duas coisas foram ajustadas
-    em relação ao arquivo que você enviou:
+    A partir desta versão, o <header class="topo"> e o <footer
+    class="rodape"> existem UMA VEZ SÓ no HTML, fora das telas — antes,
+    cada tela nova que chegava (boas-vindas, cadastro...) trazia sua
+    própria cópia do cabeçalho, e isso é exatamente o que causou a
+    logo antiga do CRA voltar no arquivo do cadastro: a edição feita
+    numa cópia não chegava nas outras. Agora qualquer ajuste no
+    cabeçalho/rodapé vale para todas as telas de uma vez.
 
-    - Corrigido um bloco de CSS duplicado dentro do media query de
-      560px (o .btn-touque e o @keyframes "pulsa" apareciam duas vezes;
-      a segunda cópia foi removida).
-    - Adicionada a estrutura de "telas" (.screen / .screen--ativa), a
-      barra de progresso (.progresso-track / .progresso-fill) e o botão
-      secundário (.btn-touque--secundario) que o Bloco 2 (as 5
-      perguntas) vai usar — é só a base pronta; nada disso aparece
-      ainda nesta tela, o visual continua exatamente o que você mandou.
+    Estrutura:
+    - .pagina > .topo (fixo) + .palco (troca de tela) + .rodape (fixo)
+    - .palco contém uma .screen para cada etapa; só a que tiver
+      .screen--ativa aparece (mesmo sistema do Bloco 1, agora com uma
+      tela de verdade usando a variante --coluna: o cadastro).
+    - Também corrigido: as regras de "1 coluna no celular" para o
+      card de boas-vindas e do cadastro tinham especificidade CSS
+      menor que a regra que define a grade de 2 colunas, então nunca
+      chegavam a fazer efeito no celular — ambas foram alinhadas.
     ============================================================
   -->
 
@@ -82,6 +86,7 @@
       padding: 24px clamp(20px, 5vw, 72px) 18px;
     }
 
+    /* ===== Cabeçalho — único no arquivo, igual em toda tela ===== */
     .topo {
       width: 100%;
       max-width: 1180px;
@@ -129,8 +134,8 @@
       font-size: 13px;
     }
 
-    /* Logo "ISECENSA Administração" — substitui a logo do CRA-DF +
-       texto "Curso de Administração" na ponta direita do cabeçalho. */
+    /* Logo "ISECENSA Administração" — usada no cabeçalho e também
+       dentro do cartão de cadastro (em branco, sobre o fundo azul). */
     .logo-administracao {
       height: 58px;
       width: auto;
@@ -138,20 +143,22 @@
       flex: 0 0 auto;
     }
 
-    .hero-wrap {
+    /* ===== Palco — área central onde as telas trocam ===== */
+    .palco {
       width: 100%;
       max-width: 1180px;
       margin: auto;
       padding: clamp(28px, 5vh, 58px) 0;
       display: flex;
       align-items: center;
+      justify-content: center;
       flex: 1;
     }
 
-    /* ===== Sistema de telas (para o Bloco 2 em diante) =====
-       Cada etapa da experiência (boas-vindas, pergunta 1-5,
-       processando, revelação) é um .hero-card.screen dentro de
-       .hero-wrap. Só a que tiver .screen--ativa fica visível. */
+    /* ===== Sistema de telas =====
+       Cada etapa da experiência (boas-vindas, cadastro, pergunta 1-5,
+       processando, revelação) é uma .screen dentro de .palco. Só a
+       que tiver .screen--ativa fica visível. */
     .screen {
       display: none;
     }
@@ -178,7 +185,7 @@
       padding: clamp(34px, 5vw, 66px);
     }
 
-    /* Variante em grade de 2 colunas — usada nesta tela de boas-vindas */
+    /* Variante em grade de 2 colunas — usada na tela de boas-vindas */
     .hero-card.screen.screen--ativa.hero-card--duas-colunas {
       display: grid;
       grid-template-columns: minmax(290px, 0.86fr) minmax(430px, 1.24fr);
@@ -187,7 +194,7 @@
     }
 
     /* Variante em coluna única centralizada — pronta para as telas de
-       pergunta do Bloco 2 (nenhuma pergunta usa isso ainda) */
+       pergunta do Bloco 3 (nenhuma pergunta usa isso ainda) */
     .hero-card.screen.screen--ativa.hero-card--coluna {
       display: flex;
       flex-direction: column;
@@ -286,6 +293,7 @@
       line-height: 0.98;
       letter-spacing: -0.045em;
       font-weight: 900;
+      overflow-wrap: anywhere;
     }
 
     .pergunta {
@@ -350,7 +358,7 @@
       50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
     }
 
-    /* Variante secundária — para "voltar" / "trocar resposta" no Bloco 2 */
+    /* Variante secundária — para "voltar" / "trocar resposta" */
     .btn-touque--secundario {
       background: var(--branco);
       color: var(--azul);
@@ -366,7 +374,7 @@
       transform: scale(0.97);
     }
 
-    /* Barra de progresso — pronta para o Bloco 2 ("pergunta 2 de 5") */
+    /* Barra de progresso — pronta para o Bloco 3 ("pergunta 2 de 5") */
     .progresso-track {
       width: 100%;
       max-width: 420px;
@@ -404,6 +412,7 @@
       margin-right: 4px;
     }
 
+    /* ===== Rodapé — único no arquivo ===== */
     .rodape {
       width: 100%;
       max-width: 1180px;
@@ -419,7 +428,7 @@
       color: var(--azul);
     }
 
-    /* Feedback visual caso o restante da experiência ainda não tenha sido conectado */
+    /* Feedback visual para partes da experiência ainda não conectadas */
     .aviso {
       position: fixed;
       left: 50%;
@@ -443,6 +452,419 @@
     .aviso.visivel {
       opacity: 1;
       transform: translate(-50%, 0);
+    }
+
+    /* ==========================================================
+       TELA 2 — CADASTRO DO ALUNO
+       ========================================================== */
+    .cadastro-card {
+      width: 100%;
+      min-height: 570px;
+      overflow: hidden;
+      border-radius: 32px;
+      border: 1px solid rgba(14, 56, 128, .10);
+      background: #fff;
+      box-shadow: 0 26px 70px rgba(14, 56, 128, .14);
+    }
+
+    .cadastro-card.screen.screen--ativa {
+      display: grid;
+      grid-template-columns: minmax(300px, .78fr) minmax(480px, 1.22fr);
+    }
+
+    .cadastro-info {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(34px, 4.5vw, 58px);
+      color: #fff;
+      background: linear-gradient(155deg, #0e3880 0%, #08295f 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .cadastro-info::before,
+    .cadastro-info::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .cadastro-info::before {
+      width: 260px;
+      height: 260px;
+      right: -120px;
+      top: -95px;
+      background: rgba(102, 170, 255, .20);
+    }
+
+    .cadastro-info::after {
+      width: 180px;
+      height: 180px;
+      left: -90px;
+      bottom: -85px;
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .cadastro-info-conteudo,
+    .cadastro-info-rodape {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-admin-cadastro {
+      width: min(100%, 250px);
+      max-height: 84px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 30px;
+      filter: brightness(0) invert(1);
+    }
+
+    .etapa-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .055em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .etapa-tag::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7cb7ff;
+      box-shadow: 0 0 0 4px rgba(124,183,255,.14);
+    }
+
+    .cadastro-info h2 {
+      font-size: clamp(34px, 3.5vw, 52px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+      margin-bottom: 18px;
+      overflow-wrap: anywhere;
+    }
+
+    .cadastro-info p {
+      color: rgba(255,255,255,.82);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 430px;
+    }
+
+    .cadastro-beneficios {
+      margin-top: 28px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .cadastro-beneficio {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: rgba(255,255,255,.90);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .cadastro-beneficio strong {
+      color: #fff;
+    }
+
+    .cadastro-info-rodape {
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .cadastro-form-area {
+      padding: clamp(34px, 4.8vw, 62px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .cadastro-form-topo {
+      margin-bottom: 26px;
+    }
+
+    .cadastro-form-topo h3 {
+      color: var(--azul);
+      font-size: clamp(25px, 2.4vw, 34px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-bottom: 8px;
+    }
+
+    .cadastro-form-topo p {
+      color: var(--texto-suave);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .barra-etapas {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .barra-etapas span {
+      height: 6px;
+      border-radius: 999px;
+      background: #e7edf7;
+      flex: 1;
+    }
+
+    .barra-etapas span.ativa { background: var(--azul); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .campo--inteiro { grid-column: 1 / -1; }
+
+    .campo label,
+    .grupo-label {
+      color: #24365f;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .obrigatorio { color: #d14a54; }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      min-height: 52px;
+      border: 1.5px solid #dce5f3;
+      background: #fbfdff;
+      border-radius: 14px;
+      padding: 0 15px;
+      color: var(--texto);
+      outline: none;
+      font-size: 15px;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .campo input::placeholder { color: #98a6bf; }
+
+    .campo input:focus,
+    .campo select:focus {
+      border-color: #5a8ad6;
+      box-shadow: 0 0 0 4px rgba(90, 138, 214, .12);
+      background: #fff;
+    }
+
+    .campo-ajuda {
+      color: #7b88a2;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .sexo-opcoes {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .radio-card {
+      position: relative;
+    }
+
+    .radio-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-card label {
+      min-height: 50px;
+      padding: 10px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 1.5px solid #dce5f3;
+      border-radius: 13px;
+      background: #fbfdff;
+      color: #536383;
+      font-size: 12px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: .16s ease;
+    }
+
+    .radio-card input:checked + label {
+      color: var(--azul);
+      border-color: #6f98dc;
+      background: #eef4ff;
+      box-shadow: 0 0 0 3px rgba(90,138,214,.08);
+    }
+
+    .consentimento-box {
+      margin-top: 22px;
+      padding: 17px 18px;
+      border-radius: 16px;
+      background: #f6f9fe;
+      border: 1px solid #e1e9f5;
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-linha {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 11px;
+      align-items: start;
+    }
+
+    .check-linha input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--azul);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .check-linha label {
+      color: #536383;
+      font-size: 12px;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .check-linha label strong { color: #24365f; }
+
+    .acoes-cadastro {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .btn-voltar {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #62718e;
+      font-weight: 750;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 12px 4px;
+    }
+
+    .btn-voltar:hover { color: var(--azul); }
+
+    .btn-continuar {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      min-height: 56px;
+      border-radius: 16px;
+      padding: 15px 24px;
+      color: white;
+      background: var(--azul);
+      box-shadow: 0 16px 30px rgba(14, 56, 128, .24);
+      font-weight: 800;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: .16s ease;
+    }
+
+    .btn-continuar:hover {
+      transform: translateY(-1px);
+      background: var(--azul-escuro);
+      box-shadow: 0 19px 36px rgba(14, 56, 128, .29);
+    }
+
+    .btn-continuar:active { transform: scale(.98); }
+
+    .erro-form {
+      display: none;
+      margin-top: 13px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: #fff2f3;
+      color: #a73742;
+      border: 1px solid #ffd5d9;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 650;
+    }
+
+    .erro-form.visivel { display: block; }
+
+    /* Tela provisória para testar o fluxo do cadastro antes das perguntas */
+    .cadastro-ok-wrap {
+      width: 100%;
+      max-width: 720px;
+      text-align: center;
+      padding: 38px;
+      border-radius: 30px;
+      border: 1px solid rgba(14,56,128,.10);
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(14,56,128,.13);
+    }
+
+    .cadastro-ok-wrap.screen.screen--ativa {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 100%;
+      max-width: 720px;
+      margin: auto;
+    }
+
+    .check-grande {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--azul);
+      font-size: 38px;
+      box-shadow: 0 16px 32px rgba(14,56,128,.22);
+    }
+
+    .cadastro-ok-wrap h2 {
+      color: var(--azul);
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.05;
+      margin-bottom: 12px;
+      letter-spacing: -.035em;
+    }
+
+    .cadastro-ok-wrap p {
+      color: var(--texto-suave);
+      line-height: 1.55;
+      margin-bottom: 24px;
     }
 
     @media (max-width: 900px) {
@@ -475,7 +897,7 @@
         font-size: 11px;
       }
 
-      .hero-wrap {
+      .palco {
         padding: 24px 0;
       }
 
@@ -484,7 +906,7 @@
         padding: 30px 22px 34px;
       }
 
-      .hero-card.hero-card--duas-colunas {
+      .hero-card.screen.screen--ativa.hero-card--duas-colunas {
         grid-template-columns: 1fr;
         text-align: center;
         gap: 14px;
@@ -521,6 +943,19 @@
 
       .rodape {
         padding-top: 0;
+      }
+
+      .cadastro-card.screen.screen--ativa { grid-template-columns: 1fr; }
+      .cadastro-info { min-height: auto; }
+      .cadastro-info-rodape { display: none; }
+      .logo-admin-cadastro { max-width: 210px; margin-bottom: 20px; }
+      .cadastro-beneficios { grid-template-columns: repeat(3, 1fr); }
+
+      /* Campos com pelo menos 16px evitam o zoom automático do Safari/iOS
+         ao tocar em um input — muito comum em formulários mobile. */
+      .campo input,
+      .campo select {
+        font-size: 16px;
       }
     }
 
@@ -574,6 +1009,69 @@
         justify-content: center;
         font-size: 12px;
       }
+
+      .cadastro-card { border-radius: 24px; }
+      .cadastro-info { padding: 28px 24px; }
+      .cadastro-info h2 { font-size: 34px; }
+      .cadastro-beneficios { grid-template-columns: 1fr; gap: 8px; }
+      .cadastro-form-area { padding: 28px 22px 30px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .campo--inteiro { grid-column: auto; }
+      .sexo-opcoes { grid-template-columns: repeat(2, 1fr); }
+      .acoes-cadastro { flex-direction: column-reverse; align-items: stretch; }
+      .btn-voltar, .btn-continuar { width: 100%; }
+    }
+
+    /* Celulares bem estreitos (a maioria dos smartphones em pé) */
+    @media (max-width: 420px) {
+      .pagina {
+        padding: 14px 12px 10px;
+      }
+
+      .hero-card {
+        padding: 22px 14px 26px;
+        border-radius: 20px;
+      }
+
+      .icone-hero {
+        width: min(58vw, 205px);
+      }
+
+      .hero-visual::before {
+        width: min(62vw, 195px);
+      }
+
+      h1 {
+        font-size: clamp(28px, 9.5vw, 38px);
+      }
+
+      .pergunta {
+        font-size: 16px;
+      }
+
+      .descricao {
+        font-size: 14px;
+      }
+
+      .cadastro-form-area {
+        padding: 24px 16px 26px;
+      }
+
+      .cadastro-info {
+        padding: 24px 18px;
+      }
+
+      .cadastro-info h2 {
+        font-size: 28px;
+      }
+
+      .sexo-opcoes {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cadastro-ok-wrap {
+        padding: 26px 18px;
+      }
     }
 
     @media (max-height: 760px) and (min-width: 901px) {
@@ -591,7 +1089,7 @@
         height: 46px;
       }
 
-      .hero-wrap {
+      .palco {
         padding: 18px 0;
       }
 
@@ -651,8 +1149,10 @@
       </div>
     </header>
 
-    <section class="hero-wrap" aria-labelledby="titulo-principal">
-      <div class="hero-card screen screen--ativa hero-card--duas-colunas" id="tela-boas-vindas">
+    <div class="palco">
+
+      <!-- ================= TELA 1: BOAS-VINDAS ================= -->
+      <section class="hero-card screen screen--ativa hero-card--duas-colunas" id="tela-boas-vindas" aria-labelledby="titulo-principal">
         <div class="hero-visual" aria-hidden="true">
           <img src="./icone-hero.png" class="icone-hero" alt="">
         </div>
@@ -686,47 +1186,237 @@
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <!-- As próximas telas (Bloco 2) entram aqui, cada uma como:
-           <div class="hero-card screen hero-card--coluna" id="tela-pergunta-1">...</div>
+      <!-- ================= TELA 2: CADASTRO DO ALUNO ================= -->
+      <section class="cadastro-card screen" id="tela-cadastro" aria-labelledby="titulo-cadastro">
+        <aside class="cadastro-info">
+          <div class="cadastro-info-conteudo">
+            <img src="./logo-administracao.png" class="logo-admin-cadastro" alt="ISECENSA Administração" onerror="this.style.display='none'">
+            <div class="etapa-tag">Etapa 1 de 3</div>
+            <h2 id="titulo-cadastro">Antes de começar, conte um pouco sobre você.</h2>
+            <p>É rapidinho. Seus dados serão usados para registrar sua participação na experiência e, quando autorizado, para contato institucional do ISECENSA.</p>
+
+            <div class="cadastro-beneficios">
+              <div class="cadastro-beneficio"><span>✓</span><span><strong>Cadastro rápido</strong> antes das 5 perguntas</span></div>
+              <div class="cadastro-beneficio"><span>✓</span><span>Resultado personalizado da sua empresa</span></div>
+              <div class="cadastro-beneficio"><span>✓</span><span>Seu DNA de Futuro Administrador</span></div>
+            </div>
+          </div>
+
+          <div class="cadastro-info-rodape">
+            Os dados serão enviados ao banco do evento quando a integração com o Supabase for ativada.
+          </div>
+        </aside>
+
+        <div class="cadastro-form-area">
+          <div class="cadastro-form-topo">
+            <h3>Seus dados</h3>
+            <p>Preencha os campos abaixo para continuar.</p>
+            <div class="barra-etapas" aria-label="Progresso da experiência">
+              <span class="ativa"></span><span></span><span></span>
+            </div>
+          </div>
+
+          <form id="form-cadastro" novalidate>
+            <div class="form-grid">
+              <div class="campo campo--inteiro">
+                <label for="nome">Nome completo <span class="obrigatorio">*</span></label>
+                <input id="nome" name="nome" type="text" autocomplete="name" placeholder="Digite seu nome completo" required minlength="3">
+              </div>
+
+              <div class="campo">
+                <label for="telefone">Telefone / WhatsApp <span class="obrigatorio">*</span></label>
+                <input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(22) 99999-9999" required>
+              </div>
+
+              <div class="campo">
+                <label for="email">E-mail <span class="obrigatorio">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="seuemail@exemplo.com" required>
+              </div>
+
+              <div class="campo campo--inteiro">
+                <span class="grupo-label">Sexo <span class="obrigatorio">*</span></span>
+                <div class="sexo-opcoes" role="radiogroup" aria-label="Sexo">
+                  <div class="radio-card">
+                    <input id="sexo-feminino" type="radio" name="sexo" value="Feminino" required>
+                    <label for="sexo-feminino">Feminino</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-masculino" type="radio" name="sexo" value="Masculino">
+                    <label for="sexo-masculino">Masculino</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-outro" type="radio" name="sexo" value="Outro">
+                    <label for="sexo-outro">Outro</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-nao-informar" type="radio" name="sexo" value="Prefiro não informar">
+                    <label for="sexo-nao-informar">Prefiro não informar</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="campo">
+                <label for="escola">Escola <span class="obrigatorio">*</span></label>
+                <input id="escola" name="escola" type="text" autocomplete="organization" placeholder="Nome da sua escola" required>
+              </div>
+
+              <div class="campo">
+                <label for="serie">Série / Ano <span class="obrigatorio">*</span></label>
+                <select id="serie" name="serie" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>8º ano do Ensino Fundamental</option>
+                  <option>9º ano do Ensino Fundamental</option>
+                  <option>1º ano do Ensino Médio</option>
+                  <option>2º ano do Ensino Médio</option>
+                  <option>3º ano do Ensino Médio</option>
+                  <option>Ensino Médio concluído</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="consentimento-box">
+              <div class="check-linha">
+                <input id="consentimento" name="consentimento" type="checkbox" required>
+                <label for="consentimento">
+                  <strong>Consentimento para uso dos dados.</strong> Autorizo o tratamento das informações fornecidas para registro da minha participação nesta experiência e para as finalidades institucionais relacionadas ao evento. <span class="obrigatorio">*</span>
+                </label>
+              </div>
+
+              <div class="check-linha">
+                <input id="contato" name="contato" type="checkbox">
+                <label for="contato">
+                  Quero receber informações do ISECENSA sobre o Curso de Administração, eventos e processos seletivos.
+                </label>
+              </div>
+            </div>
+
+            <div id="erro-cadastro" class="erro-form" role="alert"></div>
+
+            <div class="acoes-cadastro">
+              <button class="btn-voltar" id="btn-voltar-inicio" type="button">← Voltar</button>
+              <button class="btn-continuar" type="submit">Continuar para as 5 perguntas <span>→</span></button>
+            </div>
+          </form>
+        </div>
+      </section>
+
+      <!-- Tela provisória apenas para testar o fluxo até construirmos as 5 perguntas -->
+      <section class="cadastro-ok-wrap screen" id="tela-cadastro-ok">
+        <div class="check-grande">✓</div>
+        <h2>Cadastro concluído!</h2>
+        <p id="mensagem-cadastro-ok">Agora vamos descobrir que empresa combina com você.</p>
+        <button class="btn-touque" id="btn-ir-perguntas" type="button">🚀 Começar as 5 perguntas</button>
+        <div style="margin-top:14px; color:#7b88a2; font-size:12px;">A próxima etapa (as 5 perguntas, com 5 opções cada) será construída no Bloco 3.</div>
+      </section>
+
+      <!-- As próximas telas (Bloco 3) entram aqui, cada uma como:
+           <section class="hero-card screen hero-card--coluna" id="tela-pergunta-1">...</section>
            e a função mostrarTela(id) abaixo troca qual delas fica visível. -->
-    </section>
+    </div>
 
     <footer class="rodape">
       Uma experiência do <strong>Curso de Administração</strong> — Ise por um dia • 2026
     </footer>
   </main>
 
-  <div class="aviso" id="aviso">
-    A tela inicial está pronta. Conecte aqui o próximo bloco com as 5 perguntas.
-  </div>
+  <div class="aviso" id="aviso"></div>
 
   <script>
-    // Troca qual .screen fica visível dentro de .hero-wrap — pronta para
-    // o Bloco 2 alternar entre as 5 perguntas, processando e revelação.
+    // Troca qual .screen fica visível dentro de .palco — usada em toda
+    // a experiência (cadastro, 5 perguntas, processando, revelação).
     function mostrarTela(id) {
       document.querySelectorAll('.screen').forEach(function (el) {
         el.classList.remove('screen--ativa');
       });
       document.getElementById(id).classList.add('screen--ativa');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    /*
-      Quando você adicionar a tela das 5 perguntas, substitua o conteúdo
-      deste clique pela chamada que abre a primeira pergunta, por exemplo:
-      mostrarTela('tela-pergunta-1');
-    */
-    const btn = document.getElementById('btn-comecar');
     const aviso = document.getElementById('aviso');
-    let timer;
-
-    btn.addEventListener('click', function () {
+    let timerAviso;
+    function mostrarAviso(texto) {
+      aviso.textContent = texto;
       aviso.classList.add('visivel');
-      clearTimeout(timer);
-      timer = setTimeout(function () {
+      clearTimeout(timerAviso);
+      timerAviso = setTimeout(function () {
         aviso.classList.remove('visivel');
-      }, 2800);
+      }, 3200);
+    }
+
+    // ---------- Tela 1 → Tela 2 (cadastro) ----------
+    document.getElementById('btn-comecar').addEventListener('click', function () {
+      mostrarTela('tela-cadastro');
+      setTimeout(function () { document.getElementById('nome').focus(); }, 250);
+    });
+
+    document.getElementById('btn-voltar-inicio').addEventListener('click', function () {
+      mostrarTela('tela-boas-vindas');
+    });
+
+    // Máscara simples de telefone brasileiro
+    const telefone = document.getElementById('telefone');
+    telefone.addEventListener('input', function (event) {
+      let numeros = event.target.value.replace(/\D/g, '').slice(0, 11);
+      let valor = numeros;
+
+      if (numeros.length > 2) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2);
+      }
+      if (numeros.length > 7 && numeros.length <= 10) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2, 6) + '-' + numeros.slice(6);
+      }
+      if (numeros.length > 10) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2, 7) + '-' + numeros.slice(7);
+      }
+
+      event.target.value = valor;
+    });
+
+    // ---------- Tela 2 (cadastro) → Tela 3 (confirmação) ----------
+    const formCadastro = document.getElementById('form-cadastro');
+    const erroCadastro = document.getElementById('erro-cadastro');
+
+    formCadastro.addEventListener('submit', function (event) {
+      event.preventDefault();
+      erroCadastro.classList.remove('visivel');
+      erroCadastro.textContent = '';
+
+      if (!formCadastro.checkValidity()) {
+        erroCadastro.textContent = 'Preencha todos os campos obrigatórios e marque o consentimento para continuar.';
+        erroCadastro.classList.add('visivel');
+        formCadastro.reportValidity();
+        return;
+      }
+
+      const telefoneNumeros = telefone.value.replace(/\D/g, '');
+      if (telefoneNumeros.length < 10) {
+        erroCadastro.textContent = 'Confira o telefone informado antes de continuar.';
+        erroCadastro.classList.add('visivel');
+        telefone.focus();
+        return;
+      }
+
+      // Por enquanto guardamos só no navegador (sessionStorage).
+      // No Bloco 6 este objeto será enviado ao Supabase.
+      const dados = Object.fromEntries(new FormData(formCadastro).entries());
+      dados.consentimento = document.getElementById('consentimento').checked;
+      dados.contato = document.getElementById('contato').checked;
+      dados.criado_em = new Date().toISOString();
+      sessionStorage.setItem('ise_aluno', JSON.stringify(dados));
+
+      const primeiroNome = dados.nome.trim().split(/\s+/)[0];
+      document.getElementById('mensagem-cadastro-ok').textContent =
+        'Tudo certo, ' + primeiroNome + '! Agora vamos descobrir que empresa combina com você.';
+
+      mostrarTela('tela-cadastro-ok');
+    });
+
+    // ---------- Tela 3 (confirmação) → Bloco 3 (ainda não existe) ----------
+    document.getElementById('btn-ir-perguntas').addEventListener('click', function () {
+      mostrarAviso('Próximo passo: as 5 perguntas (com 5 opções cada), que vamos construir no Bloco 3.');
     });
   </script>
 </body>
