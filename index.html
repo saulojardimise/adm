@@ -1162,6 +1162,68 @@
       justify-content: center;
     }
 
+    .revelacao-cartao-cta {
+      margin-top: 30px;
+      width: 100%;
+      max-width: 420px;
+      background: var(--azul-nevoa);
+      border: 1.5px dashed var(--azul-claro);
+      border-radius: 22px;
+      padding: 22px 20px 24px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+
+    .revelacao-cartao-titulo {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 15px;
+    }
+
+    .revelacao-cartao-texto {
+      margin-top: 4px;
+      color: var(--texto-suave);
+      font-size: 13px;
+      line-height: 1.5;
+      max-width: 320px;
+    }
+
+    .revelacao-cartao-qr-caixa {
+      margin-top: 16px;
+      background: #fff;
+      border-radius: 16px;
+      padding: 12px;
+      box-shadow: 0 8px 20px rgba(14, 56, 128, 0.12);
+      min-height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .revelacao-cartao-qr-caixa img,
+    .revelacao-cartao-qr-caixa canvas {
+      display: block;
+      width: 168px;
+      height: 168px;
+    }
+
+    .revelacao-cartao-fallback {
+      margin-top: 6px;
+      color: var(--azul);
+      font-weight: 700;
+      font-size: 13px;
+      text-decoration: underline;
+    }
+
+    .revelacao-cartao-privacidade {
+      margin-top: 12px;
+      color: var(--texto-suave);
+      font-size: 11px;
+      opacity: 0.85;
+    }
+
     @media (max-width: 900px) {
       .pagina {
         padding: 18px 18px 14px;
@@ -1321,6 +1383,7 @@
       .revelacao-animal { font-size: 52px; }
       .revelacao-acoes { flex-direction: column; width: 100%; }
       .revelacao-acoes .btn-touque { width: 100%; }
+      .revelacao-cartao-cta { padding: 18px 14px 20px; max-width: 100%; }
       .revelacao-ficha-linha { font-size: 12px; }
       .revelacao-dna-linha { grid-template-columns: 82px 1fr 34px; }
       .revelacao-dna-nome { font-size: 11px; }
@@ -1671,8 +1734,15 @@
         <div class="revelacao-dna-titulo">Seu extrato de DNA empresarial</div>
         <div class="revelacao-dna-lista" id="revelacao-dna-lista"></div>
 
+        <div class="revelacao-cartao-cta">
+          <div class="revelacao-cartao-titulo">📸 Tire sua foto e gere seu card</div>
+          <p class="revelacao-cartao-texto">Aponte a câmera do seu celular para o QR code abaixo. Ele abre a câmera do seu próprio aparelho, você tira a foto e o card com sua empresa é montado na hora — pronto pra postar.</p>
+          <div class="revelacao-cartao-qr-caixa" id="qr-cartao"></div>
+          <a class="revelacao-cartao-fallback" id="link-cartao-manual" style="display:none;" target="_blank" rel="noopener">Abrir no celular</a>
+          <p class="revelacao-cartao-privacidade">Sua foto é processada só no seu celular — ela não é enviada pra nenhum servidor.</p>
+        </div>
+
         <div class="revelacao-acoes">
-          <button class="btn-touque" id="btn-ver-selo" type="button">📲 Compartilhar meu selo</button>
           <button class="btn-touque btn-touque--secundario" id="btn-refazer" type="button">↺ Refazer a experiência</button>
         </div>
       </section>
@@ -1687,6 +1757,8 @@
 
   <!-- Cliente oficial do Supabase (só para o front-end conversar com o banco) -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+  <!-- Gera o QR code do card compartilhável na tela de revelação -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
 
   <script>
     // ---------- Conexão com o Supabase ----------
@@ -2189,9 +2261,62 @@
         };
 
         salvarResultadoPerguntas(calculo.respostas, calculo.pontos, empresaGerada);
+        gerarQrCartao(empresaGerada);
 
         mostrarTela('tela-revelacao');
       }, 1400);
+    }
+
+    // Monta o link da cartao.html com os dados da empresa embutidos na
+    // própria URL (nada é lido do banco aqui) e desenha o QR code na tela
+    // de revelação. Se a biblioteca do QR não carregar (ex.: sem internet
+    // no totem), cai num link/botão manual pra não travar a experiência.
+    function gerarQrCartao(empresaGerada) {
+      const caixa = document.getElementById('qr-cartao');
+      const linkFallback = document.getElementById('link-cartao-manual');
+      caixa.innerHTML = '';
+      linkFallback.style.display = 'none';
+
+      const payload = {
+        n: empresaGerada.fundador,
+        e: empresaGerada.nome,
+        s: empresaGerada.slogan,
+        se: SETORES[empresaGerada.setor] ? SETORES[empresaGerada.setor].tag : '',
+        r: empresaGerada.ramo,
+        c: empresaGerada.cargo
+      };
+
+      let textoCodificado;
+      try {
+        textoCodificado = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+      } catch (erro) {
+        console.error('Falha ao codificar dados do card:', erro);
+        return;
+      }
+
+      const baseUrl = location.href.substring(0, location.href.lastIndexOf('/') + 1);
+      const linkCartao = baseUrl + 'cartao.html?d=' + encodeURIComponent(textoCodificado);
+
+      try {
+        if (window.QRCode) {
+          new QRCode(caixa, {
+            text: linkCartao,
+            width: 168,
+            height: 168,
+            colorDark: '#0E3880',
+            colorLight: '#ffffff',
+            correctLevel: QRCode.CorrectLevel.M
+          });
+          return;
+        }
+      } catch (erro) {
+        console.error('Falha ao gerar QR code:', erro);
+      }
+
+      // Sem a biblioteca de QR: mostra um botão que abre a mesma página
+      // direto (útil se alguém acessar o totem pelo próprio celular).
+      linkFallback.href = linkCartao;
+      linkFallback.style.display = 'inline-block';
     }
 
     // Grava as respostas + a empresa gerada no Supabase, relacionadas ao
@@ -2234,9 +2359,6 @@
       mostrarTela('tela-boas-vindas');
     });
 
-    document.getElementById('btn-ver-selo').addEventListener('click', function () {
-      mostrarAviso('O cartão para compartilhar no Instagram será construído no próximo bloco.');
-    });
   </script>
 </body>
 </html>
