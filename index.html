@@ -193,8 +193,7 @@
       gap: clamp(28px, 5vw, 72px);
     }
 
-    /* Variante em coluna única centralizada — pronta para as telas de
-       pergunta do Bloco 3 (nenhuma pergunta usa isso ainda) */
+    /* Variante em coluna única centralizada — usada na tela das 5 perguntas */
     .hero-card.screen.screen--ativa.hero-card--coluna {
       display: flex;
       flex-direction: column;
@@ -428,7 +427,7 @@
       color: var(--azul);
     }
 
-    /* Feedback visual para partes da experiência ainda não conectadas */
+    /* Toast de feedback rápido, reaproveitável por qualquer tela */
     .aviso {
       position: fixed;
       left: 50%;
@@ -881,7 +880,7 @@
 
     .erro-form.visivel { display: block; }
 
-    /* Tela provisória para testar o fluxo do cadastro antes das perguntas */
+    /* Tela de confirmação exibida logo após o cadastro, antes das perguntas */
     .cadastro-ok-wrap {
       width: 100%;
       max-width: 720px;
@@ -1634,7 +1633,7 @@
           </div>
 
           <div class="cadastro-info-rodape">
-            Os dados serão enviados ao banco do evento quando a integração com o Supabase for ativada.
+            Seus dados são enviados com segurança ao banco de dados do evento e usados só para os fins descritos acima.
           </div>
         </aside>
 
@@ -1869,14 +1868,59 @@
 
     // Se o envio ao Supabase falhar (sem internet no momento, etc.), guarda
     // localmente para não perder o registro; nunca trava o fluxo do totem.
-    // Usada tanto pelo cadastro quanto pelo resultado das 5 perguntas.
-    function guardarPendente(dados) {
+    // Usada tanto pelo cadastro quanto pelo resultado das 5 perguntas. Guarda
+    // junto o nome da tabela, pra dar pra reenviar certo depois.
+    function guardarPendente(tabela, registro) {
       try {
         const fila = JSON.parse(localStorage.getItem('ise_fila_pendente') || '[]');
-        fila.push(dados);
+        fila.push({ tabela: tabela, registro: registro });
         localStorage.setItem('ise_fila_pendente', JSON.stringify(fila));
       } catch (erro) { /* localStorage indisponível: seguimos sem guardar */ }
     }
+
+    // Tenta reenviar tudo que ficou pendente por falha de internet — roda
+    // ao carregar o totem e de tempos em tempos durante o dia, assim um
+    // aluno cujo registro não foi salvo por uma instabilidade momentânea
+    // não fica de fora do painel do professor pro resto do evento.
+    let reenviandoFilaPendente = false;
+    function tentarReenviarFilaPendente() {
+      if (!supabaseClient || reenviandoFilaPendente) { return; }
+
+      let fila;
+      try {
+        fila = JSON.parse(localStorage.getItem('ise_fila_pendente') || '[]');
+      } catch (erro) { return; }
+      if (!fila.length) { return; }
+
+      reenviandoFilaPendente = true;
+      Promise.allSettled(
+        fila.map(function (item) {
+          return supabaseClient.from(item.tabela).insert([item.registro]);
+        })
+      ).then(function (resultados) {
+        const filaRestante = [];
+        resultados.forEach(function (resultado, indice) {
+          const falhou = resultado.status === 'rejected' ||
+            (resultado.status === 'fulfilled' && resultado.value && resultado.value.error);
+          if (falhou) { filaRestante.push(fila[indice]); }
+        });
+        try {
+          localStorage.setItem('ise_fila_pendente', JSON.stringify(filaRestante));
+        } catch (erro) { /* segue o jogo */ }
+        if (filaRestante.length < fila.length) {
+          console.log('Fila pendente: ' + (fila.length - filaRestante.length) + ' registro(s) reenviado(s) com sucesso.');
+        }
+      }).finally(function () {
+        reenviandoFilaPendente = false;
+      });
+    }
+
+    // Dispara uma tentativa logo ao carregar o totem (caso tenha ficado
+    // algo pendente de uma sessão anterior) e depois a cada 30s, durante
+    // todo o dia do evento — assim qualquer instabilidade momentânea da
+    // internet se resolve sozinha sem intervenção manual.
+    tentarReenviarFilaPendente();
+    setInterval(tentarReenviarFilaPendente, 30000);
 
     // Troca qual .screen fica visível dentro de .palco — usada em toda
     // a experiência (cadastro, 5 perguntas, processando, revelação).
@@ -1965,28 +2009,29 @@
       // Envia o cadastro ao Supabase. Não esperamos a resposta para seguir
       // o fluxo do totem — se falhar (sem internet, instabilidade etc.),
       // guardamos localmente e o aluno segue normalmente para a próxima tela.
+      const registroCadastro = {
+        sessao_id: dados.sessao_id,
+        nome: dados.nome,
+        telefone: dados.telefone,
+        email: dados.email,
+        sexo: dados.sexo,
+        escola: dados.escola,
+        serie: dados.serie,
+        consentimento: dados.consentimento,
+        contato: dados.contato
+      };
       if (supabaseClient) {
-        supabaseClient.from('cadastros_alunos').insert([{
-          sessao_id: dados.sessao_id,
-          nome: dados.nome,
-          telefone: dados.telefone,
-          email: dados.email,
-          sexo: dados.sexo,
-          escola: dados.escola,
-          serie: dados.serie,
-          consentimento: dados.consentimento,
-          contato: dados.contato
-        }]).then(function (resultado) {
+        supabaseClient.from('cadastros_alunos').insert([registroCadastro]).then(function (resultado) {
           if (resultado.error) {
             console.error('Falha ao gravar cadastro no Supabase:', resultado.error);
-            guardarPendente(dados);
+            guardarPendente('cadastros_alunos', registroCadastro);
           }
         }).catch(function (erro) {
           console.error('Falha de rede ao gravar cadastro no Supabase:', erro);
-          guardarPendente(dados);
+          guardarPendente('cadastros_alunos', registroCadastro);
         });
       } else {
-        guardarPendente(dados);
+        guardarPendente('cadastros_alunos', registroCadastro);
       }
 
       const primeiroNome = dados.nome.trim().split(/\s+/)[0];
@@ -2151,6 +2196,7 @@
     let respostasEscolhidas = [];
 
     function iniciarPerguntas() {
+      if (timerAvancoPergunta) { clearTimeout(timerAvancoPergunta); timerAvancoPergunta = null; }
       indicePergunta = 0;
       respostasEscolhidas = [];
       mostrarTela('tela-pergunta');
@@ -2178,14 +2224,24 @@
       });
     }
 
+    // Guarda o timeout do avanço automático — evita que um duplo toque
+    // rápido nas opções (bem comum em criançada empolgada num touchscreen)
+    // dispare dois avanços e pule uma pergunta inteira sem ela ser
+    // respondida, e evita que esse avanço "atrasado" dispare depois que o
+    // aluno já tiver clicado em "← Voltar".
+    let timerAvancoPergunta = null;
+
     function selecionarOpcao(opcao, botaoClicado) {
+      if (timerAvancoPergunta) { return; } // já tem um avanço agendado: ignora toques extras
+
       document.querySelectorAll('.opcao-pergunta').forEach(function (b) { b.classList.remove('selecionada'); });
       botaoClicado.classList.add('selecionada');
 
       respostasEscolhidas[indicePergunta] = opcao.valor;
 
       // pequena pausa para o aluno ver a opção marcada antes de avançar
-      setTimeout(function () {
+      timerAvancoPergunta = setTimeout(function () {
+        timerAvancoPergunta = null;
         indicePergunta++;
         if (indicePergunta < PERGUNTAS.length) {
           renderizarPergunta();
@@ -2200,6 +2256,13 @@
     // caso o aluno só queira conferir) ou volta pra confirmação do
     // cadastro se estiver na primeira pergunta.
     function voltarPergunta() {
+      // Cancela um avanço automático pendente (aluno clicou numa opção e,
+      // dentro da pausa de 320ms, se arrependeu e apertou "Voltar").
+      if (timerAvancoPergunta) {
+        clearTimeout(timerAvancoPergunta);
+        timerAvancoPergunta = null;
+      }
+
       if (indicePergunta === 0) {
         mostrarTela('tela-cadastro-ok');
         return;
@@ -2410,14 +2473,14 @@
         supabaseClient.from('resultados_perguntas').insert([registro]).then(function (resultado) {
           if (resultado.error) {
             console.error('Falha ao gravar resultado no Supabase:', resultado.error);
-            guardarPendente(registro);
+            guardarPendente('resultados_perguntas', registro);
           }
         }).catch(function (erro) {
           console.error('Falha de rede ao gravar resultado no Supabase:', erro);
-          guardarPendente(registro);
+          guardarPendente('resultados_perguntas', registro);
         });
       } else {
-        guardarPendente(registro);
+        guardarPendente('resultados_perguntas', registro);
       }
     }
 
@@ -2466,6 +2529,11 @@
       try {
         sessionStorage.removeItem('ise_aluno');
         sessionStorage.removeItem('ise_resultado');
+        // Sem isso, todo aluno depois do primeiro do dia herdaria o mesmo
+        // sessao_id (ele só é gerado quando ainda não existe um guardado) —
+        // e os registros de alunos diferentes ficariam todos "amarrados"
+        // entre si no banco. Uma nova sessão só nasce quando precisar.
+        sessionStorage.removeItem('ise_sessao_id');
       } catch (erro) { /* sessionStorage indisponível: segue o jogo */ }
 
       const formulario = document.getElementById('form-cadastro');
@@ -2473,6 +2541,7 @@
       const erroCadastro = document.getElementById('erro-cadastro');
       if (erroCadastro) { erroCadastro.textContent = ''; }
 
+      if (timerAvancoPergunta) { clearTimeout(timerAvancoPergunta); timerAvancoPergunta = null; }
       indicePergunta = 0;
       respostasEscolhidas = [];
 

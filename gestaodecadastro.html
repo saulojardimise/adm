@@ -369,7 +369,7 @@
     </div>
 
     <div class="painel-busca">
-      <input id="campo-busca" type="text" placeholder="Buscar por nome ou escola...">
+      <input id="campo-busca" type="text" placeholder="Buscar por nome ou escola..." aria-label="Buscar por nome ou escola">
     </div>
 
     <div class="painel-tabela-wrap">
@@ -522,10 +522,17 @@
         // guarda só nesta aba/sessão, some ao fechar o navegador
         sessionStorage.setItem('painel_senha', senhaDigitada);
       } catch (erro) {
+        // 'P0001' é o código padrão do Postgres para um RAISE EXCEPTION
+        // simples — é assim que a função no Supabase sinaliza "senha
+        // errada". Qualquer outro erro (sem internet, servidor fora do
+        // ar, etc.) não é culpa da senha digitada, então mostramos uma
+        // mensagem diferente pra não confundir o usuário.
         if (erro && erro.message === 'SEM_SUPABASE') {
           mostrarErroLogin('Não foi possível conectar ao banco de dados agora. Verifique sua internet e tente de novo.');
-        } else {
+        } else if (erro && (erro.code === 'P0001' || erro.message === 'Senha incorreta')) {
           mostrarErroLogin('Senha incorreta. Tente novamente.');
+        } else {
+          mostrarErroLogin('Não foi possível verificar a senha agora. Verifique sua internet e tente de novo em instantes.');
         }
         console.error(erro);
       } finally {
