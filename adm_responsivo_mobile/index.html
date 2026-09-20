@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <meta name="theme-color" content="#0E3880">
+  <link rel="icon" type="image/png" href="./favicon.png">
+  <title>Crie sua Empresa em 1 Minuto — Curso de Administração</title>
+
+  <style>
+    :root {
+      --azul: #0E3880;
+      --azul-escuro: #08295f;
+      --azul-medio: #2d66c3;
+      --azul-claro: #bdd7ff;
+      --azul-nevoa: #f3f7ff;
+      --branco: #ffffff;
+      --texto: #10224a;
+      --texto-suave: #536383;
+      --borda: rgba(14, 56, 128, 0.10);
+      --sombra: 0 24px 60px rgba(14, 56, 128, 0.14);
+      --sombra-botao: 0 18px 36px rgba(14, 56, 128, 0.28);
+      --raio-btn: 18px;
+      --sombra-forte: 0 16px 40px rgba(14, 56, 128, 0.25);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      min-height: 100%;
+    }
+
+    body {
+      font-family: Inter, "Segoe UI", Arial, sans-serif;
+      background:
+        radial-gradient(circle at 15% 35%, rgba(189, 215, 255, 0.20), transparent 26rem),
+        radial-gradient(circle at 88% 60%, rgba(14, 56, 128, 0.07), transparent 26rem),
+        #ffffff;
+      color: var(--texto);
+      min-height: 100dvh;
+      overflow-x: hidden;
+    }
+
+    button, input, textarea, select {
+      font: inherit;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+    }
+
+    .pagina {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px clamp(20px, 5vw, 72px) 18px;
+    }
+
+    .topo {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 28px;
+      position: relative;
+      z-index: 2;
+    }
+
+    .marca {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .marca--direita {
+      justify-content: flex-end;
+    }
+
+    .logo-faculdade {
+      width: 58px;
+      height: 58px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .logo-cra {
+      width: 66px;
+      height: 46px;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .marca-texto {
+      line-height: 1.18;
+    }
+
+    .marca-titulo {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 18px;
+      letter-spacing: -0.02em;
+    }
+
+    .marca-subtitulo {
+      margin-top: 4px;
+      color: var(--texto-suave);
+      font-weight: 600;
+      font-size: 13px;
+    }
+
+    .marca-curso {
+      color: var(--azul);
+      font-weight: 800;
+      font-size: 17px;
+      line-height: 1.2;
+      text-align: right;
+    }
+
+    .hero-wrap {
+      width: 100%;
+      max-width: 1180px;
+      margin: auto;
+      padding: clamp(28px, 5vh, 58px) 0;
+      display: flex;
+      align-items: center;
+      flex: 1;
+    }
+
+    .hero-card {
+      width: 100%;
+      min-height: 470px;
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--borda);
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.98), rgba(246,249,255,0.98));
+      box-shadow: var(--sombra);
+      display: grid;
+      grid-template-columns: minmax(290px, 0.86fr) minmax(430px, 1.24fr);
+      align-items: center;
+      gap: clamp(28px, 5vw, 72px);
+      padding: clamp(34px, 5vw, 66px);
+    }
+
+    .hero-card::before {
+      content: "";
+      position: absolute;
+      width: 340px;
+      height: 340px;
+      border-radius: 50%;
+      left: -125px;
+      top: -160px;
+      background: rgba(189, 215, 255, 0.27);
+      pointer-events: none;
+    }
+
+    .hero-card::after {
+      content: "";
+      position: absolute;
+      width: 220px;
+      height: 220px;
+      border-radius: 50%;
+      right: -80px;
+      bottom: -110px;
+      background: rgba(14, 56, 128, 0.06);
+      pointer-events: none;
+    }
+
+    .hero-visual {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .hero-visual::before {
+      content: "";
+      position: absolute;
+      width: min(27vw, 330px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: linear-gradient(145deg, #edf5ff, #ffffff);
+      box-shadow: inset 0 0 0 1px rgba(14,56,128,0.05);
+    }
+
+    .icone-hero {
+      position: relative;
+      z-index: 1;
+      width: min(25vw, 310px);
+      min-width: 220px;
+      filter: drop-shadow(0 18px 22px rgba(14, 56, 128, 0.12));
+    }
+
+    .hero-texto {
+      position: relative;
+      z-index: 1;
+      min-width: 0;
+    }
+
+    .selo-topo {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--azul);
+      background: #eaf2ff;
+      border: 1px solid #cfdef6;
+      border-radius: 999px;
+      padding: 8px 13px;
+      font-size: 12px;
+      line-height: 1;
+      font-weight: 800;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      margin-bottom: 18px;
+    }
+
+    .ponto {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #3e82ef;
+      box-shadow: 0 0 0 4px rgba(62,130,239,0.13);
+    }
+
+    h1 {
+      max-width: 720px;
+      color: var(--azul);
+      font-size: clamp(38px, 4.3vw, 66px);
+      line-height: 0.98;
+      letter-spacing: -0.045em;
+      font-weight: 900;
+    }
+
+    .pergunta {
+      margin-top: 22px;
+      color: var(--texto);
+      font-size: clamp(18px, 1.65vw, 25px);
+      line-height: 1.35;
+      font-weight: 750;
+      max-width: 690px;
+    }
+
+    .descricao {
+      margin-top: 13px;
+      color: var(--texto-suave);
+      font-size: clamp(15px, 1.25vw, 18px);
+      line-height: 1.55;
+      max-width: 670px;
+    }
+
+    .descricao strong {
+      color: var(--azul);
+    }
+
+    .cta-area {
+      margin-top: 28px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+
+
+
+    /* Botão original do HTML anterior */
+    .btn-touque {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
+      color: var(--branco);
+      background: var(--azul);
+      padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
+      border-radius: var(--raio-btn);
+      box-shadow: var(--sombra-forte);
+      min-height: clamp(48px, 8vh, 76px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      animation: pulsa 2.4s ease-in-out infinite;
+    }
+
+    .btn-touque:active {
+      transform: scale(0.96);
+      background: var(--azul-escuro);
+      box-shadow: var(--sombra);
+      animation: none;
+    }
+
+    @keyframes pulsa {
+      0%, 100% { box-shadow: var(--sombra-forte); }
+      50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
+    }
+
+    .microinfos {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 8px 12px;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 650;
+    }
+
+    .microinfos span {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .microinfos span + span::before {
+      content: "•";
+      color: #8ea8d2;
+      margin-right: 4px;
+    }
+
+    .rodape {
+      width: 100%;
+      max-width: 1180px;
+      margin: 0 auto;
+      padding-top: 4px;
+      text-align: center;
+      color: var(--texto-suave);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .rodape strong {
+      color: var(--azul);
+    }
+
+    /* Feedback visual caso o restante da experiência ainda não tenha sido conectado */
+    .aviso {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      transform: translate(-50%, 18px);
+      max-width: min(92vw, 620px);
+      padding: 14px 18px;
+      border-radius: 14px;
+      color: #fff;
+      background: rgba(8, 41, 95, 0.96);
+      box-shadow: 0 18px 44px rgba(8, 41, 95, 0.28);
+      font-weight: 650;
+      font-size: 14px;
+      opacity: 0;
+      pointer-events: none;
+      transition: .25s ease;
+      text-align: center;
+      z-index: 30;
+    }
+
+    .aviso.visivel {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+
+    @media (max-width: 900px) {
+      .pagina {
+        padding: 18px 18px 14px;
+      }
+
+      .topo {
+        align-items: flex-start;
+      }
+
+      .marca {
+        gap: 8px;
+      }
+
+      .logo-faculdade {
+        width: 48px;
+        height: 48px;
+      }
+
+      .logo-cra {
+        width: 54px;
+        height: 38px;
+      }
+
+      .marca-titulo,
+      .marca-curso {
+        font-size: 15px;
+      }
+
+      .marca-subtitulo {
+        font-size: 11px;
+      }
+
+      .hero-wrap {
+        padding: 24px 0;
+      }
+
+      .hero-card {
+        grid-template-columns: 1fr;
+        text-align: center;
+        gap: 14px;
+        border-radius: 28px;
+        padding: 30px 22px 34px;
+      }
+
+      .hero-visual::before {
+        width: 260px;
+      }
+
+      .icone-hero {
+        width: 230px;
+        min-width: 0;
+      }
+
+      .hero-texto {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+
+      h1 {
+        font-size: clamp(36px, 8.8vw, 54px);
+      }
+
+      .pergunta,
+      .descricao {
+        max-width: 620px;
+      }
+
+      .cta-area {
+        align-items: center;
+        width: 100%;
+      }
+
+      .rodape {
+        padding-top: 0;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .topo {
+        gap: 12px;
+      }
+
+      .marca-texto {
+        display: none;
+      }
+
+      .marca--direita {
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 4px;
+      }
+
+      .marca-curso {
+        font-size: 13px;
+        max-width: 150px;
+      }
+
+      .hero-card {
+        padding: 26px 18px 30px;
+      }
+
+      .icone-hero {
+        width: 185px;
+      }
+
+      .hero-visual::before {
+        width: 210px;
+      }
+
+      .selo-topo {
+        font-size: 10px;
+      }
+
+      h1 {
+        font-size: 38px;
+      }
+
+      .pergunta {
+        font-size: 18px;
+      }
+
+      .descricao {
+        font-size: 15px;
+      }
+
+      .btn-touque {
+        width: 100%;
+        min-width: 0;
+      }
+
+  
+    /* Botão original do HTML anterior */
+    .btn-touque {
+      appearance: none;
+      border: none;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 700;
+      font-size: clamp(15px, min(2.4vw, 2.8vh), 28px);
+      color: var(--branco);
+      background: var(--azul);
+      padding: clamp(10px, 1.8vh, 26px) clamp(24px, 6vw, 72px);
+      border-radius: var(--raio-btn);
+      box-shadow: var(--sombra-forte);
+      min-height: clamp(48px, 8vh, 76px);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 14px;
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+      animation: pulsa 2.4s ease-in-out infinite;
+    }
+
+    .btn-touque:active {
+      transform: scale(0.96);
+      background: var(--azul-escuro);
+      box-shadow: var(--sombra);
+      animation: none;
+    }
+
+    @keyframes pulsa {
+      0%, 100% { box-shadow: var(--sombra-forte); }
+      50% { box-shadow: 0 16px 46px rgba(14, 56, 128, 0.4); }
+    }
+
+    .microinfos {
+        justify-content: center;
+        font-size: 12px;
+      }
+    }
+
+    @media (max-height: 760px) and (min-width: 901px) {
+      .pagina {
+        padding-top: 16px;
+        padding-bottom: 12px;
+      }
+
+      .logo-faculdade {
+        width: 48px;
+        height: 48px;
+      }
+
+      .logo-cra {
+        width: 58px;
+        height: 40px;
+      }
+
+      .hero-wrap {
+        padding: 18px 0;
+      }
+
+      .hero-card {
+        min-height: 390px;
+        padding-top: 34px;
+        padding-bottom: 34px;
+      }
+
+      .icone-hero {
+        width: min(22vw, 250px);
+        min-width: 190px;
+      }
+
+      h1 {
+        font-size: clamp(36px, 3.8vw, 56px);
+      }
+
+      .pergunta {
+        margin-top: 16px;
+      }
+
+      .cta-area {
+        margin-top: 20px;
+      }
+
+      .btn-touque {
+        min-height: 56px;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        animation: none !important;
+        transition: none !important;
+      }
+    }
+  
+
+    /* ==========================================================
+       TELA 2 — CADASTRO DO ALUNO
+       ========================================================== */
+    [hidden] { display: none !important; }
+
+    .cadastro-pagina {
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      padding: 24px clamp(20px, 5vw, 72px) 18px;
+      background:
+        radial-gradient(circle at 8% 12%, rgba(189, 215, 255, 0.24), transparent 24rem),
+        radial-gradient(circle at 92% 88%, rgba(14, 56, 128, 0.06), transparent 28rem),
+        #ffffff;
+    }
+
+    .cadastro-wrap {
+      width: 100%;
+      max-width: 1180px;
+      margin: auto;
+      padding: clamp(24px, 4vh, 50px) 0;
+      flex: 1;
+      display: flex;
+      align-items: center;
+    }
+
+    .cadastro-card {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(300px, .78fr) minmax(480px, 1.22fr);
+      min-height: 570px;
+      overflow: hidden;
+      border-radius: 32px;
+      border: 1px solid rgba(14, 56, 128, .10);
+      background: #fff;
+      box-shadow: 0 26px 70px rgba(14, 56, 128, .14);
+    }
+
+    .cadastro-info {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(34px, 4.5vw, 58px);
+      color: #fff;
+      background: linear-gradient(155deg, #0e3880 0%, #08295f 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 30px;
+    }
+
+    .cadastro-info::before,
+    .cadastro-info::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      pointer-events: none;
+    }
+
+    .cadastro-info::before {
+      width: 260px;
+      height: 260px;
+      right: -120px;
+      top: -95px;
+      background: rgba(102, 170, 255, .20);
+    }
+
+    .cadastro-info::after {
+      width: 180px;
+      height: 180px;
+      left: -90px;
+      bottom: -85px;
+      background: rgba(255, 255, 255, .07);
+    }
+
+    .cadastro-info-conteudo,
+    .cadastro-info-rodape {
+      position: relative;
+      z-index: 1;
+    }
+
+    .logo-admin-cadastro {
+      width: min(100%, 250px);
+      max-height: 84px;
+      object-fit: contain;
+      object-position: left center;
+      margin-bottom: 30px;
+      filter: brightness(0) invert(1);
+    }
+
+    .etapa-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255,255,255,.12);
+      border: 1px solid rgba(255,255,255,.18);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .055em;
+      text-transform: uppercase;
+      margin-bottom: 20px;
+    }
+
+    .etapa-tag::before {
+      content: "";
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #7cb7ff;
+      box-shadow: 0 0 0 4px rgba(124,183,255,.14);
+    }
+
+    .cadastro-info h2 {
+      font-size: clamp(34px, 3.5vw, 52px);
+      line-height: 1.02;
+      letter-spacing: -.045em;
+      margin-bottom: 18px;
+    }
+
+    .cadastro-info p {
+      color: rgba(255,255,255,.82);
+      font-size: 16px;
+      line-height: 1.55;
+      max-width: 430px;
+    }
+
+    .cadastro-beneficios {
+      margin-top: 28px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .cadastro-beneficio {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      color: rgba(255,255,255,.90);
+      font-size: 14px;
+      font-weight: 650;
+    }
+
+    .cadastro-beneficio strong {
+      color: #fff;
+    }
+
+    .cadastro-info-rodape {
+      color: rgba(255,255,255,.62);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .cadastro-form-area {
+      padding: clamp(34px, 4.8vw, 62px);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      min-width: 0;
+    }
+
+    .cadastro-form-topo {
+      margin-bottom: 26px;
+    }
+
+    .cadastro-form-topo h3 {
+      color: var(--azul);
+      font-size: clamp(25px, 2.4vw, 34px);
+      line-height: 1.1;
+      letter-spacing: -.03em;
+      margin-bottom: 8px;
+    }
+
+    .cadastro-form-topo p {
+      color: var(--texto-suave);
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .barra-etapas {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .barra-etapas span {
+      height: 6px;
+      border-radius: 999px;
+      background: #e7edf7;
+      flex: 1;
+    }
+
+    .barra-etapas span.ativa { background: var(--azul); }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .campo {
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+      min-width: 0;
+    }
+
+    .campo--inteiro { grid-column: 1 / -1; }
+
+    .campo label,
+    .grupo-label {
+      color: #24365f;
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .obrigatorio { color: #d14a54; }
+
+    .campo input,
+    .campo select {
+      width: 100%;
+      min-height: 52px;
+      border: 1.5px solid #dce5f3;
+      background: #fbfdff;
+      border-radius: 14px;
+      padding: 0 15px;
+      color: var(--texto);
+      outline: none;
+      font-size: 15px;
+      transition: border-color .16s ease, box-shadow .16s ease, background .16s ease;
+    }
+
+    .campo input::placeholder { color: #98a6bf; }
+
+    .campo input:focus,
+    .campo select:focus {
+      border-color: #5a8ad6;
+      box-shadow: 0 0 0 4px rgba(90, 138, 214, .12);
+      background: #fff;
+    }
+
+    .campo-ajuda {
+      color: #7b88a2;
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .sexo-opcoes {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 8px;
+    }
+
+    .radio-card {
+      position: relative;
+    }
+
+    .radio-card input {
+      position: absolute;
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .radio-card label {
+      min-height: 50px;
+      padding: 10px 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      border: 1.5px solid #dce5f3;
+      border-radius: 13px;
+      background: #fbfdff;
+      color: #536383;
+      font-size: 12px;
+      font-weight: 750;
+      cursor: pointer;
+      transition: .16s ease;
+    }
+
+    .radio-card input:checked + label {
+      color: var(--azul);
+      border-color: #6f98dc;
+      background: #eef4ff;
+      box-shadow: 0 0 0 3px rgba(90,138,214,.08);
+    }
+
+    .consentimento-box {
+      margin-top: 22px;
+      padding: 17px 18px;
+      border-radius: 16px;
+      background: #f6f9fe;
+      border: 1px solid #e1e9f5;
+      display: grid;
+      gap: 12px;
+    }
+
+    .check-linha {
+      display: grid;
+      grid-template-columns: 20px 1fr;
+      gap: 11px;
+      align-items: start;
+    }
+
+    .check-linha input {
+      width: 18px;
+      height: 18px;
+      accent-color: var(--azul);
+      margin-top: 2px;
+      cursor: pointer;
+    }
+
+    .check-linha label {
+      color: #536383;
+      font-size: 12px;
+      line-height: 1.5;
+      cursor: pointer;
+    }
+
+    .check-linha label strong { color: #24365f; }
+
+    .acoes-cadastro {
+      margin-top: 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+    }
+
+    .btn-voltar {
+      appearance: none;
+      border: 0;
+      background: transparent;
+      color: #62718e;
+      font-weight: 750;
+      font-size: 14px;
+      cursor: pointer;
+      padding: 12px 4px;
+    }
+
+    .btn-voltar:hover { color: var(--azul); }
+
+    .btn-continuar {
+      appearance: none;
+      border: 0;
+      cursor: pointer;
+      min-height: 56px;
+      border-radius: 16px;
+      padding: 15px 24px;
+      color: white;
+      background: var(--azul);
+      box-shadow: 0 16px 30px rgba(14, 56, 128, .24);
+      font-weight: 800;
+      font-size: 15px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      transition: .16s ease;
+    }
+
+    .btn-continuar:hover {
+      transform: translateY(-1px);
+      background: var(--azul-escuro);
+      box-shadow: 0 19px 36px rgba(14, 56, 128, .29);
+    }
+
+    .btn-continuar:active { transform: scale(.98); }
+
+    .erro-form {
+      display: none;
+      margin-top: 13px;
+      padding: 11px 13px;
+      border-radius: 12px;
+      background: #fff2f3;
+      color: #a73742;
+      border: 1px solid #ffd5d9;
+      font-size: 12px;
+      line-height: 1.4;
+      font-weight: 650;
+    }
+
+    .erro-form.visivel { display: block; }
+
+    /* Tela provisória para testar o fluxo do cadastro antes das perguntas */
+    .cadastro-ok-wrap {
+      width: 100%;
+      max-width: 720px;
+      margin: auto;
+      text-align: center;
+      padding: 38px;
+      border-radius: 30px;
+      border: 1px solid rgba(14,56,128,.10);
+      background: #fff;
+      box-shadow: 0 24px 60px rgba(14,56,128,.13);
+    }
+
+    .check-grande {
+      width: 76px;
+      height: 76px;
+      margin: 0 auto 22px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      background: var(--azul);
+      font-size: 38px;
+      box-shadow: 0 16px 32px rgba(14,56,128,.22);
+    }
+
+    .cadastro-ok-wrap h2 {
+      color: var(--azul);
+      font-size: clamp(30px, 4vw, 46px);
+      line-height: 1.05;
+      margin-bottom: 12px;
+      letter-spacing: -.035em;
+    }
+
+    .cadastro-ok-wrap p {
+      color: var(--texto-suave);
+      line-height: 1.55;
+      margin-bottom: 24px;
+    }
+
+    @media (max-width: 980px) {
+      .cadastro-card { grid-template-columns: 1fr; }
+      .cadastro-info { min-height: auto; }
+      .cadastro-info-rodape { display: none; }
+      .logo-admin-cadastro { max-width: 210px; margin-bottom: 20px; }
+      .cadastro-beneficios { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    @media (max-width: 720px) {
+      .cadastro-pagina { padding: 14px; }
+      .cadastro-wrap { padding: 16px 0; align-items: flex-start; }
+      .cadastro-card { border-radius: 24px; }
+      .cadastro-info { padding: 28px 24px; }
+      .cadastro-info h2 { font-size: 34px; }
+      .cadastro-beneficios { grid-template-columns: 1fr; gap: 8px; }
+      .cadastro-form-area { padding: 28px 22px 30px; }
+      .form-grid { grid-template-columns: 1fr; }
+      .campo--inteiro { grid-column: auto; }
+      .sexo-opcoes { grid-template-columns: repeat(2, 1fr); }
+      .acoes-cadastro { flex-direction: column-reverse; align-items: stretch; }
+      .btn-voltar, .btn-continuar { width: 100%; }
+    }
+
+  
+  /* ===== AJUSTES MOBILE / RESPONSIVIDADE ===== */
+  @media (max-width: 768px) {
+    body { overflow-x: hidden; }
+    .pagina, .screen {
+      width: 100%; max-width: 100%; min-height: 100dvh;
+      padding-left: 14px !important; padding-right: 14px !important;
+    }
+    .topo { width: 100%; max-width: 100%; align-items: center; gap: 12px; }
+    .marca, .marca--direita, .marca-faculdade, .marca-curso { min-width: 0; }
+    .logo-faculdade, .logo-imagem { width: 46px !important; height: 46px !important; object-fit: contain; }
+    .logo-cra { width: 52px !important; height: 38px !important; object-fit: contain; }
+    .marca-titulo, .nome-faculdade, .marca-curso, .nome-curso { font-size: 13px !important; }
+    .marca-subtitulo, .nome-faculdade small, .nome-curso small { font-size: 10px !important; }
+    .hero-wrap, .hero-conteudo {
+      width: 100%; max-width: 100%; padding: 18px 0 !important; margin: 0 auto;
+    }
+    .hero-card {
+      width: 100%; max-width: 100%; min-width: 0; min-height: auto;
+      display: flex !important; flex-direction: column !important;
+      align-items: center; justify-content: center; gap: 16px;
+      padding: 26px 18px 30px !important; border-radius: 24px; overflow: hidden;
+    }
+    .hero-grafico, .hero-visual {
+      width: 100%; max-width: 100%; display: flex; justify-content: center; align-items: center; flex: 0 0 auto;
+    }
+    .hero-visual::before { width: 210px !important; max-width: 70vw; }
+    .icone-hero {
+      width: min(58vw, 230px) !important; min-width: 0 !important; height: auto !important;
+      max-width: 100%; object-fit: contain;
+    }
+    .hero-texto {
+      width: 100%; max-width: 100% !important; min-width: 0 !important;
+      align-items: center !important; text-align: center !important; gap: 12px;
+    }
+    .titulo-hero, h1 {
+      width: 100%; max-width: 100%; font-size: clamp(30px, 9vw, 42px) !important;
+      line-height: 1.06 !important; text-align: center; overflow-wrap: anywhere;
+    }
+    .pergunta, .subtitulo-hero, .descricao {
+      width: 100%; max-width: 100% !important; font-size: 15px !important;
+      line-height: 1.45 !important; text-align: center; overflow-wrap: anywhere;
+    }
+    .cta-area { width: 100%; align-items: center !important; }
+    .btn-touque, .btn-comecar {
+      width: 100% !important; max-width: 360px; min-width: 0 !important;
+      padding-left: 18px !important; padding-right: 18px !important; font-size: 17px !important;
+    }
+    .microinfos { justify-content: center; text-align: center; }
+    .rodape { width: 100%; max-width: 100%; padding: 12px 8px 4px; font-size: 12px; line-height: 1.35; }
+    .cadastro-card, .form-card, form { width: 100%; max-width: 100% !important; min-width: 0 !important; }
+    .form-grid, .grid-form, .campos-grid { display: grid !important; grid-template-columns: 1fr !important; gap: 14px !important; }
+    input, select, textarea, .campo input, .campo select {
+      width: 100% !important; max-width: 100%; min-width: 0; font-size: 16px !important;
+    }
+  }
+  @media (max-width: 420px) {
+    .pagina, .screen { padding-left: 10px !important; padding-right: 10px !important; }
+    .hero-card { padding: 22px 14px 26px !important; border-radius: 20px; }
+    .icone-hero { width: min(62vw, 205px) !important; }
+    .titulo-hero, h1 { font-size: clamp(28px, 9.5vw, 38px) !important; }
+  }
+
+</style>
+</head>
+
+<body>
+  <main class="pagina" id="tela-inicial">
+    <header class="topo">
+      <div class="marca">
+        <img src="./logo-faculdade.png" class="logo-faculdade" alt="Logo ISECENSA">
+        <div class="marca-texto">
+          <div class="marca-titulo">ISECENSA</div>
+          <div class="marca-subtitulo">Ise por um dia • 2026</div>
+        </div>
+      </div>
+
+      <div class="marca marca--direita">
+        <img src="./logo-cra.png" class="logo-cra" alt="Logo do Conselho Regional de Administração">
+        <div class="marca-curso">Curso de Administração</div>
+      </div>
+    </header>
+
+    <section class="hero-wrap" aria-labelledby="titulo-principal">
+      <div class="hero-card">
+        <div class="hero-visual" aria-hidden="true">
+          <img src="./icone-hero.png" class="icone-hero" alt="">
+        </div>
+
+        <div class="hero-texto">
+          <div class="selo-topo">
+            <span class="ponto"></span>
+            Experiência interativa • 1 minuto
+          </div>
+
+          <h1 id="titulo-principal">Crie sua empresa em 1 minuto</h1>
+
+          <p class="pergunta">
+            Se você abrisse uma empresa hoje, que tipo de empreendedor seria?
+          </p>
+
+          <p class="descricao">
+            Responda <strong>6 perguntas rápidas</strong>, descubra seu perfil e veja qual empresa combina com você.
+            No final, receba seu <strong>Selo de Futuro Administrador</strong>, formado pelo ISECENSA.
+          </p>
+
+          <div class="cta-area">
+            <button class="btn-touque" id="btn-comecar" type="button">
+              👉 Toque para começar
+            </button>
+
+            <div class="microinfos" aria-label="Informações da experiência">
+              <span>6 perguntas</span>
+              <span>1 minuto</span>
+              <span>resultado instantâneo</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="rodape">
+      Uma experiência do <strong>Curso de Administração</strong> — Ise por um dia • 2026
+    </footer>
+  </main>
+
+
+
+  <!-- ================= TELA 2: CADASTRO DO ALUNO ================= -->
+  <main class="cadastro-pagina" id="tela-cadastro" hidden>
+    <header class="topo">
+      <div class="marca">
+        <img src="./logo-faculdade.png" class="logo-faculdade" alt="Logo ISECENSA">
+        <div class="marca-texto">
+          <div class="marca-titulo">ISECENSA</div>
+          <div class="marca-subtitulo">Ise por um dia • 2026</div>
+        </div>
+      </div>
+
+      <div class="marca marca--direita">
+        <img src="./logo-cra.png" class="logo-cra" alt="Logo do Conselho Regional de Administração">
+        <div class="marca-curso">Curso de Administração</div>
+      </div>
+    </header>
+
+    <section class="cadastro-wrap" aria-labelledby="titulo-cadastro">
+      <div class="cadastro-card">
+        <aside class="cadastro-info">
+          <div class="cadastro-info-conteudo">
+            <img src="./logo-isecensa-administracao.png" class="logo-admin-cadastro" alt="ISECENSA Administração" onerror="this.style.display='none'">
+            <div class="etapa-tag">Etapa 1 de 3</div>
+            <h2 id="titulo-cadastro">Antes de começar, conte um pouco sobre você.</h2>
+            <p>É rapidinho. Seus dados serão usados para registrar sua participação na experiência e, quando autorizado, para contato institucional do ISECENSA.</p>
+
+            <div class="cadastro-beneficios">
+              <div class="cadastro-beneficio"><span>✓</span><span><strong>Cadastro rápido</strong> antes das 6 perguntas</span></div>
+              <div class="cadastro-beneficio"><span>✓</span><span>Resultado personalizado da sua empresa</span></div>
+              <div class="cadastro-beneficio"><span>✓</span><span>Seu DNA de Futuro Administrador</span></div>
+            </div>
+          </div>
+
+          <div class="cadastro-info-rodape">
+            Os dados serão enviados ao banco do evento quando a integração com o Supabase for ativada.
+          </div>
+        </aside>
+
+        <div class="cadastro-form-area">
+          <div class="cadastro-form-topo">
+            <h3>Seus dados</h3>
+            <p>Preencha os campos abaixo para continuar.</p>
+            <div class="barra-etapas" aria-label="Progresso da experiência">
+              <span class="ativa"></span><span></span><span></span>
+            </div>
+          </div>
+
+          <form id="form-cadastro" novalidate>
+            <div class="form-grid">
+              <div class="campo campo--inteiro">
+                <label for="nome">Nome completo <span class="obrigatorio">*</span></label>
+                <input id="nome" name="nome" type="text" autocomplete="name" placeholder="Digite seu nome completo" required minlength="3">
+              </div>
+
+              <div class="campo">
+                <label for="telefone">Telefone / WhatsApp <span class="obrigatorio">*</span></label>
+                <input id="telefone" name="telefone" type="tel" autocomplete="tel" inputmode="tel" placeholder="(22) 99999-9999" required>
+              </div>
+
+              <div class="campo">
+                <label for="email">E-mail <span class="obrigatorio">*</span></label>
+                <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="seuemail@exemplo.com" required>
+              </div>
+
+              <div class="campo campo--inteiro">
+                <span class="grupo-label">Sexo <span class="obrigatorio">*</span></span>
+                <div class="sexo-opcoes" role="radiogroup" aria-label="Sexo">
+                  <div class="radio-card">
+                    <input id="sexo-feminino" type="radio" name="sexo" value="Feminino" required>
+                    <label for="sexo-feminino">Feminino</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-masculino" type="radio" name="sexo" value="Masculino">
+                    <label for="sexo-masculino">Masculino</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-outro" type="radio" name="sexo" value="Outro">
+                    <label for="sexo-outro">Outro</label>
+                  </div>
+                  <div class="radio-card">
+                    <input id="sexo-nao-informar" type="radio" name="sexo" value="Prefiro não informar">
+                    <label for="sexo-nao-informar">Prefiro não informar</label>
+                  </div>
+                </div>
+              </div>
+
+              <div class="campo">
+                <label for="escola">Escola <span class="obrigatorio">*</span></label>
+                <input id="escola" name="escola" type="text" autocomplete="organization" placeholder="Nome da sua escola" required>
+              </div>
+
+              <div class="campo">
+                <label for="serie">Série / Ano <span class="obrigatorio">*</span></label>
+                <select id="serie" name="serie" required>
+                  <option value="" selected disabled>Selecione</option>
+                  <option>8º ano do Ensino Fundamental</option>
+                  <option>9º ano do Ensino Fundamental</option>
+                  <option>1º ano do Ensino Médio</option>
+                  <option>2º ano do Ensino Médio</option>
+                  <option>3º ano do Ensino Médio</option>
+                  <option>Ensino Médio concluído</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="consentimento-box">
+              <div class="check-linha">
+                <input id="consentimento" name="consentimento" type="checkbox" required>
+                <label for="consentimento">
+                  <strong>Consentimento para uso dos dados.</strong> Autorizo o tratamento das informações fornecidas para registro da minha participação nesta experiência e para as finalidades institucionais relacionadas ao evento. <span class="obrigatorio">*</span>
+                </label>
+              </div>
+
+              <div class="check-linha">
+                <input id="contato" name="contato" type="checkbox">
+                <label for="contato">
+                  Quero receber informações do ISECENSA sobre o Curso de Administração, eventos e processos seletivos.
+                </label>
+              </div>
+            </div>
+
+            <div id="erro-cadastro" class="erro-form" role="alert"></div>
+
+            <div class="acoes-cadastro">
+              <button class="btn-voltar" id="btn-voltar-inicio" type="button">← Voltar</button>
+              <button class="btn-continuar" type="submit">Continuar para as 6 perguntas <span>→</span></button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <footer class="rodape">
+      Uma experiência do <strong>Curso de Administração</strong> — Ise por um dia • 2026
+    </footer>
+  </main>
+
+  <!-- Tela provisória apenas para testar o fluxo até construirmos as 6 perguntas -->
+  <main class="cadastro-pagina" id="tela-cadastro-ok" hidden>
+    <div class="cadastro-ok-wrap">
+      <div class="check-grande">✓</div>
+      <h2>Cadastro concluído!</h2>
+      <p id="mensagem-cadastro-ok">Agora vamos descobrir que empresa combina com você.</p>
+      <button class="btn-touque" id="btn-ir-perguntas" type="button">🚀 Começar as 6 perguntas</button>
+      <div style="margin-top:14px; color:#7b88a2; font-size:12px;">A próxima etapa será construída no Bloco 3.</div>
+    </div>
+  </main>
+
+
+  <div class="aviso" id="aviso">
+    A tela inicial está pronta. Cadastro do aluno pronto para ser conectado às 6 perguntas.
+  </div>
+
+  <script>
+    const telaInicial = document.getElementById('tela-inicial');
+    const telaCadastro = document.getElementById('tela-cadastro');
+    const telaCadastroOk = document.getElementById('tela-cadastro-ok');
+    const btnComecar = document.getElementById('btn-comecar');
+    const btnVoltarInicio = document.getElementById('btn-voltar-inicio');
+    const formCadastro = document.getElementById('form-cadastro');
+    const erroCadastro = document.getElementById('erro-cadastro');
+    const telefone = document.getElementById('telefone');
+
+    function mostrarSomente(tela) {
+      [telaInicial, telaCadastro, telaCadastroOk].forEach(function(el) {
+        el.hidden = el !== tela;
+      });
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    btnComecar.addEventListener('click', function () {
+      mostrarSomente(telaCadastro);
+      setTimeout(function () { document.getElementById('nome').focus(); }, 250);
+    });
+
+    btnVoltarInicio.addEventListener('click', function () {
+      mostrarSomente(telaInicial);
+    });
+
+    // Máscara simples de telefone brasileiro, apenas para a experiência de front-end.
+    telefone.addEventListener('input', function (event) {
+      let numeros = event.target.value.replace(/\D/g, '').slice(0, 11);
+      let valor = numeros;
+
+      if (numeros.length > 2) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2);
+      }
+      if (numeros.length > 7 && numeros.length <= 10) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2, 6) + '-' + numeros.slice(6);
+      }
+      if (numeros.length > 10) {
+        valor = '(' + numeros.slice(0, 2) + ') ' + numeros.slice(2, 7) + '-' + numeros.slice(7);
+      }
+
+      event.target.value = valor;
+    });
+
+    formCadastro.addEventListener('submit', function (event) {
+      event.preventDefault();
+      erroCadastro.classList.remove('visivel');
+      erroCadastro.textContent = '';
+
+      if (!formCadastro.checkValidity()) {
+        erroCadastro.textContent = 'Preencha todos os campos obrigatórios e marque o consentimento para continuar.';
+        erroCadastro.classList.add('visivel');
+        formCadastro.reportValidity();
+        return;
+      }
+
+      const telefoneNumeros = telefone.value.replace(/\D/g, '');
+      if (telefoneNumeros.length < 10) {
+        erroCadastro.textContent = 'Confira o telefone informado antes de continuar.';
+        erroCadastro.classList.add('visivel');
+        telefone.focus();
+        return;
+      }
+
+      // FRONT-END APENAS: guardamos temporariamente no navegador.
+      // Na próxima etapa este objeto será enviado ao Supabase.
+      const dados = Object.fromEntries(new FormData(formCadastro).entries());
+      dados.consentimento = document.getElementById('consentimento').checked;
+      dados.contato = document.getElementById('contato').checked;
+      dados.criado_em = new Date().toISOString();
+      sessionStorage.setItem('ise_aluno', JSON.stringify(dados));
+
+      const primeiroNome = dados.nome.trim().split(/\s+/)[0];
+      document.getElementById('mensagem-cadastro-ok').textContent =
+        'Tudo certo, ' + primeiroNome + '! Agora vamos descobrir que empresa combina com você.';
+
+      mostrarSomente(telaCadastroOk);
+    });
+
+    document.getElementById('btn-ir-perguntas').addEventListener('click', function () {
+      alert('Próximo passo: construir as 6 perguntas e conectar este cadastro ao Supabase.');
+    });
+  </script>
+</body>
+</html>
