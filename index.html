@@ -1568,7 +1568,6 @@
         <img src="./logo-faculdade.png" class="logo-faculdade" alt="Logo ISECENSA">
         <div class="marca-texto">
           <div class="marca-titulo">ISECENSA</div>
-          <div class="marca-subtitulo">Ise por um dia • 2026</div>
         </div>
       </div>
 
@@ -1810,7 +1809,7 @@
     </div>
 
     <footer class="rodape">
-      Uma experiência do <strong>Curso de Administração</strong> — Ise por um dia • 2026
+      Uma experiência do <strong>Curso de Administração</strong> — ISECENSA
     </footer>
   </main>
 
@@ -2051,32 +2050,27 @@
       mkt: {
         nome: 'Comunicador(a) Nato(a)', curto: 'Marketing', animal: 'Golfinho', emoji: '🐬',
         frase: 'Seu superpoder é comunicar. Você sabe transformar uma ideia em algo que todo mundo quer ouvir — e ouvir de novo.',
-        slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.',
-        missaoQualificador: 'conectar pessoas de verdade'
+        slogan: 'Toda marca tem uma voz. A da {nome} é impossível ignorar.'
       },
       ops: {
         nome: 'Organizador(a) Mestre', curto: 'Operações', animal: 'Formiga', emoji: '🐜',
         frase: 'Seu superpoder é organizar. Onde tem bagunça, você enxerga um sistema esperando para ser montado.',
-        slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.',
-        missaoQualificador: 'entregar excelência todos os dias'
+        slogan: 'Onde existe caos, a {nome} encontra ordem e eficiência.'
       },
       fin: {
         nome: 'Estrategista Financeiro(a)', curto: 'Finanças', animal: 'Coruja', emoji: '🦉',
         frase: 'Seu superpoder é decidir com a cabeça fria. Você sabe que todo sonho grande precisa de uma base financeira sólida.',
-        slogan: 'Crescer com segurança: esse é o compromisso da {nome}.',
-        missaoQualificador: 'crescer com solidez e responsabilidade'
+        slogan: 'Crescer com segurança: esse é o compromisso da {nome}.'
       },
       lid: {
         nome: 'Líder Nato(a)', curto: 'Liderança', animal: 'Leão', emoji: '🦁',
         frase: 'Seu superpoder é inspirar pessoas. Times inteiros rendem mais quando você está por perto.',
-        slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.',
-        missaoQualificador: 'formar os melhores times do setor'
+        slogan: 'Por trás de toda grande equipe, tem alguém como a {nome} liderando.'
       },
       est: {
         nome: 'Visionário(a) Estratégico(a)', curto: 'Estratégia', animal: 'Raposa', emoji: '🦊',
         frase: 'Seu superpoder é enxergar longe. Enquanto os outros reagem ao presente, você já está pensando no que vem depois.',
-        slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.',
-        missaoQualificador: 'estar sempre um passo à frente'
+        slogan: 'A {nome} não segue tendências. Ela enxerga o próximo passo antes de todo mundo.'
       }
     };
 
@@ -2087,6 +2081,231 @@
       moda: ['Loja de roupas autorais', 'Marca de cosméticos', 'Ateliê de acessórios', 'Grife de streetwear', 'Salão de beleza e estética', 'Marca de calçados'],
       sustentabilidade: ['Empresa de reciclagem', 'Marca de produtos biodegradáveis', 'Consultoria em energia solar', 'Horta urbana e agricultura sustentável', 'Startup de economia circular', 'Marca de moda sustentável']
     };
+
+    // 150 missões completas: uma por ramo e perfil.
+    // Critérios: entrega, necessidade, abrangência, forma de atuação e beneficiários.
+    const MISSOES = {
+  "tecnologia": {
+    "Startup de aplicativos": {
+      "mkt": "Desenvolver aplicativos úteis em todo o Brasil, com escuta dos usuários e comunicação clara, para simplificar tarefas do dia a dia e dar mais praticidade e autonomia às pessoas.",
+      "ops": "Desenvolver aplicativos úteis em todo o Brasil, com interfaces simples e funcionamento confiável, para simplificar tarefas do dia a dia e dar mais praticidade e autonomia às pessoas.",
+      "fin": "Desenvolver aplicativos úteis em todo o Brasil, com uso responsável de recursos e opções acessíveis, para simplificar tarefas do dia a dia e dar mais praticidade e autonomia às pessoas.",
+      "lid": "Desenvolver aplicativos úteis em todo o Brasil, com equipes colaborativas e atentas aos usuários, para simplificar tarefas do dia a dia e dar mais praticidade e autonomia às pessoas.",
+      "est": "Desenvolver aplicativos úteis em todo o Brasil, com soluções criativas para necessidades emergentes, para simplificar tarefas do dia a dia e dar mais praticidade e autonomia às pessoas."
+    },
+    "Desenvolvedora de software": {
+      "mkt": "Desenvolver softwares de gestão em todo o Brasil, com diálogo próximo e suporte claro, para reduzir tarefas repetitivas e ajudar pequenas empresas a organizar o trabalho.",
+      "ops": "Desenvolver softwares de gestão em todo o Brasil, com processos bem estruturados e sistemas confiáveis, para reduzir tarefas repetitivas e ajudar pequenas empresas a organizar o trabalho.",
+      "fin": "Desenvolver softwares de gestão em todo o Brasil, com soluções de bom custo-benefício e custos transparentes, para reduzir tarefas repetitivas e ajudar pequenas empresas a organizar o trabalho.",
+      "lid": "Desenvolver softwares de gestão em todo o Brasil, com equipes capacitadas e suporte acolhedor, para reduzir tarefas repetitivas e ajudar pequenas empresas a organizar o trabalho.",
+      "est": "Desenvolver softwares de gestão em todo o Brasil, com soluções flexíveis que acompanhem novos desafios, para reduzir tarefas repetitivas e ajudar pequenas empresas a organizar o trabalho."
+    },
+    "Empresa de inteligência artificial": {
+      "mkt": "Criar soluções de inteligência artificial em todo o Brasil, com escuta dos clientes e explicações acessíveis, para facilitar a análise de informações e ajudar empresas a tomar decisões mais bem informadas.",
+      "ops": "Criar soluções de inteligência artificial em todo o Brasil, com testes rigorosos e atenção à qualidade dos dados, para facilitar a análise de informações e ajudar empresas a tomar decisões mais bem informadas.",
+      "fin": "Criar soluções de inteligência artificial em todo o Brasil, com projetos economicamente viáveis e uso eficiente de recursos, para facilitar a análise de informações e ajudar empresas a tomar decisões mais bem informadas.",
+      "lid": "Criar soluções de inteligência artificial em todo o Brasil, com equipes multidisciplinares e formação contínua, para facilitar a análise de informações e ajudar empresas a tomar decisões mais bem informadas.",
+      "est": "Criar soluções de inteligência artificial em todo o Brasil, com pesquisa aplicada e inovação responsável, para facilitar a análise de informações e ajudar empresas a tomar decisões mais bem informadas."
+    },
+    "Estúdio de games": {
+      "mkt": "Desenvolver jogos digitais em todo o Brasil, com diálogo com a comunidade e histórias envolventes, para ampliar as opções de lazer interativo e proporcionar diversão e conexão entre jogadores.",
+      "ops": "Desenvolver jogos digitais em todo o Brasil, com testes de qualidade e experiências fluidas, para ampliar as opções de lazer interativo e proporcionar diversão e conexão entre jogadores.",
+      "fin": "Desenvolver jogos digitais em todo o Brasil, com planejamento de custos e preços transparentes, para ampliar as opções de lazer interativo e proporcionar diversão e conexão entre jogadores.",
+      "lid": "Desenvolver jogos digitais em todo o Brasil, com equipes criativas e respeito à diversidade, para ampliar as opções de lazer interativo e proporcionar diversão e conexão entre jogadores.",
+      "est": "Desenvolver jogos digitais em todo o Brasil, com novas formas de jogar e explorar histórias, para ampliar as opções de lazer interativo e proporcionar diversão e conexão entre jogadores."
+    },
+    "Consultoria em tecnologia": {
+      "mkt": "Prestar consultoria em tecnologia em todo o Brasil, com diagnóstico próximo e orientação clara, para superar dificuldades no uso de ferramentas digitais e ajudar pequenos negócios a trabalhar melhor.",
+      "ops": "Prestar consultoria em tecnologia em todo o Brasil, com implantação organizada e acompanhamento técnico, para superar dificuldades no uso de ferramentas digitais e ajudar pequenos negócios a trabalhar melhor.",
+      "fin": "Prestar consultoria em tecnologia em todo o Brasil, com escolhas compatíveis com o orçamento de cada cliente, para superar dificuldades no uso de ferramentas digitais e ajudar pequenos negócios a trabalhar melhor.",
+      "lid": "Prestar consultoria em tecnologia em todo o Brasil, com profissionais capacitados e troca de conhecimento, para superar dificuldades no uso de ferramentas digitais e ajudar pequenos negócios a trabalhar melhor.",
+      "est": "Prestar consultoria em tecnologia em todo o Brasil, com soluções alinhadas aos desafios futuros dos clientes, para superar dificuldades no uso de ferramentas digitais e ajudar pequenos negócios a trabalhar melhor."
+    },
+    "Plataforma de e-commerce": {
+      "mkt": "Oferecer uma plataforma de comércio eletrônico em todo o Brasil, com comunicação clara e atenção à experiência de compra, para facilitar as vendas pela internet e aproximar pequenos vendedores e consumidores.",
+      "ops": "Oferecer uma plataforma de comércio eletrônico em todo o Brasil, com navegação simples e pedidos bem organizados, para facilitar as vendas pela internet e aproximar pequenos vendedores e consumidores.",
+      "fin": "Oferecer uma plataforma de comércio eletrônico em todo o Brasil, com tarifas transparentes e opções viáveis para pequenos negócios, para facilitar as vendas pela internet e aproximar pequenos vendedores e consumidores.",
+      "lid": "Oferecer uma plataforma de comércio eletrônico em todo o Brasil, com equipes preparadas para apoiar vendedores e compradores, para facilitar as vendas pela internet e aproximar pequenos vendedores e consumidores.",
+      "est": "Oferecer uma plataforma de comércio eletrônico em todo o Brasil, com recursos inovadores que acompanhem novos hábitos de consumo, para facilitar as vendas pela internet e aproximar pequenos vendedores e consumidores."
+    }
+  },
+  "saude": {
+    "Clínica de bem-estar": {
+      "mkt": "Oferecer serviços de cuidado e bem-estar em Campos dos Goytacazes e região, com escuta atenta e orientação clara, para acolher diferentes necessidades de autocuidado e contribuir para a qualidade de vida das pessoas.",
+      "ops": "Oferecer serviços de cuidado e bem-estar em Campos dos Goytacazes e região, com atendimento organizado e cuidado individualizado, para acolher diferentes necessidades de autocuidado e contribuir para a qualidade de vida das pessoas.",
+      "fin": "Oferecer serviços de cuidado e bem-estar em Campos dos Goytacazes e região, com gestão responsável e preços transparentes, para acolher diferentes necessidades de autocuidado e contribuir para a qualidade de vida das pessoas.",
+      "lid": "Oferecer serviços de cuidado e bem-estar em Campos dos Goytacazes e região, com profissionais qualificados e acolhimento humanizado, para acolher diferentes necessidades de autocuidado e contribuir para a qualidade de vida das pessoas.",
+      "est": "Oferecer serviços de cuidado e bem-estar em Campos dos Goytacazes e região, com práticas atualizadas e atenção às novas demandas, para acolher diferentes necessidades de autocuidado e contribuir para a qualidade de vida das pessoas."
+    },
+    "Academia e estúdio fitness": {
+      "mkt": "Oferecer atividades físicas orientadas em Campos dos Goytacazes e região, com incentivo próximo e comunicação motivadora, para facilitar a prática regular de exercícios e apoiar a saúde e a disposição de pessoas com diferentes rotinas.",
+      "ops": "Oferecer atividades físicas orientadas em Campos dos Goytacazes e região, com treinos organizados e acompanhamento cuidadoso, para facilitar a prática regular de exercícios e apoiar a saúde e a disposição de pessoas com diferentes rotinas.",
+      "fin": "Oferecer atividades físicas orientadas em Campos dos Goytacazes e região, com planos acessíveis e uso responsável de recursos, para facilitar a prática regular de exercícios e apoiar a saúde e a disposição de pessoas com diferentes rotinas.",
+      "lid": "Oferecer atividades físicas orientadas em Campos dos Goytacazes e região, com instrutores capacitados e um ambiente acolhedor, para facilitar a prática regular de exercícios e apoiar a saúde e a disposição de pessoas com diferentes rotinas.",
+      "est": "Oferecer atividades físicas orientadas em Campos dos Goytacazes e região, com modalidades variadas e soluções para novos hábitos, para facilitar a prática regular de exercícios e apoiar a saúde e a disposição de pessoas com diferentes rotinas."
+    },
+    "Marca de suplementos naturais": {
+      "mkt": "Produzir suplementos naturais em todo o Brasil, com informações claras sobre composição e uso, para oferecer opções de complementação alimentar e apoiar escolhas conscientes de adultos interessados em nutrição.",
+      "ops": "Produzir suplementos naturais em todo o Brasil, com controle de qualidade e rastreabilidade dos ingredientes, para oferecer opções de complementação alimentar e apoiar escolhas conscientes de adultos interessados em nutrição.",
+      "fin": "Produzir suplementos naturais em todo o Brasil, com preços transparentes e gestão eficiente da produção, para oferecer opções de complementação alimentar e apoiar escolhas conscientes de adultos interessados em nutrição.",
+      "lid": "Produzir suplementos naturais em todo o Brasil, com equipes qualificadas e orientação responsável, para oferecer opções de complementação alimentar e apoiar escolhas conscientes de adultos interessados em nutrição.",
+      "est": "Produzir suplementos naturais em todo o Brasil, com desenvolvimento criterioso de novas formulações, para oferecer opções de complementação alimentar e apoiar escolhas conscientes de adultos interessados em nutrição."
+    },
+    "Consultório de nutrição": {
+      "mkt": "Oferecer acompanhamento nutricional em Campos dos Goytacazes e região, com escuta próxima e orientações fáceis de compreender, para ajudar a enfrentar dificuldades na alimentação e apoiar hábitos saudáveis de pessoas com diferentes necessidades.",
+      "ops": "Oferecer acompanhamento nutricional em Campos dos Goytacazes e região, com avaliação individual e acompanhamento organizado, para ajudar a enfrentar dificuldades na alimentação e apoiar hábitos saudáveis de pessoas com diferentes necessidades.",
+      "fin": "Oferecer acompanhamento nutricional em Campos dos Goytacazes e região, com orientações compatíveis com o orçamento de cada pessoa, para ajudar a enfrentar dificuldades na alimentação e apoiar hábitos saudáveis de pessoas com diferentes necessidades.",
+      "lid": "Oferecer acompanhamento nutricional em Campos dos Goytacazes e região, com atendimento acolhedor e atualização profissional, para ajudar a enfrentar dificuldades na alimentação e apoiar hábitos saudáveis de pessoas com diferentes necessidades.",
+      "est": "Oferecer acompanhamento nutricional em Campos dos Goytacazes e região, com estratégias personalizadas que acompanhem mudanças de rotina, para ajudar a enfrentar dificuldades na alimentação e apoiar hábitos saudáveis de pessoas com diferentes necessidades."
+    },
+    "Spa e terapias holísticas": {
+      "mkt": "Oferecer experiências de relaxamento e autocuidado em Campos dos Goytacazes e região, com escuta das preferências e comunicação acolhedora, para criar momentos de pausa na rotina e promover conforto e bem-estar para adultos.",
+      "ops": "Oferecer experiências de relaxamento e autocuidado em Campos dos Goytacazes e região, com ambientes cuidados e atendimentos bem organizados, para criar momentos de pausa na rotina e promover conforto e bem-estar para adultos.",
+      "fin": "Oferecer experiências de relaxamento e autocuidado em Campos dos Goytacazes e região, com serviços de preços claros e gestão responsável, para criar momentos de pausa na rotina e promover conforto e bem-estar para adultos.",
+      "lid": "Oferecer experiências de relaxamento e autocuidado em Campos dos Goytacazes e região, com equipes preparadas e respeito às necessidades individuais, para criar momentos de pausa na rotina e promover conforto e bem-estar para adultos.",
+      "est": "Oferecer experiências de relaxamento e autocuidado em Campos dos Goytacazes e região, com experiências variadas e atenção a novos interesses, para criar momentos de pausa na rotina e promover conforto e bem-estar para adultos."
+    },
+    "Startup de telemedicina": {
+      "mkt": "Conectar pacientes a profissionais de saúde por telemedicina em todo o Brasil, com comunicação acessível e apoio ao paciente, para reduzir barreiras de deslocamento e facilitar o acesso das pessoas à orientação médica.",
+      "ops": "Conectar pacientes a profissionais de saúde por telemedicina em todo o Brasil, com agendamento organizado e proteção das informações, para reduzir barreiras de deslocamento e facilitar o acesso das pessoas à orientação médica.",
+      "fin": "Conectar pacientes a profissionais de saúde por telemedicina em todo o Brasil, com custos transparentes e uso eficiente da estrutura digital, para reduzir barreiras de deslocamento e facilitar o acesso das pessoas à orientação médica.",
+      "lid": "Conectar pacientes a profissionais de saúde por telemedicina em todo o Brasil, com profissionais qualificados e atendimento humanizado, para reduzir barreiras de deslocamento e facilitar o acesso das pessoas à orientação médica.",
+      "est": "Conectar pacientes a profissionais de saúde por telemedicina em todo o Brasil, com tecnologia inclusiva e aperfeiçoamento contínuo do acesso, para reduzir barreiras de deslocamento e facilitar o acesso das pessoas à orientação médica."
+    }
+  },
+  "alimentacao": {
+    "Hamburgueria artesanal": {
+      "mkt": "Preparar e servir hambúrgueres artesanais em Campos dos Goytacazes e região, com escuta dos clientes e apresentação convidativa, para oferecer opções saborosas para encontros e refeições e proporcionar bons momentos a clientes e seus acompanhantes.",
+      "ops": "Preparar e servir hambúrgueres artesanais em Campos dos Goytacazes e região, com ingredientes bem selecionados e preparo padronizado, para oferecer opções saborosas para encontros e refeições e proporcionar bons momentos a clientes e seus acompanhantes.",
+      "fin": "Preparar e servir hambúrgueres artesanais em Campos dos Goytacazes e região, com controle de desperdícios e preços justos, para oferecer opções saborosas para encontros e refeições e proporcionar bons momentos a clientes e seus acompanhantes.",
+      "lid": "Preparar e servir hambúrgueres artesanais em Campos dos Goytacazes e região, com uma equipe valorizada e atendimento acolhedor, para oferecer opções saborosas para encontros e refeições e proporcionar bons momentos a clientes e seus acompanhantes.",
+      "est": "Preparar e servir hambúrgueres artesanais em Campos dos Goytacazes e região, com receitas criativas e atenção a novas preferências, para oferecer opções saborosas para encontros e refeições e proporcionar bons momentos a clientes e seus acompanhantes."
+    },
+    "Confeitaria e doceria": {
+      "mkt": "Produzir bolos e doces em Campos dos Goytacazes e região, com atenção aos pedidos e apresentação cuidadosa, para tornar celebrações e pausas mais especiais e levar sabor e carinho a famílias e pessoas que celebram.",
+      "ops": "Produzir bolos e doces em Campos dos Goytacazes e região, com preparo caprichado e entregas pontuais, para tornar celebrações e pausas mais especiais e levar sabor e carinho a famílias e pessoas que celebram.",
+      "fin": "Produzir bolos e doces em Campos dos Goytacazes e região, com planejamento de ingredientes e preços transparentes, para tornar celebrações e pausas mais especiais e levar sabor e carinho a famílias e pessoas que celebram.",
+      "lid": "Produzir bolos e doces em Campos dos Goytacazes e região, com uma equipe dedicada e atendimento atencioso, para tornar celebrações e pausas mais especiais e levar sabor e carinho a famílias e pessoas que celebram.",
+      "est": "Produzir bolos e doces em Campos dos Goytacazes e região, com novas receitas e opções para diferentes ocasiões, para tornar celebrações e pausas mais especiais e levar sabor e carinho a famílias e pessoas que celebram."
+    },
+    "Food truck gourmet": {
+      "mkt": "Preparar e vender refeições em food truck em Campos dos Goytacazes e região, com divulgação clara dos pontos de atendimento e escuta dos clientes, para ampliar as opções práticas de alimentação e atender quem busca sabor em passeios, eventos e intervalos.",
+      "ops": "Preparar e vender refeições em food truck em Campos dos Goytacazes e região, com preparo organizado e serviço ágil, para ampliar as opções práticas de alimentação e atender quem busca sabor em passeios, eventos e intervalos.",
+      "fin": "Preparar e vender refeições em food truck em Campos dos Goytacazes e região, com controle de custos e redução de desperdícios, para ampliar as opções práticas de alimentação e atender quem busca sabor em passeios, eventos e intervalos.",
+      "lid": "Preparar e vender refeições em food truck em Campos dos Goytacazes e região, com uma equipe integrada e atendimento receptivo, para ampliar as opções práticas de alimentação e atender quem busca sabor em passeios, eventos e intervalos.",
+      "est": "Preparar e vender refeições em food truck em Campos dos Goytacazes e região, com cardápios criativos e presença em novos pontos de encontro, para ampliar as opções práticas de alimentação e atender quem busca sabor em passeios, eventos e intervalos."
+    },
+    "Marca de produtos naturais": {
+      "mkt": "Produzir alimentos com ingredientes naturais em todo o Brasil, com informações claras sobre os ingredientes, para ampliar as opções para uma alimentação variada e facilitar escolhas conscientes de consumidores e famílias.",
+      "ops": "Produzir alimentos com ingredientes naturais em todo o Brasil, com seleção cuidadosa de insumos e controle de qualidade, para ampliar as opções para uma alimentação variada e facilitar escolhas conscientes de consumidores e famílias.",
+      "fin": "Produzir alimentos com ingredientes naturais em todo o Brasil, com produção eficiente e preços transparentes, para ampliar as opções para uma alimentação variada e facilitar escolhas conscientes de consumidores e famílias.",
+      "lid": "Produzir alimentos com ingredientes naturais em todo o Brasil, com equipes capacitadas e fornecedores comprometidos, para ampliar as opções para uma alimentação variada e facilitar escolhas conscientes de consumidores e famílias.",
+      "est": "Produzir alimentos com ingredientes naturais em todo o Brasil, com novas receitas que atendam diferentes preferências, para ampliar as opções para uma alimentação variada e facilitar escolhas conscientes de consumidores e famílias."
+    },
+    "Restaurante temático": {
+      "mkt": "Servir refeições em um ambiente temático em Campos dos Goytacazes e região, com histórias envolventes e diálogo com os clientes, para oferecer experiências de lazer à mesa e criar momentos memoráveis para famílias e grupos de amigos.",
+      "ops": "Servir refeições em um ambiente temático em Campos dos Goytacazes e região, com qualidade no preparo e serviço bem coordenado, para oferecer experiências de lazer à mesa e criar momentos memoráveis para famílias e grupos de amigos.",
+      "fin": "Servir refeições em um ambiente temático em Campos dos Goytacazes e região, com planejamento de compras e opções de bom custo-benefício, para oferecer experiências de lazer à mesa e criar momentos memoráveis para famílias e grupos de amigos.",
+      "lid": "Servir refeições em um ambiente temático em Campos dos Goytacazes e região, com uma equipe acolhedora e integrada, para oferecer experiências de lazer à mesa e criar momentos memoráveis para famílias e grupos de amigos.",
+      "est": "Servir refeições em um ambiente temático em Campos dos Goytacazes e região, com experiências criativas que renovem o interesse dos visitantes, para oferecer experiências de lazer à mesa e criar momentos memoráveis para famílias e grupos de amigos."
+    },
+    "Delivery de refeições saudáveis": {
+      "mkt": "Preparar e entregar refeições equilibradas em Campos dos Goytacazes e região, com cardápios claros e escuta das preferências dos clientes, para facilitar a alimentação saudável na rotina e oferecer praticidade a pessoas com pouco tempo para cozinhar.",
+      "ops": "Preparar e entregar refeições equilibradas em Campos dos Goytacazes e região, com qualidade no preparo e pontualidade nas entregas, para facilitar a alimentação saudável na rotina e oferecer praticidade a pessoas com pouco tempo para cozinhar.",
+      "fin": "Preparar e entregar refeições equilibradas em Campos dos Goytacazes e região, com redução de desperdícios e planos de preços transparentes, para facilitar a alimentação saudável na rotina e oferecer praticidade a pessoas com pouco tempo para cozinhar.",
+      "lid": "Preparar e entregar refeições equilibradas em Campos dos Goytacazes e região, com uma equipe capacitada e valorizada, para facilitar a alimentação saudável na rotina e oferecer praticidade a pessoas com pouco tempo para cozinhar.",
+      "est": "Preparar e entregar refeições equilibradas em Campos dos Goytacazes e região, com cardápios variados e soluções para diferentes rotinas, para facilitar a alimentação saudável na rotina e oferecer praticidade a pessoas com pouco tempo para cozinhar."
+    }
+  },
+  "moda": {
+    "Loja de roupas autorais": {
+      "mkt": "Criar e vender roupas autorais em Campos dos Goytacazes e região, com diálogo sobre estilos e apresentação inspiradora, para ampliar as possibilidades de expressão pessoal e ajudar clientes a vestir sua identidade com conforto.",
+      "ops": "Criar e vender roupas autorais em Campos dos Goytacazes e região, com acabamento cuidadoso e organização dos pedidos, para ampliar as possibilidades de expressão pessoal e ajudar clientes a vestir sua identidade com conforto.",
+      "fin": "Criar e vender roupas autorais em Campos dos Goytacazes e região, com uso eficiente de tecidos e preços transparentes, para ampliar as possibilidades de expressão pessoal e ajudar clientes a vestir sua identidade com conforto.",
+      "lid": "Criar e vender roupas autorais em Campos dos Goytacazes e região, com valorização dos criadores e atendimento acolhedor, para ampliar as possibilidades de expressão pessoal e ajudar clientes a vestir sua identidade com conforto.",
+      "est": "Criar e vender roupas autorais em Campos dos Goytacazes e região, com coleções originais e atenção a novos comportamentos, para ampliar as possibilidades de expressão pessoal e ajudar clientes a vestir sua identidade com conforto."
+    },
+    "Marca de cosméticos": {
+      "mkt": "Desenvolver cosméticos em todo o Brasil, com informações claras e escuta dos consumidores, para atender diferentes necessidades de cuidado pessoal e apoiar o autocuidado de consumidores com diferentes perfis.",
+      "ops": "Desenvolver cosméticos em todo o Brasil, com controle de qualidade e atenção à segurança dos produtos, para atender diferentes necessidades de cuidado pessoal e apoiar o autocuidado de consumidores com diferentes perfis.",
+      "fin": "Desenvolver cosméticos em todo o Brasil, com produção eficiente e preços transparentes, para atender diferentes necessidades de cuidado pessoal e apoiar o autocuidado de consumidores com diferentes perfis.",
+      "lid": "Desenvolver cosméticos em todo o Brasil, com equipes qualificadas e respeito à diversidade, para atender diferentes necessidades de cuidado pessoal e apoiar o autocuidado de consumidores com diferentes perfis.",
+      "est": "Desenvolver cosméticos em todo o Brasil, com pesquisa e desenvolvimento de novas soluções de cuidado, para atender diferentes necessidades de cuidado pessoal e apoiar o autocuidado de consumidores com diferentes perfis."
+    },
+    "Ateliê de acessórios": {
+      "mkt": "Criar acessórios artesanais em Campos dos Goytacazes e região, com atenção às preferências e diálogo sobre cada criação, para oferecer peças que expressem diferentes estilos e valorizar a identidade de quem busca detalhes únicos.",
+      "ops": "Criar acessórios artesanais em Campos dos Goytacazes e região, com acabamento cuidadoso e cumprimento dos prazos, para oferecer peças que expressem diferentes estilos e valorizar a identidade de quem busca detalhes únicos.",
+      "fin": "Criar acessórios artesanais em Campos dos Goytacazes e região, com aproveitamento de materiais e preços justos, para oferecer peças que expressem diferentes estilos e valorizar a identidade de quem busca detalhes únicos.",
+      "lid": "Criar acessórios artesanais em Campos dos Goytacazes e região, com valorização do trabalho artesanal e atendimento próximo, para oferecer peças que expressem diferentes estilos e valorizar a identidade de quem busca detalhes únicos.",
+      "est": "Criar acessórios artesanais em Campos dos Goytacazes e região, com combinações originais de materiais e formas, para oferecer peças que expressem diferentes estilos e valorizar a identidade de quem busca detalhes únicos."
+    },
+    "Grife de streetwear": {
+      "mkt": "Criar roupas de streetwear em todo o Brasil, com diálogo com a comunidade e comunicação autêntica, para dar espaço à expressão da cultura urbana e fortalecer a identidade de jovens e comunidades criativas.",
+      "ops": "Criar roupas de streetwear em todo o Brasil, com conforto, bom acabamento e entregas organizadas, para dar espaço à expressão da cultura urbana e fortalecer a identidade de jovens e comunidades criativas.",
+      "fin": "Criar roupas de streetwear em todo o Brasil, com produção planejada e preços coerentes com a qualidade, para dar espaço à expressão da cultura urbana e fortalecer a identidade de jovens e comunidades criativas.",
+      "lid": "Criar roupas de streetwear em todo o Brasil, com colaboração entre artistas e valorização das equipes, para dar espaço à expressão da cultura urbana e fortalecer a identidade de jovens e comunidades criativas.",
+      "est": "Criar roupas de streetwear em todo o Brasil, com coleções experimentais e atenção aos movimentos culturais, para dar espaço à expressão da cultura urbana e fortalecer a identidade de jovens e comunidades criativas."
+    },
+    "Salão de beleza e estética": {
+      "mkt": "Oferecer serviços de beleza e estética em Campos dos Goytacazes e região, com escuta das preferências e orientação clara, para atender necessidades de cuidado com a aparência e promover bem-estar e expressão pessoal para os clientes.",
+      "ops": "Oferecer serviços de beleza e estética em Campos dos Goytacazes e região, com higiene, organização e cuidado em cada atendimento, para atender necessidades de cuidado com a aparência e promover bem-estar e expressão pessoal para os clientes.",
+      "fin": "Oferecer serviços de beleza e estética em Campos dos Goytacazes e região, com preços transparentes e uso responsável dos materiais, para atender necessidades de cuidado com a aparência e promover bem-estar e expressão pessoal para os clientes.",
+      "lid": "Oferecer serviços de beleza e estética em Campos dos Goytacazes e região, com profissionais capacitados e respeito à individualidade, para atender necessidades de cuidado com a aparência e promover bem-estar e expressão pessoal para os clientes.",
+      "est": "Oferecer serviços de beleza e estética em Campos dos Goytacazes e região, com técnicas atualizadas e serviços adaptados a novos interesses, para atender necessidades de cuidado com a aparência e promover bem-estar e expressão pessoal para os clientes."
+    },
+    "Marca de calçados": {
+      "mkt": "Desenvolver calçados em todo o Brasil, com escuta dos consumidores e informações claras sobre os modelos, para atender necessidades de conforto no dia a dia e acompanhar a rotina de pessoas com diferentes estilos.",
+      "ops": "Desenvolver calçados em todo o Brasil, com materiais bem selecionados e controle de acabamento, para atender necessidades de conforto no dia a dia e acompanhar a rotina de pessoas com diferentes estilos.",
+      "fin": "Desenvolver calçados em todo o Brasil, com produção eficiente e opções de bom custo-benefício, para atender necessidades de conforto no dia a dia e acompanhar a rotina de pessoas com diferentes estilos.",
+      "lid": "Desenvolver calçados em todo o Brasil, com equipes qualificadas e valorização dos parceiros, para atender necessidades de conforto no dia a dia e acompanhar a rotina de pessoas com diferentes estilos.",
+      "est": "Desenvolver calçados em todo o Brasil, com novos materiais e designs voltados a diferentes usos, para atender necessidades de conforto no dia a dia e acompanhar a rotina de pessoas com diferentes estilos."
+    }
+  },
+  "sustentabilidade": {
+    "Empresa de reciclagem": {
+      "mkt": "Coletar e encaminhar materiais para reciclagem em Campos dos Goytacazes e região, com orientação clara sobre separação e mobilização da comunidade, para reduzir o descarte inadequado de resíduos e beneficiar moradores, empresas e trabalhadores da reciclagem.",
+      "ops": "Coletar e encaminhar materiais para reciclagem em Campos dos Goytacazes e região, com coleta organizada e destinação responsável, para reduzir o descarte inadequado de resíduos e beneficiar moradores, empresas e trabalhadores da reciclagem.",
+      "fin": "Coletar e encaminhar materiais para reciclagem em Campos dos Goytacazes e região, com rotas eficientes e parcerias economicamente viáveis, para reduzir o descarte inadequado de resíduos e beneficiar moradores, empresas e trabalhadores da reciclagem.",
+      "lid": "Coletar e encaminhar materiais para reciclagem em Campos dos Goytacazes e região, com valorização dos trabalhadores e cooperação entre parceiros, para reduzir o descarte inadequado de resíduos e beneficiar moradores, empresas e trabalhadores da reciclagem.",
+      "est": "Coletar e encaminhar materiais para reciclagem em Campos dos Goytacazes e região, com novas soluções de coleta e aproveitamento de materiais, para reduzir o descarte inadequado de resíduos e beneficiar moradores, empresas e trabalhadores da reciclagem."
+    },
+    "Marca de produtos biodegradáveis": {
+      "mkt": "Produzir itens biodegradáveis em todo o Brasil, com informações claras sobre uso e condições de descarte, para ampliar alternativas aos materiais de difícil decomposição e apoiar escolhas de menor impacto para consumidores e empresas.",
+      "ops": "Produzir itens biodegradáveis em todo o Brasil, com controle de qualidade e seleção criteriosa de materiais, para ampliar alternativas aos materiais de difícil decomposição e apoiar escolhas de menor impacto para consumidores e empresas.",
+      "fin": "Produzir itens biodegradáveis em todo o Brasil, com produção eficiente e preços transparentes, para ampliar alternativas aos materiais de difícil decomposição e apoiar escolhas de menor impacto para consumidores e empresas.",
+      "lid": "Produzir itens biodegradáveis em todo o Brasil, com equipes capacitadas e fornecedores responsáveis, para ampliar alternativas aos materiais de difícil decomposição e apoiar escolhas de menor impacto para consumidores e empresas.",
+      "est": "Produzir itens biodegradáveis em todo o Brasil, com pesquisa de materiais e desenvolvimento de novas aplicações, para ampliar alternativas aos materiais de difícil decomposição e apoiar escolhas de menor impacto para consumidores e empresas."
+    },
+    "Consultoria em energia solar": {
+      "mkt": "Orientar projetos de energia solar em Campos dos Goytacazes e região, com explicações claras e diálogo sobre as necessidades dos clientes, para facilitar a adoção de fontes renováveis e ajudar famílias e empresas a fazer escolhas energéticas conscientes.",
+      "ops": "Orientar projetos de energia solar em Campos dos Goytacazes e região, com avaliação técnica cuidadosa e planejamento da implantação, para facilitar a adoção de fontes renováveis e ajudar famílias e empresas a fazer escolhas energéticas conscientes.",
+      "fin": "Orientar projetos de energia solar em Campos dos Goytacazes e região, com análise de viabilidade e estimativas transparentes de custos, para facilitar a adoção de fontes renováveis e ajudar famílias e empresas a fazer escolhas energéticas conscientes.",
+      "lid": "Orientar projetos de energia solar em Campos dos Goytacazes e região, com profissionais capacitados e cooperação entre parceiros, para facilitar a adoção de fontes renováveis e ajudar famílias e empresas a fazer escolhas energéticas conscientes.",
+      "est": "Orientar projetos de energia solar em Campos dos Goytacazes e região, com soluções atualizadas e atenção a novas possibilidades de uso, para facilitar a adoção de fontes renováveis e ajudar famílias e empresas a fazer escolhas energéticas conscientes."
+    },
+    "Horta urbana e agricultura sustentável": {
+      "mkt": "Cultivar e comercializar hortaliças em Campos dos Goytacazes e região, com diálogo com os consumidores e informação sobre o cultivo, para aproximar alimentos frescos da comunidade e ampliar o acesso de famílias e restaurantes à produção local.",
+      "ops": "Cultivar e comercializar hortaliças em Campos dos Goytacazes e região, com manejo cuidadoso do solo e planejamento das colheitas, para aproximar alimentos frescos da comunidade e ampliar o acesso de famílias e restaurantes à produção local.",
+      "fin": "Cultivar e comercializar hortaliças em Campos dos Goytacazes e região, com redução de perdas e uso eficiente de água e insumos, para aproximar alimentos frescos da comunidade e ampliar o acesso de famílias e restaurantes à produção local.",
+      "lid": "Cultivar e comercializar hortaliças em Campos dos Goytacazes e região, com cooperação entre produtores e valorização do trabalho local, para aproximar alimentos frescos da comunidade e ampliar o acesso de famílias e restaurantes à produção local.",
+      "est": "Cultivar e comercializar hortaliças em Campos dos Goytacazes e região, com técnicas sustentáveis e novas formas de distribuição, para aproximar alimentos frescos da comunidade e ampliar o acesso de famílias e restaurantes à produção local."
+    },
+    "Startup de economia circular": {
+      "mkt": "Criar soluções de reaproveitamento de materiais em todo o Brasil, com conexão entre parceiros e comunicação clara sobre o reaproveitamento, para reduzir desperdícios e prolongar a vida dos recursos e ajudar empresas e comunidades a transformar resíduos em oportunidades.",
+      "ops": "Criar soluções de reaproveitamento de materiais em todo o Brasil, com rastreabilidade dos materiais e processos bem organizados, para reduzir desperdícios e prolongar a vida dos recursos e ajudar empresas e comunidades a transformar resíduos em oportunidades.",
+      "fin": "Criar soluções de reaproveitamento de materiais em todo o Brasil, com modelos economicamente viáveis e redução de perdas, para reduzir desperdícios e prolongar a vida dos recursos e ajudar empresas e comunidades a transformar resíduos em oportunidades.",
+      "lid": "Criar soluções de reaproveitamento de materiais em todo o Brasil, com equipes colaborativas e inclusão de parceiros locais, para reduzir desperdícios e prolongar a vida dos recursos e ajudar empresas e comunidades a transformar resíduos em oportunidades.",
+      "est": "Criar soluções de reaproveitamento de materiais em todo o Brasil, com novos usos para materiais e modelos de negócio circulares, para reduzir desperdícios e prolongar a vida dos recursos e ajudar empresas e comunidades a transformar resíduos em oportunidades."
+    },
+    "Marca de moda sustentável": {
+      "mkt": "Criar roupas com materiais e processos de menor impacto em todo o Brasil, com transparência sobre a origem das peças e diálogo com os clientes, para reduzir desperdícios na produção de moda e oferecer escolhas responsáveis a consumidores e valorizar quem produz.",
+      "ops": "Criar roupas com materiais e processos de menor impacto em todo o Brasil, com aproveitamento de tecidos e controle da qualidade, para reduzir desperdícios na produção de moda e oferecer escolhas responsáveis a consumidores e valorizar quem produz.",
+      "fin": "Criar roupas com materiais e processos de menor impacto em todo o Brasil, com planejamento de produção e preços transparentes, para reduzir desperdícios na produção de moda e oferecer escolhas responsáveis a consumidores e valorizar quem produz.",
+      "lid": "Criar roupas com materiais e processos de menor impacto em todo o Brasil, com valorização dos trabalhadores e parcerias responsáveis, para reduzir desperdícios na produção de moda e oferecer escolhas responsáveis a consumidores e valorizar quem produz.",
+      "est": "Criar roupas com materiais e processos de menor impacto em todo o Brasil, com design durável e novas formas de reutilizar materiais, para reduzir desperdícios na produção de moda e oferecer escolhas responsáveis a consumidores e valorizar quem produz."
+    }
+  }
+};
 
     const ESTILOS = {
       analitico: 'E o seu jeito de decidir é olhando pros números: você confia em dados antes de dar o próximo passo.',
@@ -2361,7 +2580,7 @@
         // "Ltda."/"S.A." bem no final da frase do slogan.
         const sloganFinal = perfil.slogan.replace('{nome}', nomeEmpresa).replace(/\.\.+/g, '.');
         const ramo = escolherAleatorio(RAMOS[setorChave]);
-        const missao = 'Missão: ser referência em ' + descapitalizar(ramo) + ', com o compromisso de ' + perfil.missaoQualificador + '.';
+        const missao = 'Missão: ' + MISSOES[setorChave][ramo][perfilChave];
         const registroFicticio = gerarRegistroFicticio();
         const dataFundacao = new Date().toLocaleDateString('pt-BR', { day: 'numeric', month: 'long', year: 'numeric' });
 

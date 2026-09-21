@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Meu card — Ise por um Dia 2026</title>
+<title>Meu card — Crie sua Empresa em 1 Minuto</title>
 <link rel="icon" type="image/png" href="./favicon.png">
 <meta name="robots" content="noindex, nofollow">
 <style>
@@ -159,7 +159,7 @@
 </head>
 <body>
   <div class="pagina">
-    <div class="marca-topo">🎓 Ise por um Dia 2026 · Curso de Administração</div>
+    <div class="marca-topo">🎓 Crie sua Empresa em 1 Minuto · Curso de Administração</div>
 
     <!-- ================= TELA: erro (link inválido/expirado) ================= -->
     <section class="tela" id="tela-erro">
@@ -190,7 +190,7 @@
     <section class="tela" id="tela-final">
       <h1>Seu card ficou assim!</h1>
       <div class="card-final-wrap">
-        <img id="img-card-final" alt="Card personalizado do Ise por um Dia 2026">
+        <img id="img-card-final" alt="Card personalizado do Crie sua Empresa em 1 Minuto">
       </div>
       <div class="acoes-final">
         <button class="btn-acao btn-acao--principal" id="btn-baixar" type="button">⬇️ Baixar imagem</button>
@@ -554,7 +554,7 @@
         desenharTextoComQuebra(ctx.textAlign === 'left' ? ctx : ctx, dadosCard.s || '', textoX, yNome + 40, larguraTexto, 30);
         // (desenharTextoComQuebra usa fillText com textAlign atual = 'left', ok)
 
-        // ---- "Eu participei do Ise por Um Dia - 2026 do ISECENSA." ----
+        // ---- "Eu participei do Crie sua Empresa em 1 Minuto do ISECENSA." ----
         let yBloco = yCartaoEmpresa + alturaCartaoEmpresa + 78;
         ctx.textAlign = 'center';
         ctx.fillStyle = '#10224a';
@@ -563,7 +563,7 @@
         yBloco += 52;
         ctx.fillStyle = '#0E3880';
         ctx.font = '800 40px Inter, Arial, sans-serif';
-        ctx.fillText('Ise por Um Dia · 2026', L / 2, yBloco);
+        ctx.fillText('Crie sua Empresa em 1 Minuto', L / 2, yBloco);
         yBloco += 46;
         ctx.fillStyle = '#10224a';
         ctx.font = '500 28px Inter, Arial, sans-serif';
@@ -634,7 +634,7 @@
         ctx.fillStyle = '#536383';
         ctx.font = 'italic 500 26px Inter, Arial, sans-serif';
         ctx.textAlign = 'center';
-        ctx.fillText('#IseporUmDia2026 · #ISECENSA', L / 2, ALTURA_CONTEUDO - 50);
+        ctx.fillText('#CrieSuaEmpresa · #ISECENSA', L / 2, ALTURA_CONTEUDO - 50);
 
         ctx.restore();
 
@@ -676,7 +676,7 @@
       const dataUrl = document.getElementById('img-card-final').src;
       const link = document.createElement('a');
       link.href = dataUrl;
-      link.download = 'meu-card-ise-por-um-dia-2026.png';
+      link.download = 'meu-card-crie-sua-empresa.png';
       document.body.appendChild(link);
       link.click();
       document.body.removeChild(link);
@@ -688,15 +688,15 @@
       if (!navigator.share || !navigator.canShare) return;
 
       fetch(dataUrl).then(function (resp) { return resp.blob(); }).then(function (blob) {
-        const arquivo = new File([blob], 'meu-card-ise-por-um-dia-2026.png', { type: 'image/png' });
+        const arquivo = new File([blob], 'meu-card-crie-sua-empresa.png', { type: 'image/png' });
         if (!navigator.canShare({ files: [arquivo] })) return;
 
         btnCompartilhar.style.display = 'inline-block';
         btnCompartilhar.onclick = function () {
           navigator.share({
             files: [arquivo],
-            title: 'Meu card — Ise por um Dia 2026',
-            text: 'Eu participei do Ise por um Dia do ISECENSA! 🎓'
+            title: 'Meu card — Crie sua Empresa em 1 Minuto',
+            text: 'Eu participei do Crie sua Empresa em 1 Minuto do ISECENSA! 🎓'
           }).catch(function () { /* usuário cancelou o compartilhamento, tudo bem */ });
         };
       }).catch(function (erro) {

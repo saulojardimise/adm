@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="robots" content="noindex, nofollow">
-<title>Painel de Cadastros — Ise por um dia</title>
+<title>Painel de Cadastros — Crie sua Empresa em 1 Minuto</title>
 <link rel="icon" type="image/png" href="./favicon.png">
 
 <!--
@@ -342,7 +342,7 @@
     <form class="cartao-login" id="form-senha">
       <div class="cadeado" aria-hidden="true">🔒</div>
       <h1>Painel de Cadastros</h1>
-      <p>Ise por um dia • 2026 — acesso restrito. Digite a senha para ver os dados dos alunos cadastrados.</p>
+      <p>Acesso restrito. Digite a senha para ver os dados dos alunos cadastrados.</p>
       <div class="campo-senha-wrap">
         <label for="campo-senha">Senha</label>
         <input id="campo-senha" type="password" autocomplete="off" placeholder="Digite a senha" required>
@@ -356,7 +356,7 @@
   <div class="tela-painel" id="tela-painel">
     <div class="painel-topo">
       <div class="painel-titulo">
-        <h1>Cadastros — Ise por um dia 2026</h1>
+        <h1>Cadastros — Crie sua Empresa em 1 Minuto</h1>
         <p>Dados enviados pelos alunos na experiência "Crie sua empresa em 1 minuto".</p>
       </div>
       <div class="painel-acoes">
@@ -588,7 +588,7 @@
       const livro = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(livro, planilha, 'Cadastros');
       const dataArquivo = new Date().toISOString().slice(0, 10);
-      XLSX.writeFile(livro, 'cadastros-ise-por-um-dia-' + dataArquivo + '.xlsx');
+      XLSX.writeFile(livro, 'cadastros-crie-sua-empresa-' + dataArquivo + '.xlsx');
     });
 
     // Se já tinha entrado nesta mesma aba antes (sessionStorage), entra
