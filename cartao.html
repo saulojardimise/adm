@@ -75,7 +75,7 @@
     font-size: 56px;
   }
 
-  label.btn-camera {
+  .btn-camera {
     margin-top: 22px;
     width: 100%;
     display: inline-flex;
@@ -93,7 +93,7 @@
     border: none;
   }
 
-  label.btn-camera:active { background: var(--azul-escuro); }
+  .btn-camera:active { background: var(--azul-escuro); }
 
   input[type="file"] { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
 
@@ -161,12 +161,16 @@
   <div class="pagina">
     <div class="marca-topo">🎓 Crie sua Empresa em 1 Minuto · Curso de Administração</div>
 
+    <nav class="navegacao-card" id="navegacao-card" hidden>
+      <a href="./index.html#resultado" id="btn-voltar-resultado">← Voltar ao resultado</a>
+      <a href="./index.html" id="btn-nova-experiencia">Iniciar nova experiência</a>
+    </nav>
     <!-- ================= TELA: erro (link inválido/expirado) ================= -->
     <section class="tela" id="tela-erro">
       <div class="erro-caixa">
         <div class="emoji">😕</div>
         <h1>Não achamos os dados do seu card</h1>
-        <p>Esse link parece incompleto ou expirado. Volte na tela de revelação do totem e escaneie o QR code de novo.</p>
+        <p>Esse link parece incompleto ou expirado. Volte ao resultado e abra a etapa da foto novamente, ou escaneie o QR code.</p>
       </div>
     </section>
 
@@ -175,9 +179,18 @@
       <div class="icone-camera">📸</div>
       <h1 id="titulo-camera">Hora da sua foto!</h1>
       <p class="subtitulo" id="subtitulo-camera"></p>
-      <label class="btn-camera" for="input-foto">📷 Tirar minha foto</label>
+      <button class="btn-camera" id="btn-abrir-camera" type="button">📷 Abrir câmera deste aparelho</button>
+      <div class="camera-preview" id="camera-preview" hidden>
+        <video id="video-camera" autoplay muted playsinline aria-label="Prévia da câmera"></video>
+        <div class="camera-acoes">
+          <button class="btn-acao btn-acao--principal" id="btn-capturar" type="button" disabled>Tirar foto</button>
+          <button class="btn-acao btn-acao--terciaria" id="btn-cancelar-camera" type="button">Cancelar</button>
+        </div>
+      </div>
+      <p class="camera-mensagem" id="camera-mensagem" role="status" aria-live="polite"></p>
+      <label class="btn-camera" for="input-foto">Escolher foto ou usar a câmera do celular</label>
       <input type="file" accept="image/*" capture="user" id="input-foto">
-      <p class="aviso-privacidade">Sua foto é usada só aqui, no seu celular, para montar a imagem do card. Ela não é enviada nem guardada em nenhum servidor.</p>
+      <p class="aviso-privacidade">Sua foto é usada apenas neste aparelho, para montar a imagem do card. Ela não é enviada nem guardada em nenhum servidor.</p>
     </section>
 
     <!-- ================= TELA: processando ================= -->
@@ -642,29 +655,115 @@
       });
     }
 
-    // ---------- 5) Fluxo: escolher/tirar foto → montar → mostrar ----------
+    // A câmera e a composição da imagem funcionam apenas neste aparelho.
+    const videoCamera = document.getElementById('video-camera');
+    const btnAbrirCamera = document.getElementById('btn-abrir-camera');
+    const btnCapturar = document.getElementById('btn-capturar');
+    const mensagemCamera = document.getElementById('camera-mensagem');
+    let streamCamera = null;
+    let pedidoCamera = 0;
+
+    function pararCamera() {
+      pedidoCamera += 1;
+      if (streamCamera) streamCamera.getTracks().forEach(function (track) { track.stop(); });
+      streamCamera = null;
+      videoCamera.srcObject = null;
+      document.getElementById('camera-preview').hidden = true;
+      btnCapturar.disabled = true;
+      btnAbrirCamera.disabled = false;
+    }
+
+    async function abrirCamera() {
+      if (!dadosCard) return;
+      pararCamera();
+      mensagemCamera.textContent = '';
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        mensagemCamera.textContent = 'A câmera não está disponível neste navegador. Use a opção de escolher foto abaixo ou acesse o site por HTTPS.';
+        return;
+      }
+      const pedido = pedidoCamera;
+      btnAbrirCamera.disabled = true;
+      mensagemCamera.textContent = 'Permita o acesso à câmera para continuar.';
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+        if (pedido !== pedidoCamera) { stream.getTracks().forEach(function (track) { track.stop(); }); return; }
+        streamCamera = stream;
+        videoCamera.srcObject = stream;
+        document.getElementById('camera-preview').hidden = false;
+        await videoCamera.play();
+        if (pedido !== pedidoCamera) return;
+        btnCapturar.disabled = !(videoCamera.videoWidth && videoCamera.videoHeight);
+        mensagemCamera.textContent = 'Enquadre o rosto e toque em Tirar foto.';
+      } catch (erro) {
+        if (pedido !== pedidoCamera) return;
+        pararCamera();
+        mensagemCamera.textContent = 'Não foi possível abrir a câmera. Confira a permissão do navegador ou escolha uma foto abaixo.';
+      }
+    }
+    videoCamera.addEventListener('loadeddata', function () {
+      btnCapturar.disabled = !(streamCamera && videoCamera.videoWidth && videoCamera.videoHeight);
+    });
+    btnAbrirCamera.addEventListener('click', abrirCamera);
+    document.getElementById('btn-cancelar-camera').addEventListener('click', function () {
+      pararCamera(); mensagemCamera.textContent = '';
+    });
+    window.addEventListener('pagehide', pararCamera);
+    document.addEventListener('visibilitychange', function () {
+      if (document.hidden) pararCamera();
+    });
+
+    async function concluirFoto(imagem) {
+      pararCamera();
+      mostrarTela('tela-processando-foto');
+      try {
+        const dataUrl = await montarCard(imagem);
+        document.getElementById('img-card-final').src = dataUrl;
+        prepararCompartilhamento(dataUrl);
+        mostrarTela('tela-final');
+      } catch (erro) {
+        mensagemCamera.textContent = 'Não foi possível montar o card. Escolha outra foto e tente novamente.';
+        mostrarTela('tela-camera');
+      }
+    }
+    btnCapturar.addEventListener('click', function () {
+      if (!streamCamera || !videoCamera.videoWidth || !videoCamera.videoHeight) return;
+      const foto = document.createElement('canvas');
+      // Limita o tamanho da captura para evitar imagens excessivamente grandes.
+      const escala = Math.min(1, 1600 / Math.max(videoCamera.videoWidth, videoCamera.videoHeight));
+      foto.width = Math.round(videoCamera.videoWidth * escala);
+      foto.height = Math.round(videoCamera.videoHeight * escala);
+      const ctx = foto.getContext('2d');
+      ctx.translate(foto.width, 0);
+      ctx.scale(-1, 1);
+      ctx.drawImage(videoCamera, 0, 0, foto.width, foto.height);
+      concluirFoto(foto);
+    });
     document.getElementById('input-foto').addEventListener('change', function (evento) {
       const arquivo = evento.target.files && evento.target.files[0];
-      if (!arquivo) return;
-
+      if (!arquivo || !dadosCard) return;
+      pararCamera();
+      mensagemCamera.textContent = '';
       mostrarTela('tela-processando-foto');
-
       const leitor = new FileReader();
+      function falhaFoto() {
+        mensagemCamera.textContent = 'Não foi possível ler esta foto. Escolha outra imagem.';
+        mostrarTela('tela-camera');
+      }
+      leitor.onerror = falhaFoto;
       leitor.onload = function () {
         const imgFoto = new Image();
-        imgFoto.onload = function () {
-          montarCard(imgFoto).then(function (dataUrl) {
-            document.getElementById('img-card-final').src = dataUrl;
-            prepararCompartilhamento(dataUrl);
-            mostrarTela('tela-final');
-          }).catch(function (erro) {
-            console.error('Falha ao montar o card:', erro);
-            mostrarTela('tela-camera');
-          });
-        };
+        imgFoto.onload = function () { concluirFoto(imgFoto); };
+        imgFoto.onerror = falhaFoto;
         imgFoto.src = leitor.result;
       };
       leitor.readAsDataURL(arquivo);
+    });
+    if (new URLSearchParams(location.search).get('origem') === 'app') {
+      document.getElementById('navegacao-card').hidden = false;
+    }
+    document.getElementById('btn-nova-experiencia').addEventListener('click', function () {
+      pararCamera();
+      ['ise_aluno', 'ise_resultado', 'ise_sessao_id'].forEach(function (key) { sessionStorage.removeItem(key); });
     });
 
     document.getElementById('btn-outra-foto').addEventListener('click', function () {

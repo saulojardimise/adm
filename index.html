@@ -1558,6 +1558,7 @@
         transition: none !important;
       }
     }
+    #btn-foto-aparelho[hidden] { display: none !important; }
   </style>
 </head>
 
@@ -1658,47 +1659,16 @@
               </div>
 
               <div class="campo">
-                <label for="email">E-mail <span class="obrigatorio">*</span></label>
-                <input id="email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="seuemail@exemplo.com" required>
-              </div>
-
-              <div class="campo campo--inteiro">
-                <span class="grupo-label">Sexo <span class="obrigatorio">*</span></span>
-                <div class="sexo-opcoes" role="radiogroup" aria-label="Sexo">
-                  <div class="radio-card">
-                    <input id="sexo-feminino" type="radio" name="sexo" value="Feminino" required>
-                    <label for="sexo-feminino">Feminino</label>
-                  </div>
-                  <div class="radio-card">
-                    <input id="sexo-masculino" type="radio" name="sexo" value="Masculino">
-                    <label for="sexo-masculino">Masculino</label>
-                  </div>
-                  <div class="radio-card">
-                    <input id="sexo-outro" type="radio" name="sexo" value="Outro">
-                    <label for="sexo-outro">Outro</label>
-                  </div>
-                  <div class="radio-card">
-                    <input id="sexo-nao-informar" type="radio" name="sexo" value="Prefiro não informar">
-                    <label for="sexo-nao-informar">Prefiro não informar</label>
-                  </div>
-                </div>
-              </div>
-
-              <div class="campo">
                 <label for="escola">Escola <span class="obrigatorio">*</span></label>
                 <input id="escola" name="escola" type="text" autocomplete="organization" placeholder="Nome da sua escola" required>
               </div>
 
-              <div class="campo">
+              <div class="campo campo--inteiro">
                 <label for="serie">Série / Ano <span class="obrigatorio">*</span></label>
                 <select id="serie" name="serie" required>
                   <option value="" selected disabled>Selecione</option>
-                  <option>8º ano do Ensino Fundamental</option>
-                  <option>9º ano do Ensino Fundamental</option>
-                  <option>1º ano do Ensino Médio</option>
-                  <option>2º ano do Ensino Médio</option>
                   <option>3º ano do Ensino Médio</option>
-                  <option>Ensino Médio concluído</option>
+                  <option value="Ensino Médio concluído">Ensino Médio completo</option>
                   <option>Outro</option>
                 </select>
               </div>
@@ -1796,10 +1766,11 @@
 
         <div class="revelacao-cartao-cta">
           <div class="revelacao-cartao-titulo">📸 Tire sua foto e gere seu card</div>
-          <p class="revelacao-cartao-texto">Aponte a câmera do seu celular para o QR code abaixo. Ele abre a câmera do seu próprio aparelho, você tira a foto e o card com sua empresa é montado na hora — pronto pra postar.</p>
+          <p class="revelacao-cartao-texto">Tire sua foto neste aparelho ou escaneie o QR code para continuar no seu celular. Seu card fica pronto para baixar e compartilhar.</p>
+          <a class="btn-touque" id="btn-foto-aparelho" hidden style="margin:16px 0;text-decoration:none;">📷 Tirar foto neste aparelho</a>
           <div class="revelacao-cartao-qr-caixa" id="qr-cartao"></div>
           <a class="revelacao-cartao-fallback" id="link-cartao-manual" style="display:none;" target="_blank" rel="noopener">Abrir no celular</a>
-          <p class="revelacao-cartao-privacidade">Sua foto é processada só no seu celular — ela não é enviada pra nenhum servidor.</p>
+          <p class="revelacao-cartao-privacidade">Sua foto é processada apenas no aparelho utilizado e não é enviada a nenhum servidor.</p>
         </div>
 
         <div class="revelacao-acoes">
@@ -2012,8 +1983,6 @@
         sessao_id: dados.sessao_id,
         nome: dados.nome,
         telefone: dados.telefone,
-        email: dados.email,
-        sexo: dados.sexo,
         escola: dados.escola,
         serie: dados.serie,
         consentimento: dados.consentimento,
@@ -2587,20 +2556,6 @@
         const dadosAluno = JSON.parse(sessionStorage.getItem('ise_aluno') || '{}');
         const nomeFundador = dadosAluno.nome || 'Futuro(a) Administrador(a)';
 
-        document.getElementById('revelacao-animal').textContent = perfil.emoji;
-        document.getElementById('revelacao-nome').textContent = nomeEmpresa;
-        document.getElementById('revelacao-slogan').textContent = sloganFinal;
-        document.getElementById('revelacao-setor').textContent = SETORES[setorChave].tag;
-        document.getElementById('revelacao-ramo').textContent = ramo;
-        document.getElementById('revelacao-perfil-titulo').textContent = 'Seu DNA de Administrador: ' + perfil.nome;
-        document.getElementById('revelacao-dna').textContent = perfil.frase + ' ' + ESTILOS[estiloChave];
-        document.getElementById('revelacao-missao').textContent = missao;
-        document.getElementById('revelacao-fundador').textContent = nomeFundador;
-        document.getElementById('revelacao-cargo').textContent = CARGO_PADRAO;
-        document.getElementById('revelacao-data').textContent = dataFundacao;
-        document.getElementById('revelacao-registro').textContent = registroFicticio + ' (fictício)';
-        renderizarDnaLista(calculo.pontos);
-
         const empresaGerada = {
           nome: nomeEmpresa,
           setor: setorChave,
@@ -2618,9 +2573,7 @@
         };
 
         salvarResultadoPerguntas(calculo.respostas, calculo.pontos, empresaGerada);
-        gerarQrCartao(empresaGerada);
-
-        mostrarTela('tela-revelacao');
+        exibirResultado(empresaGerada, calculo.pontos);
       }, 1400);
     }
 
@@ -2628,11 +2581,33 @@
     // própria URL (nada é lido do banco aqui) e desenha o QR code na tela
     // de revelação. Se a biblioteca do QR não carregar (ex.: sem internet
     // no totem), cai num link/botão manual pra não travar a experiência.
+    function exibirResultado(empresa, pontos) {
+      const perfil = PERFIS[empresa.perfil];
+      document.getElementById('revelacao-animal').textContent = perfil.emoji;
+      document.getElementById('revelacao-nome').textContent = empresa.nome;
+      document.getElementById('revelacao-slogan').textContent = empresa.slogan;
+      document.getElementById('revelacao-setor').textContent = SETORES[empresa.setor].tag;
+      document.getElementById('revelacao-ramo').textContent = empresa.ramo;
+      document.getElementById('revelacao-perfil-titulo').textContent = 'Seu DNA de Administrador: ' + perfil.nome;
+      document.getElementById('revelacao-dna').textContent = perfil.frase + ' ' + ESTILOS[empresa.estilo];
+      document.getElementById('revelacao-missao').textContent = empresa.missao;
+      document.getElementById('revelacao-fundador').textContent = empresa.fundador;
+      document.getElementById('revelacao-cargo').textContent = empresa.cargo;
+      document.getElementById('revelacao-data').textContent = empresa.data_fundacao;
+      document.getElementById('revelacao-registro').textContent = empresa.registro_ficticio + ' (fictício)';
+      renderizarDnaLista(pontos);
+      gerarQrCartao(empresa);
+      mostrarTela('tela-revelacao');
+    }
+
     function gerarQrCartao(empresaGerada) {
       const caixa = document.getElementById('qr-cartao');
       const linkFallback = document.getElementById('link-cartao-manual');
       caixa.innerHTML = '';
       linkFallback.style.display = 'none';
+      const linkAparelho = document.getElementById('btn-foto-aparelho');
+      linkAparelho.hidden = true;
+      linkAparelho.removeAttribute('href');
 
       const payload = {
         n: empresaGerada.fundador,
@@ -2652,8 +2627,10 @@
         return;
       }
 
-      const baseUrl = location.href.substring(0, location.href.lastIndexOf('/') + 1);
+      const baseUrl = new URL('.', location.href).href;
       const linkCartao = baseUrl + 'cartao.html?d=' + encodeURIComponent(textoCodificado);
+      linkAparelho.href = linkCartao + '&origem=app';
+      linkAparelho.hidden = false;
 
       try {
         if (window.QRCode) {
@@ -2768,6 +2745,10 @@
       if (qrCartao) { qrCartao.innerHTML = ''; }
       const linkCartaoManual = document.getElementById('link-cartao-manual');
       if (linkCartaoManual) { linkCartaoManual.style.display = 'none'; }
+      const linkFoto = document.getElementById('btn-foto-aparelho');
+      linkFoto.hidden = true;
+      linkFoto.removeAttribute('href');
+      if (location.hash) { history.replaceState(null, '', location.pathname + location.search); }
 
       mostrarTela('tela-boas-vindas');
     }
@@ -2818,6 +2799,14 @@
       agendarAvisoInatividade();
     });
 
+    if (location.hash === '#resultado') {
+      try {
+        const salvo = JSON.parse(sessionStorage.getItem('ise_resultado') || 'null');
+        if (salvo && salvo.empresa_gerada && salvo.pontos_perfil) {
+          exibirResultado(salvo.empresa_gerada, salvo.pontos_perfil);
+        }
+      } catch (erro) { console.warn('Resultado indisponível para retorno.'); }
+    }
     agendarAvisoInatividade();
   </script>
 </body>
