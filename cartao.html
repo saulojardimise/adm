@@ -179,17 +179,11 @@
       <div class="icone-camera">📸</div>
       <h1 id="titulo-camera">Hora da sua foto!</h1>
       <p class="subtitulo" id="subtitulo-camera"></p>
-      <button class="btn-camera" id="btn-abrir-camera" type="button">📷 Abrir câmera deste aparelho</button>
-      <div class="camera-preview" id="camera-preview" hidden>
-        <video id="video-camera" autoplay muted playsinline aria-label="Prévia da câmera"></video>
-        <div class="camera-acoes">
-          <button class="btn-acao btn-acao--principal" id="btn-capturar" type="button" disabled>Tirar foto</button>
-          <button class="btn-acao btn-acao--terciaria" id="btn-cancelar-camera" type="button">Cancelar</button>
-        </div>
-      </div>
-      <p class="camera-mensagem" id="camera-mensagem" role="status" aria-live="polite"></p>
-      <label class="btn-camera" for="input-foto">Escolher foto ou usar a câmera do celular</label>
+      <label class="btn-camera" for="input-foto">📷 Tirar minha foto</label>
       <input type="file" accept="image/*" capture="user" id="input-foto">
+      <label class="btn-camera" for="input-galeria">🖼️ Escolher foto do celular</label>
+      <input type="file" accept="image/*" id="input-galeria">
+      <p class="camera-mensagem" id="camera-mensagem" role="status" aria-live="polite"></p>
       <p class="aviso-privacidade">Sua foto é usada apenas neste aparelho, para montar a imagem do card. Ela não é enviada nem guardada em nenhum servidor.</p>
     </section>
 
@@ -208,7 +202,7 @@
       <div class="acoes-final">
         <button class="btn-acao btn-acao--principal" id="btn-baixar" type="button">⬇️ Baixar imagem</button>
         <button class="btn-acao btn-acao--secundaria" id="btn-compartilhar" type="button" style="display:none;">📤 Compartilhar</button>
-        <button class="btn-acao btn-acao--terciaria" id="btn-outra-foto" type="button">🔄 Tirar outra foto</button>
+        <button class="btn-acao btn-acao--terciaria" id="btn-outra-foto" type="button">🔄 Trocar foto</button>
       </div>
     </section>
   </div>
@@ -655,65 +649,17 @@
       });
     }
 
-    // A câmera e a composição da imagem funcionam apenas neste aparelho.
-    const videoCamera = document.getElementById('video-camera');
-    const btnAbrirCamera = document.getElementById('btn-abrir-camera');
-    const btnCapturar = document.getElementById('btn-capturar');
+    // O campo com capture abre a interface de captura oferecida pelo celular.
+    // A imagem confirmada volta ao app para a montagem local do card.
     const mensagemCamera = document.getElementById('camera-mensagem');
-    let streamCamera = null;
-    let pedidoCamera = 0;
-
-    function pararCamera() {
-      pedidoCamera += 1;
-      if (streamCamera) streamCamera.getTracks().forEach(function (track) { track.stop(); });
-      streamCamera = null;
-      videoCamera.srcObject = null;
-      document.getElementById('camera-preview').hidden = true;
-      btnCapturar.disabled = true;
-      btnAbrirCamera.disabled = false;
-    }
-
-    async function abrirCamera() {
-      if (!dadosCard) return;
-      pararCamera();
-      mensagemCamera.textContent = '';
-      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
-        mensagemCamera.textContent = 'A câmera não está disponível neste navegador. Use a opção de escolher foto abaixo ou acesse o site por HTTPS.';
-        return;
-      }
-      const pedido = pedidoCamera;
-      btnAbrirCamera.disabled = true;
-      mensagemCamera.textContent = 'Permita o acesso à câmera para continuar.';
-      try {
-        const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
-        if (pedido !== pedidoCamera) { stream.getTracks().forEach(function (track) { track.stop(); }); return; }
-        streamCamera = stream;
-        videoCamera.srcObject = stream;
-        document.getElementById('camera-preview').hidden = false;
-        await videoCamera.play();
-        if (pedido !== pedidoCamera) return;
-        btnCapturar.disabled = !(videoCamera.videoWidth && videoCamera.videoHeight);
-        mensagemCamera.textContent = 'Enquadre o rosto e toque em Tirar foto.';
-      } catch (erro) {
-        if (pedido !== pedidoCamera) return;
-        pararCamera();
-        mensagemCamera.textContent = 'Não foi possível abrir a câmera. Confira a permissão do navegador ou escolha uma foto abaixo.';
-      }
-    }
-    videoCamera.addEventListener('loadeddata', function () {
-      btnCapturar.disabled = !(streamCamera && videoCamera.videoWidth && videoCamera.videoHeight);
-    });
-    btnAbrirCamera.addEventListener('click', abrirCamera);
-    document.getElementById('btn-cancelar-camera').addEventListener('click', function () {
-      pararCamera(); mensagemCamera.textContent = '';
-    });
-    window.addEventListener('pagehide', pararCamera);
-    document.addEventListener('visibilitychange', function () {
-      if (document.hidden) pararCamera();
+    ['input-foto', 'input-galeria'].forEach(function (id) {
+      document.getElementById(id).addEventListener('click', function () {
+        this.value = '';
+        mensagemCamera.textContent = '';
+      });
     });
 
     async function concluirFoto(imagem) {
-      pararCamera();
       mostrarTela('tela-processando-foto');
       try {
         const dataUrl = await montarCard(imagem);
@@ -725,23 +671,9 @@
         mostrarTela('tela-camera');
       }
     }
-    btnCapturar.addEventListener('click', function () {
-      if (!streamCamera || !videoCamera.videoWidth || !videoCamera.videoHeight) return;
-      const foto = document.createElement('canvas');
-      // Limita o tamanho da captura para evitar imagens excessivamente grandes.
-      const escala = Math.min(1, 1600 / Math.max(videoCamera.videoWidth, videoCamera.videoHeight));
-      foto.width = Math.round(videoCamera.videoWidth * escala);
-      foto.height = Math.round(videoCamera.videoHeight * escala);
-      const ctx = foto.getContext('2d');
-      ctx.translate(foto.width, 0);
-      ctx.scale(-1, 1);
-      ctx.drawImage(videoCamera, 0, 0, foto.width, foto.height);
-      concluirFoto(foto);
-    });
-    document.getElementById('input-foto').addEventListener('change', function (evento) {
+    function receberFoto(evento) {
       const arquivo = evento.target.files && evento.target.files[0];
       if (!arquivo || !dadosCard) return;
-      pararCamera();
       mensagemCamera.textContent = '';
       mostrarTela('tela-processando-foto');
       const leitor = new FileReader();
@@ -757,17 +689,20 @@
         imgFoto.src = leitor.result;
       };
       leitor.readAsDataURL(arquivo);
-    });
+    }
+    document.getElementById('input-foto').addEventListener('change', receberFoto);
+    document.getElementById('input-galeria').addEventListener('change', receberFoto);
     if (new URLSearchParams(location.search).get('origem') === 'app') {
       document.getElementById('navegacao-card').hidden = false;
     }
     document.getElementById('btn-nova-experiencia').addEventListener('click', function () {
-      pararCamera();
       ['ise_aluno', 'ise_resultado', 'ise_sessao_id'].forEach(function (key) { sessionStorage.removeItem(key); });
     });
 
     document.getElementById('btn-outra-foto').addEventListener('click', function () {
       document.getElementById('input-foto').value = '';
+      document.getElementById('input-galeria').value = '';
+      mensagemCamera.textContent = '';
       mostrarTela('tela-camera');
     });
 
