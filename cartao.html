@@ -155,15 +155,66 @@
   .erro-caixa p { margin-top: 14px; color: var(--texto-suave); font-size: 14px; line-height: 1.6; }
 
   canvas#canvas-cartao { display: none; }
+
+  /* Navegação entre o resultado e uma nova experiência. */
+  .navegacao-card {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    max-width: 420px;
+    gap: 12px;
+    width: 100%;
+    margin: 24px 0 28px;
+  }
+  .navegacao-card[hidden] { display: none; }
+  .navegacao-card a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    min-height: 52px;
+    padding: 13px 14px;
+    border: 1px solid #d4e1f5;
+    border-radius: 16px;
+    background: #fff;
+    color: var(--azul);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    line-height: 1.35;
+    text-align: center;
+    text-decoration: none;
+    box-shadow: 0 4px 12px rgba(14,56,128,.06);
+    transition: background .15s ease, box-shadow .15s ease;
+  }
+  .navegacao-card a:visited { color: var(--azul); }
+  .navegacao-card a svg { width: 19px; height: 19px; flex-shrink: 0; }
+  .navegacao-card #btn-nova-experiencia {
+    background: var(--azul);
+    border-color: var(--azul);
+    color: #fff;
+    box-shadow: 0 6px 16px rgba(14,56,128,.16);
+  }
+  .navegacao-card a:focus-visible { outline: 3px solid #6495ed; outline-offset: 4px; }
+  .navegacao-card a:active { box-shadow: none; }
+  @media (hover: hover) {
+    .navegacao-card a:hover { background: #edf3ff; }
+    .navegacao-card #btn-nova-experiencia:hover { background: var(--azul-escuro); }
+  }
+  @media (max-width: 420px) {
+    .navegacao-card { grid-template-columns: 1fr; gap: 10px; margin: 20px 0 24px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .navegacao-card a { transition: none; }
+  }
 </style>
 </head>
 <body>
   <div class="pagina">
     <div class="marca-topo">🎓 Crie sua Empresa em 1 Minuto · Curso de Administração</div>
 
-    <nav class="navegacao-card" id="navegacao-card" hidden>
-      <a href="./index.html#resultado" id="btn-voltar-resultado">← Voltar ao resultado</a>
-      <a href="./index.html" id="btn-nova-experiencia">Iniciar nova experiência</a>
+    <nav class="navegacao-card" id="navegacao-card" aria-label="Navegação da experiência" hidden>
+      <a href="./index.html#resultado" id="btn-voltar-resultado"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M19 12H5m7-7-7 7 7 7"/></svg><span>Voltar ao resultado</span></a>
+      <a href="./index.html" id="btn-nova-experiencia"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 7v5h-5M4 17v-5h5"/><path d="M6.1 7a7 7 0 0 1 11.6-1L20 9M4 15l2.3 3A7 7 0 0 0 17.9 17"/></svg><span>Iniciar nova experiência</span></a>
     </nav>
     <!-- ================= TELA: erro (link inválido/expirado) ================= -->
     <section class="tela" id="tela-erro">

@@ -1761,8 +1761,6 @@
           </div>
         </div>
 
-        <div class="revelacao-dna-titulo">Seu extrato de DNA empresarial</div>
-        <div class="revelacao-dna-lista" id="revelacao-dna-lista"></div>
 
         <div class="revelacao-cartao-cta">
           <div class="revelacao-cartao-titulo">📸 Tire sua foto e gere seu card</div>
@@ -2510,30 +2508,8 @@
       return p1 + p2 + sufixo;
     }
 
-    // Monta as barras do "extrato de DNA" — mostra a pontuação nos 5
-    // perfis (não só o vencedor), ordenadas da maior pra menor, pra dar
-    // a sensação de um resultado único e não só uma categoria fechada.
-    function renderizarDnaLista(pontos) {
-      const ordem = ['mkt', 'ops', 'fin', 'lid', 'est'].slice().sort(function (a, b) {
-        return pontos[b] - pontos[a];
-      });
-      const container = document.getElementById('revelacao-dna-lista');
-      container.innerHTML = '';
-      ordem.forEach(function (chave) {
-        const pct = Math.round((pontos[chave] / 3) * 100);
-        const linha = document.createElement('div');
-        linha.className = 'revelacao-dna-linha';
-        linha.innerHTML =
-          '<span class="revelacao-dna-nome">' + PERFIS[chave].curto + '</span>' +
-          '<span class="revelacao-dna-track"><span class="revelacao-dna-fill" style="width:' + pct + '%"></span></span>' +
-          '<span class="revelacao-dna-pct">' + pct + '%</span>';
-        container.appendChild(linha);
-      });
-    }
-
     // Todo aluno é sempre "CEO e Fundador(a)" da própria empresa — o
-    // perfil vencedor (Marketing, Operações...) já aparece no DNA e no
-    // extrato, não precisa também virar um cargo diferente aqui.
+    // perfil vencedor (Marketing, Operações...) já aparece no resultado.
     const CARGO_PADRAO = 'CEO e Fundador(a)';
 
     function finalizarPerguntas() {
@@ -2595,7 +2571,6 @@
       document.getElementById('revelacao-cargo').textContent = empresa.cargo;
       document.getElementById('revelacao-data').textContent = empresa.data_fundacao;
       document.getElementById('revelacao-registro').textContent = empresa.registro_ficticio + ' (fictício)';
-      renderizarDnaLista(pontos);
       gerarQrCartao(empresa);
       mostrarTela('tela-revelacao');
     }
